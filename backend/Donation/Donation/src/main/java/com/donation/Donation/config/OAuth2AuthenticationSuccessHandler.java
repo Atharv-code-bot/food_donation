@@ -49,7 +49,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         System.out.println("Granted Authorities: " + authentication2.getAuthorities());
 
         // Redirect with token & role
-        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/oauth2/redirect")
+        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:5500s/oauth2/redirect")
                 .queryParam("token", token)
                 .queryParam("role", user.getRole().name())
                 .build().toUriString();

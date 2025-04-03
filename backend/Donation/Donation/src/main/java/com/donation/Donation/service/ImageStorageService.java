@@ -13,7 +13,7 @@ import java.util.UUID;
 @Service
 public class ImageStorageService {
 
-    private static final String IMAGE_UPLOAD_DIR = "uploads/profile_images/";
+    private static final String IMAGE_UPLOAD_DIR = "D:\\food_donation\\backend\\Donation\\Donation\\uploads\\profile_images\\";
 
     public String saveImageFromUrl(String imageUrl) {
         try {

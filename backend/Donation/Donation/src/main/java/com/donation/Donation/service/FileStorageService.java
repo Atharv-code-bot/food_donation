@@ -13,13 +13,10 @@ import java.util.UUID;
 @Service
 public class FileStorageService {
 
-    private final String uploadDir;
+    private final String uploadDir = "D:\\food_donation\\backend\\Donation\\Donation\\uploads";
+
 
     public FileStorageService() {
-        // Store files inside the project's root directory under "uploads" folder
-        this.uploadDir = System.getProperty("user.dir") + File.separator + "uploads";
-
-        // Create the directory if it does not exist
         File directory = new File(uploadDir);
         if (!directory.exists()) {
             directory.mkdirs();

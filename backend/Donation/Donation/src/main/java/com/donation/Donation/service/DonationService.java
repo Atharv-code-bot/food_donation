@@ -119,10 +119,16 @@ public class DonationService {
         Integer ngoId = (donation.getClaimedByNgo() != null) ? donation.getClaimedByNgo().getUserId() : null;
         Integer donorId = (donation.getDonor() != null) ? donation.getDonor().getUserId() : null;
 
+        String donorName = (donation.getDonor() != null) ? donation.getDonor().getFullname() : null;
+        String ngoName = (donation.getClaimedByNgo() != null) ? donation.getClaimedByNgo().getFullname() : null;
+
+
+
 
         DonationResponse response = new DonationResponse();
         response.setDonationId(donation.getDonationId());
         response.setDonorId(donorId);
+        response.setDonorName(donorName);
         response.setItemName(donation.getItemName());
         response.setQuantity(donation.getQuantity());
         response.setBestBeforeDate(donation.getBestBeforeDate());
@@ -134,7 +140,7 @@ public class DonationService {
         response.setCreatedAt(donation.getCreatedAt());
         response.setUpdatedAt(donation.getUpdatedAt());
         response.setNgoId(ngoId);
-
+        response.setNgoName(ngoName);
         return response;
     }
 

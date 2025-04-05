@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 public class DonationResponse {
     private int donationId;
     private Integer donorId;
+    private String donorName;
     private Integer ngoId;
+    private String ngoName;
     private String itemName;
     private int quantity;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -26,6 +28,30 @@ public class DonationResponse {
     private LocalDateTime createdAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
+
+    public void setDonationId(int donationId) {
+        this.donationId = donationId;
+    }
+
+    public void setDonorId(Integer donorId) {
+        this.donorId = donorId;
+    }
+
+    public String getDonorName() {
+        return donorName;
+    }
+
+    public void setDonorName(String donorName) {
+        this.donorName = donorName;
+    }
+
+    public String getNgoName() {
+        return ngoName;
+    }
+
+    public void setNgoName(String ngoName) {
+        this.ngoName = ngoName;
+    }
 
     public Integer getNgoId() {
         return ngoId;

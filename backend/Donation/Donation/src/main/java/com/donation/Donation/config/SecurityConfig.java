@@ -71,7 +71,7 @@ public class SecurityConfig {
 
                                 .requestMatchers("/donations/{id}").hasAnyAuthority("ROLE_NGO", "ROLE_ADMIN")  // ✅ Get donation by ID
                                 .requestMatchers("/donations/{id}/claim").hasAnyAuthority("ROLE_NGO")  // ✅ Claim donation
-                                .requestMatchers("/donations/{id}/complete").hasAnyAuthority("ROLE_DONOR", "ROLE_ADMIN")  // ✅ Complete donation
+                                .requestMatchers("/donations/{id}/complete").hasAnyAuthority("ROLE_NGO", "ROLE_ADMIN")  // ✅ Complete donation
                                 .requestMatchers("/donations/status/{stat}").hasAnyAuthority("ROLE_NGO", "ROLE_ADMIN")  // ✅ Get pending donations
                                 .requestMatchers("/donations/images/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_DONOR", "ROLE_NGO")  // ✅ Get donation images
                                 .requestMatchers("/donations/user/{stat}").hasAnyAuthority("ROLE_DONOR", "ROLE_ADMIN")  // ✅ Get claimed donations for donor

@@ -69,7 +69,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/donations/{id}").hasAnyAuthority("ROLE_DONOR", "ROLE_ADMIN")  // ✅ Update donation (Ensure this is before NGO rules)
                                 .requestMatchers(HttpMethod.DELETE, "/donations/{id}").hasAnyAuthority("ROLE_DONOR", "ROLE_ADMIN")  // ✅ Delete donation (Ensure this is before NGO rules)
 
-                                .requestMatchers("/donations/{id}").hasAnyAuthority("ROLE_NGO", "ROLE_ADMIN")  // ✅ Get donation by ID
+                                .requestMatchers("/donations/{id}").hasAnyAuthority("ROLE_NGO","ROLE_DONOR","ROLE_ADMIN")  // ✅ Get donation by ID
                                 .requestMatchers("/donations/{id}/claim").hasAnyAuthority("ROLE_NGO")  // ✅ Claim donation
                                 .requestMatchers("/donations/{id}/complete").hasAnyAuthority("ROLE_NGO", "ROLE_ADMIN")  // ✅ Complete donation
                                 .requestMatchers("/donations/status/{stat}").hasAnyAuthority("ROLE_NGO", "ROLE_ADMIN")  // ✅ Get pending donations

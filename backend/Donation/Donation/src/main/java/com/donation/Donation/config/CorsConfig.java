@@ -29,7 +29,7 @@ public class CorsConfig {
         config.setAllowedHeaders(List.of("*"));
 
         // ✅ Apply CORS config to all endpoints
-        source.registerCorsConfiguration("/", config);
+        source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
 }

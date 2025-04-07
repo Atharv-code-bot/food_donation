@@ -48,6 +48,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session
                 .authorizeHttpRequests(auth -> auth
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ✅ Preflight
+
                                 .requestMatchers("/auth/register", "/auth/login", "/auth/logout", "/oauth2/**").permitAll()
 
 // 🔹 1️⃣ OAuth2-Specific Endpoints (Keep these first)

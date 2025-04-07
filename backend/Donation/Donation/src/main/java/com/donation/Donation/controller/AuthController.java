@@ -47,7 +47,7 @@ public class AuthController {
             if (newUser.isPresent()) {
                 User user = newUser.get();
                 String token = jwtUtil.generateToken(user.getUsername());
-                return ResponseEntity.ok(new AuthResponse(token, user.getRole().name()));
+                return ResponseEntity.ok(new AuthResponse(token, user.getRole().name(),user.getUserId()));
             }
 
             return ResponseEntity.badRequest().body("Error in user creation.");
@@ -85,7 +85,7 @@ public class AuthController {
             String token = jwtUtil.generateToken(userDetails.getUsername());
 
             // Return token and role
-            return ResponseEntity.ok(new AuthResponse(token, user.getRole().name()));
+            return ResponseEntity.ok(new AuthResponse(token, user.getRole().name(),user.getUserId()));
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Invalid credentials.");

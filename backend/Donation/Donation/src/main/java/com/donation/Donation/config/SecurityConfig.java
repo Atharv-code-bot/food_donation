@@ -44,7 +44,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())) // ✅ Enable CORS
+                //.cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())) // ✅ Enable CORS
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session
                 .authorizeHttpRequests(auth -> auth
@@ -57,7 +57,7 @@ public class SecurityConfig {
                                 .requestMatchers("/users/update-oauth2-user").hasAnyAuthority("ROLE_OAUTH2_USER", "ROLE_ADMIN")  // ✅ OAuth2 users & Admin
 
 // 🔹 2️⃣ Admin Access (Keep this next)
-                                .requestMatchers("/admin/**", "/users/admin").hasAuthority("ROLE_ADMIN")  // ✅ Only Admin
+                                .requestMatchers("/admin/**", "/users/admin","/donations/admin").hasAuthority("ROLE_ADMIN")  // ✅ Only Admin
 
 // 🔹 3️⃣ General User API Permissions
                                 .requestMatchers("/users/{id}").hasAnyAuthority("ROLE_NGO", "ROLE_DONOR", "ROLE_ADMIN")  // ✅ Get user by ID

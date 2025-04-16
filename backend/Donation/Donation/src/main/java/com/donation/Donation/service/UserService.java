@@ -49,7 +49,7 @@ public class UserService {
     @Autowired
     private ImageStorageService imageStorageService;
 
-    private final String PLACEHOLDER_IMAGE_URL = "/uploads/placeholder/placeholder.png"; // Path to Placeholder
+    private final String PLACEHOLDER_IMAGE_URL = "/profile_images/placeholder.png"; // Path to Placeholder
 
 
     @Transactional

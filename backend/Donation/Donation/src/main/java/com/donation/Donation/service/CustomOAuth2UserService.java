@@ -24,7 +24,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
     private final ImageStorageService imageStorageService;
 
-    private static final String PLACEHOLDER_IMAGE_URL = "/uploads/placeholder/placeholder.png";
+    private final String PLACEHOLDER_IMAGE_URL = "/profile_images/placeholder.png"; // Path to Placeholder
 
     public CustomOAuth2UserService(UserRepository userRepository, ImageStorageService imageStorageService) {
         this.userRepository = userRepository;

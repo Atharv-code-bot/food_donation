@@ -78,10 +78,6 @@
       href="https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/6629311d5a4b7dca004f2dab_webclip.png"
       rel="apple-touch-icon"
     />
-    <script
-      src="https://www.google.com/recaptcha/api.js"
-      type="text/javascript"
-    ></script>
     <meta
       http-equiv="Cache-Control"
       content="no-cache, no-store, must-revalidate"
@@ -90,6 +86,10 @@
     <meta http-equiv="Expires" content="0" />
 
     <style>
+      body {
+        display: none;
+      }
+      
       textarea {
         resize: vertical;
       }
@@ -653,7 +653,6 @@
       });
     </script>
 
-    <script src="https://www.google.com/recaptcha/api.js"></script>
 
     <script>
       function onSubmit(token) {
@@ -665,5 +664,20 @@
         $("#field171614068_1").prop("checked", true);
       });
     </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+    const token = localStorage.getItem("token");
+    console.log(token)
+
+    if (!token) {
+        // Store the URL the user was trying to access
+        localStorage.setItem("redirectAfterLogin", window.location.href);
+        // Redirect to signin page
+        window.location.href = "not-logged-in.html";
+      } else {
+        document.body.style.display = "block"; // Show page if logged in
+      }
+    });
+  </script>
   </body>
 </html>

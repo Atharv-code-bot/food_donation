@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Donation Details Viewer</title>
+    <link rel="stylesheet" href="../styles/donation-details.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/61484409455df78d536c0980_Food_Connect_favicon.png"
+      rel="shortcut icon"
+      type="image/x-icon"
+    />
+    <style>
+      body {
+        display: none;
+        background-color: #FFF8F2;
+      }
+      .btn-primary {
+        background-color: #F68B6A;
+      }
+      .donation-header {
+        background-color: #FFD6C0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="donation-header">
+      <h1>Donation Details</h1>
+      <div id="status-badge"></div>
+    </div>
+
+    <div class="donation-page">
+      <div class="donation-info">
+        <h2 id="item-name" class="donation-title">Loading...</h2>
+
+        <div class="info-section">
+          <h3><i class="fa fa-box"></i> Item Details</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Quantity</span>
+              <span id="quantity" class="value">Loading...</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Best Before</span>
+              <span id="best-before" class="value">Loading...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3><i class="fa fa-map-marker-alt"></i> Pickup Details</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Location</span>
+              <span id="location" class="value">Loading...</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Available From</span>
+              <span id="available-from" class="value">Loading...</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Available Until</span>
+              <span id="available-until" class="value">Loading...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3><i class="fa fa-info-circle"></i> Reference Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Donation ID</span>
+              <span id="donation-id" class="value">Loading...</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Donor ID</span>
+              <span id="donor-id" class="value">Loading...</span>
+            </div>
+            <div class="info-item">
+              <span class="label">NGO ID</span>
+              <span id="ngo-id" class="value">Loading...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timestamps">
+          <div class="timestamp-item">
+            <i class="fa fa-calendar-plus"></i> Created:
+            <span id="created-at">Loading...</span>
+          </div>
+          <div class="timestamp-item">
+            <i class="fa fa-calendar-check"></i> Updated:
+            <span id="updated-at">Loading...</span>
+          </div>
+        </div>
+
+        <!-- Centered column for action buttons -->
+        <!-- <div
+          style="
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 16px;
+            margin-top: 30px;
+            justify-content: center;
+          "
+        > -->
+        <!-- This will show conditionally via JavaScript -->
+        <div class="donation-actions" id="donation-actions">
+          <button type="button" class="btn btn-secondary" id="back-button">
+            <i class="fa fa-arrow-left"></i> Back
+          </button>
+          <!-- <button id="claim-btn" class="btn btn-primary">
+              Claim Donation
+            </button> -->
+          <button id="update-btn" class="btn btn-update">
+            <i class="fa fa-edit"></i> Update
+          </button>
+          <button id="delete-btn" class="btn btn-delete">
+            <i class="fa fa-trash"></i> Delete
+          </button>
+          <!-- Add other buttons here (update/delete/etc.) if needed -->
+        </div>
+        <!-- </div> -->
+      </div>
+
+      <div class="donation-images" id="donation-images">
+        <!-- Images will be loaded here dynamically -->
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const token = localStorage.getItem("token");
+        console.log(token);
+
+        if (!token) {
+          // Store the URL the user was trying to access
+          localStorage.setItem("redirectAfterLogin", window.location.href);
+          // Redirect to signin page
+          window.location.href = "not-logged-in.html";
+        } else {
+          document.body.style.display = "block"; // Show page if logged in
+        }
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const token = localStorage.getItem("token");
+        console.log(token);
+
+        if (!token) {
+          // Store the URL the user was trying to access
+          localStorage.setItem("redirectAfterLogin", window.location.href);
+          // Redirect to signin page
+          window.location.href = "not-logged-in.html";
+        } else {
+          document.body.style.display = "flex"; // Show page if logged in
+        }
+      });
+    </script>
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Function to format dates
+        function formatDate(dateString) {
+          return new Date(dateString).toLocaleString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        }
+
+        // Function to set status badge styles
+        function setStatusBadgeStyles(status) {
+          const statusBadge = document.getElementById("status-badge");
+          statusBadge.textContent = status;
+
+          switch (status) {
+            case "AVAILABLE":
+              statusBadge.className = "status-available";
+              break;
+            case "CLAIMED":
+              statusBadge.className = "status-claimed";
+              break;
+            case "PENDING":
+              statusBadge.className = "status-pending";
+              break;
+            case "EXPIRED":
+              statusBadge.className = "status-expired";
+              break;
+            default:
+              statusBadge.className = "";
+          }
+        }
+
+        // Function to load image
+        function loadImages(urls) {
+          const container = document.getElementById("donation-images");
+          container.innerHTML = ""; // Clear old images
+          const token = localStorage.getItem("token");
+
+          if (!urls || urls.length === 0) {
+            container.innerHTML = `
+      <div class="image-placeholder">
+        <i class="fa fa-image"></i><p>No images available</p>
+      </div>`;
+            return;
+          }
+
+          urls.forEach((url) => {
+            const placeholder = document.createElement("div");
+            placeholder.className = "image-placeholder";
+            placeholder.innerHTML =
+              '<i class="fa fa-spinner fa-spin"></i><p>Loading...</p>';
+            container.appendChild(placeholder);
+
+            fetch(`http://localhost:8080${url}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+              .then((response) => {
+                if (!response.ok) throw new Error("Image fetch failed");
+                return response.blob();
+              })
+              .then((blob) => {
+                const img = document.createElement("img");
+                img.src = URL.createObjectURL(blob);
+                img.alt = "Donation Image";
+                img.onload = () => {
+                  container.replaceChild(img, placeholder);
+                };
+                img.onerror = () => {
+                  placeholder.innerHTML =
+                    '<i class="fa fa-exclamation-circle"></i><p>Failed to load image</p>';
+                };
+              })
+              .catch((err) => {
+                console.error("Image error:", err);
+                placeholder.innerHTML =
+                  '<i class="fa fa-exclamation-circle"></i><p>Failed to load image</p>';
+              });
+          });
+        }
+
+        function setField(id, value, formatter = (v) => v) {
+          const el = document.getElementById(id);
+          const wrapper =
+            el?.closest(".info-item") || el?.closest(".timestamp-item");
+          if (!value || value === "null" || value === "") {
+            wrapper?.remove();
+          } else {
+            el.textContent = formatter(value);
+          }
+        }
+
+        // Function to display donation details
+        function displayDonationDetails(donation) {
+          photoUrl = `http://localhost:8080${donation.photoUrl}`;
+          // Set donation details
+          setField("item-name", donation.itemName);
+          setField("quantity", donation.quantity);
+          setField("best-before", donation.bestBeforeDate, formatDate);
+          setField("location", donation.pickupLocation);
+          setField("available-from", donation.availabilityStart, formatDate);
+          setField("available-until", donation.availabilityEnd, formatDate);
+          setField("donation-id", donation.donationId);
+          setField("donor-id", donation.donorId);
+          setField("ngo-id", donation.ngoId);
+          setField("created-at", donation.createdAt, formatDate);
+          setField("updated-at", donation.updatedAt, formatDate);
+
+          // Set status badge
+          setStatusBadgeStyles(donation.status);
+
+          // Load donation image
+          const images = Array.isArray(donation.photoUrls)
+            ? donation.photoUrls
+            : [donation.photoUrl]; // for backward compatibility
+          loadImages(images);
+        }
+
+        // Function to fetch donation details
+        function fetchDonationDetails() {
+          // In a real app, you'd fetch data from a server using:
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const donationId = urlParams.get("id");
+          const token = localStorage.getItem("token");
+          console.log(token);
+
+          fetch(`http://localhost:8080/donations/${donationId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+            .then((response) => {
+              if (!response.ok) throw new Error("Failed to fetch donation");
+              return response.json();
+            })
+            .then((data) => {
+              displayDonationDetails(data);
+              renderActionButton(data);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.body.innerHTML = `
+                <div class="error-container">
+                  <i class="fa fa-exclamation-triangle"></i>
+                  <p>Failed to load donation details. Please try again later.</p>
+                </div>
+              `;
+            });
+
+          // For demo purposes, we'll just use our mock data:
+          //   displayDonationDetails(mockDonation);
+        }
+
+        // Initialize
+        fetchDonationDetails();
+      });
+    </script>
+    <script>
+      const userRole = localStorage.getItem("role");
+      const token = localStorage.getItem("token");
+
+      document.getElementById("donation-actions").style.display = "flex";
+      function renderActionButton(donation) {
+        const currentUserId = localStorage.getItem("id"); // Assuming NGO's user ID is stored here
+        const buttonWrapper = document.getElementById("donation-actions");
+        console.log(donation.ngoId, currentUserId);
+
+        // Clear existing buttons
+        // buttonWrapper.innerHTML = "";
+
+        // If user is NGO and status is 'available' => Show "Claim Donation"
+        if (userRole === "ROLE_NGO" && donation.status == "AVAILABLE") {
+          document.getElementById("update-btn").style.display = "none";
+          document.getElementById("delete-btn").style.display = "none";
+          const claimBtn = document.createElement("button");
+          claimBtn.textContent = "Claim Donation";
+          claimBtn.className = "btn btn-primary"; // Update class as needed
+          claimBtn.onclick = () => claimDonation(donation.donationId);
+          buttonWrapper.appendChild(claimBtn);
+        }
+
+        // If user is NGO, status is 'claimed', and they are the one who claimed it => "Mark as Completed"
+        else if (
+          userRole === "ROLE_NGO" &&
+          donation.status === "CLAIMED" &&
+          String(donation.ngoId) === String(currentUserId)
+        ) {
+          document.getElementById("update-btn").style.display = "none";
+          document.getElementById("delete-btn").style.display = "none";
+          const completeBtn = document.createElement("button");
+          completeBtn.textContent = "Mark as Completed";
+          completeBtn.className = "btn btn-primary";
+          completeBtn.onclick = () => markAsCompleted(donation.donationId);
+          buttonWrapper.appendChild(completeBtn);
+        } else if (
+          userRole === "ROLE_DONOR" &&
+          donation.status === "AVAILABLE"
+        ) {
+          document
+            .getElementById("update-btn")
+            .addEventListener("click", () => {
+              const urlParams = new URLSearchParams(window.location.search);
+              const donationId = urlParams.get("id");
+              window.location.href = `create-donation.html?donationId=${donationId}`;
+            });
+
+          document
+            .getElementById("delete-btn")
+            .addEventListener("click", () => {
+              if (!confirm("Are you sure you want to delete this donation?"))
+                return;
+
+              const donationId = new URLSearchParams(
+                window.location.search
+              ).get("id");
+
+              fetch(`http://localhost:8080/donations/${donationId}`, {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                   "Content-Type": "application/json"
+                },
+              })
+                .then((res) => {
+                  if (!res.ok) throw new Error("Failed to delete donation.");
+                  alert("Donation deleted successfully.");
+                  window.location.href = "donate-dashboard.html"; // Change this to your actual listing page
+                })
+                .catch((err) => {
+                  console.error("Delete error:", err);
+                  alert("An error occurred while deleting the donation.");
+                });
+            });
+          } else {
+            document.getElementById("update-btn").style.display = "none";
+            document.getElementById("delete-btn").style.display = "none";
+          }
+        }
+
+      async function claimDonation(donationId) {
+        const token = localStorage.getItem("token");
+        try {
+          const response = await fetch(
+            `http://localhost:8080/donations/${donationId}/claim`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (response.ok) {
+            alert("Donation claimed successfully!");
+            location.reload();
+          } else {
+            alert("Failed to claim donation");
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      async function markAsCompleted(donationId) {
+        const token = localStorage.getItem("token");
+        try {
+          const response = await fetch(
+            `http://localhost:8080/donations/${donationId}/complete`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (response.ok) {
+            alert("Donation marked as completed!");
+            location.reload();
+          } else {
+            alert("Failed to complete donation");
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      // Back button (optional)
+      const backButton = document.getElementById("back-button");
+      backButton.addEventListener("click", () => {
+        window.history.back(); // Takes user to the previous page
+      });
+    </script>
+  </body>
+</html>

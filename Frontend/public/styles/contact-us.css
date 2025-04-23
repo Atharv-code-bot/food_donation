@@ -2100,39 +2100,6 @@ figcaption {
 .btn-secondary:hover {
   background-color: #ee7954;
 }
-.auth-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.signin-btn, .signup-btn {
-  padding: 10px 20px;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.signin-btn {
-  background-color: transparent;
-  border: 2px solid #F68B6A;
-  color: #F68B6A;
-}
-
-.signup-btn {
-  background-color: #F68B6A;
-  color: white;
-  border: none;
-}
-
-.signin-btn:hover {
-  background-color: #d4623f;
-  color: white;
-}
-
-.signup-btn:hover {
-  background-color: #d4623f;
-}
-
 .navbar {
   z-index: 9999;
   background-color: #fcf8f7;
@@ -3218,8 +3185,8 @@ figcaption {
   z-index: 5;
   background-color: var(--primary-green-regular\<deleted\|variable-f6096cce\>);
   color: var(--white);
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: 64px;
+  padding-bottom: 64px;
   position: relative;
   overflow: visible;
 }
@@ -3255,11 +3222,10 @@ figcaption {
   grid-template-rows: auto;
   grid-template-columns: 1fr 1fr 1fr;
   grid-auto-columns: 1fr;
+  justify-content: space-between;
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
 }
 .social-icon {
   margin-right: 20px;
@@ -4192,7 +4158,9 @@ figcaption {
   display: flex;
 }
 .blog-doodle {
-  background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/60dd9083125eb41f36d01e80_Vector%20\11\.svg);
+  background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/60dd9083125eb41f36d01e80_Vector%20\(
+      11\
+    ).svg);
   background-position: 50% 100%;
   background-repeat: no-repeat;
   background-size: auto;
@@ -5568,6 +5536,41 @@ figcaption {
   display: block;
   position: relative;
 }
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .signin-btn, .signup-btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s ease-in-out;
+  }
+  
+  /* Sign In button - Blue outline */
+  .signin-btn {
+    background-color: transparent;
+    border: 2px solid #007bff; /* Blue outline */
+    color: #007bff;
+  }
+  
+  .signin-btn:hover {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  /* Sign Up button - Solid Blue */
+  .signup-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+  }
+  
+  .signup-btn:hover {
+    background-color: #0056b3; /* Darker blue */
+  }
 .dropdown-icon {
   display: none;
 }
@@ -9115,16 +9118,18 @@ figcaption {
 .location-gallery-img.bay-5 {
   background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/6745e654e17635efbe9247b9_Chase%20Center%20Food%20Recovery%20Hub%20101923.webp);
 }
-/* .location-gallery-img.bay-6 {
+.location-gallery-img.bay-6 {
   background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/6745e6543b3acf9c756d6f1d_Oakland%20Communities%20United%20for%20Equity%20and%20Justice%20\(
       OCUEJ\
     )%20of%20Oakland%2C%20CA.webp);
-} */
+}
 .location-gallery-img.philly-1 {
   background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/6759a24e3174fd1f1d44dea0_53805134372_6c3e07104c_o.webp);
 }
 .location-gallery-img.philly-2 {
-  background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/6759a24e69f3b81b89d74bef_53805134462_31cb87786c_o%20.webp);
+  background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/6759a24e69f3b81b89d74bef_53805134462_31cb87786c_o%20\(
+      1\
+    ).webp);
 }
 .location-gallery-img.philly-3 {
   background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/6759a24e9646a3d856b92848_Penn%20Farm_Center%20for%20Public%20Health%20Distrbution_091724_A.webp);
@@ -9142,11 +9147,11 @@ figcaption {
   background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/67473fcdeaf41481d4f18ae1_CloudConvert%20Image.webp);
   background-position: 100%;
 }
-/* .location-gallery-img.kansas-2 {
+.location-gallery-img.kansas-2 {
   background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/67473fcd35e7dd1309196abc_Image%20from%20CloudConvert%20\(
       2\
     ).webp);
-} */
+}
 .location-gallery-img.kansas-3 {
   background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/67473fcdeaf41481d4f18b03_Image%20Jun%2013%202024%20from%20CloudConvert.webp);
 }
@@ -9154,7 +9159,7 @@ figcaption {
   background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/67473fcd49e05f355cfa3f28_Image%20from%20CloudConvert.webp);
   background-position: 20%;
 }
-/* .location-gallery-img.kansas-5 {
+.location-gallery-img.kansas-5 {
   background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/67473fcd392ed6aa3d6f4d00_Image%20from%20CloudConvert%20\(
       1\
     ).webp);
@@ -9163,7 +9168,7 @@ figcaption {
   background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/67473fcd84389157f763004b_Image%20from%20CloudConvert%20\(
       3\
     ).webp);
-} */
+}
 .locations-menu-container {
   z-index: 10;
   justify-content: center;
@@ -9586,11 +9591,11 @@ figcaption {
 .approach-sticky-img._1 {
   background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/674890c926607e81e83cc305_53806313378_9b04348087_o%201%20copy.webp);
 }
-/* .approach-sticky-img._2 {
+.approach-sticky-img._2 {
   background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/674890cad5c55abe2b0b7df9_Second%20Antioch%20Baptist%20Church_10.25.22%20\(
       3\
     )%201%20copy.webp);
-} */
+}
 .approach-sticky-img._3 {
   background-image: url(https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/674890c9e211905a4845e6b4_Penn%20Farm_Center%20for%20Public%20Health%20Distrbution_091724_C%201%20copy.webp);
 }
@@ -17789,4 +17794,3 @@ figcaption {
     grid-column: span 2 / span 2;
   }
 }
-

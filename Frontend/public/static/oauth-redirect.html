@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting...</title>
+    <link
+    href="https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/61484409455df78d536c0980_Food_Connect_favicon.png"
+    rel="shortcut icon"
+    type="image/x-icon"
+  />
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            height: 90vh;
+        }
+.dot-spinner {
+  --uib-size: 2.8rem;
+  --uib-speed: .9s;
+  --uib-color: #183153;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: var(--uib-size);
+  width: var(--uib-size);
+}
+
+.dot-spinner__dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  width: 100%;
+}
+
+.dot-spinner__dot::before {
+  content: '';
+  height: 20%;
+  width: 20%;
+  border-radius: 50%;
+  background-color: var(--uib-color);
+  transform: scale(0);
+  opacity: 0.5;
+  animation: pulse0112 calc(var(--uib-speed) * 1.111) ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(18, 31, 53, 0.3);
+}
+
+.dot-spinner__dot:nth-child(2) {
+  transform: rotate(45deg);
+}
+
+.dot-spinner__dot:nth-child(2)::before {
+  animation-delay: calc(var(--uib-speed) * -0.875);
+}
+
+.dot-spinner__dot:nth-child(3) {
+  transform: rotate(90deg);
+}
+
+.dot-spinner__dot:nth-child(3)::before {
+  animation-delay: calc(var(--uib-speed) * -0.75);
+}
+
+.dot-spinner__dot:nth-child(4) {
+  transform: rotate(135deg);
+}
+
+.dot-spinner__dot:nth-child(4)::before {
+  animation-delay: calc(var(--uib-speed) * -0.625);
+}
+
+.dot-spinner__dot:nth-child(5) {
+  transform: rotate(180deg);
+}
+
+.dot-spinner__dot:nth-child(5)::before {
+  animation-delay: calc(var(--uib-speed) * -0.5);
+}
+
+.dot-spinner__dot:nth-child(6) {
+  transform: rotate(225deg);
+}
+
+.dot-spinner__dot:nth-child(6)::before {
+  animation-delay: calc(var(--uib-speed) * -0.375);
+}
+
+.dot-spinner__dot:nth-child(7) {
+  transform: rotate(270deg);
+}
+
+.dot-spinner__dot:nth-child(7)::before {
+  animation-delay: calc(var(--uib-speed) * -0.25);
+}
+
+.dot-spinner__dot:nth-child(8) {
+  transform: rotate(315deg);
+}
+
+.dot-spinner__dot:nth-child(8)::before {
+  animation-delay: calc(var(--uib-speed) * -0.125);
+}
+
+@keyframes pulse0112 {
+  0%,
+  100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+    </style>
+    <script>
+      window.onload = async () => {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
+        const roleFromUrl = params.get("role");
+        const userId = params.get("id");
+
+        // const urlParams = new URLSearchParams(window.location.search);
+        //   const token = urlParams.get("token");
+        //   const roleFromUrl = urlParams.get("role");
+
+        if (!token) {
+          document.getElementById("message").textContent =
+            "Missing token or role in URL.";
+          document.getElementById("message").className = "message error";
+          // Store the URL the user was trying to access
+          // localStorage.setItem("redirectAfterLogin", window.location.href);
+          // Redirect to signin page
+          window.location.href = "not-logged-in.html";
+          return;
+        } else if (roleFromUrl == "ROLE_OAUTH2_USER") {
+          window.location.href = "oauth-update.html";
+        } else if (roleFromUrl == "ROLE_NGO") {
+          localStorage.setItem("token", token);
+          localStorage.setItem("role", roleFromUrl);
+          localStorage.setItem("id", userId);
+          window.location.href = "donate-dashboard.html";
+        } else if (roleFromUrl == "ROLE_DONOR") {
+          localStorage.setItem("token", token);
+          localStorage.setItem("role", roleFromUrl);
+          localStorage.setItem("id", userId);
+          window.location.href = "receive-dashboard.html";
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <p>Redirecting... please wait.</p>
+<div class="dot-spinner">
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+</div>
+    </div>
+  </body>
+</html>

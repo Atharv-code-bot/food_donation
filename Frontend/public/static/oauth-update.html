@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update Details</title>
+    <link
+      href="https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/61484409455df78d536c0980_Food_Connect_favicon.png"
+      rel="shortcut icon"
+      type="image/x-icon"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
+        padding: 1rem;
+        text-align: center;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .background-text {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .background-text h1 {
+        font-size: 15rem;
+        font-weight: bold;
+        color: rgba(243, 244, 246, 0.5);
+      }
+
+      .content {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 500px;
+      }
+
+      h2 {
+        margin-bottom: 1rem;
+        font-size: 1.875rem;
+        font-weight: bold;
+        color: #1f2937;
+      }
+
+      p {
+        margin-bottom: 2rem;
+        color: #4b5563;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+      }
+
+      input,
+      select {
+        padding: 0.75rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 100%;
+      }
+
+      button {
+        padding: 0.75rem 1rem;
+        border-radius: 9999px;
+        background-color: #26ae99;
+        color: white;
+        font-size: 1rem;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      button:hover {
+        background-color: #229886;
+      }
+
+      .message {
+        margin-top: 1rem;
+        font-size: 1rem;
+      }
+
+      .success {
+        color: #16a34a;
+      }
+
+      .error {
+        color: #dc2626;
+      }
+
+      @media (max-width: 640px) {
+        .background-text h1 {
+          font-size: 10rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background-text">
+      <h1>OAUTH</h1>
+    </div>
+
+    <div class="content">
+      <h2>Complete Your Profile</h2>
+      <p>Enter your details to continue</p>
+
+      <form id="update-form">
+        <input
+          type="text"
+          id="phone"
+          name="phone"
+          placeholder="Phone Number"
+          required
+        />
+        <input
+          type="text"
+          id="address"
+          name="address"
+          placeholder="Address"
+          required
+        />
+        <select id="role" name="role" required>
+          <option value="" disabled selected>Select Role</option>
+          <option value="ROLE_DONOR">Donor</option>
+          <option value="ROLE_NGO">NGO</option>
+        </select>
+        <button type="submit">Submit</button>
+      </form>
+
+      <div class="message" id="message"></div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get("token");
+        console.log(token);
+
+        if (!token) {
+          // Store the URL the user was trying to access
+          localStorage.setItem("redirectAfterLogin", window.location.href);
+          // Redirect to signin page
+          window.location.href = "not-logged-in.html";
+        } else {
+          document.body.style.display = "flex"; // Show page if logged in
+        }
+      });
+    </script>
+
+    <script>
+      document
+        .getElementById("update-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+        //   const urlParams = new URLSearchParams(window.location.search);
+        //   const token = urlParams.get("token");
+        //   const roleFromUrl = urlParams.get("role");
+        //   const userId = urlParams.get("id")
+
+        //   if (!token || !roleFromUrl) {
+        //     document.getElementById("message").textContent =
+        //       "Missing token or role in URL.";
+        //     document.getElementById("message").className = "message error";
+        //     // Store the URL the user was trying to access
+        //     // localStorage.setItem("redirectAfterLogin", window.location.href);
+        //     // // Redirect to signin page
+        //     // window.location.href = "not-logged-in.html";
+        //     return;
+        //   }
+
+          const phone = document.getElementById("phone").value;
+          const address = document.getElementById("address").value;
+          const role = document.getElementById("role").value;
+
+          try {
+            const response = await fetch(
+              "http://localhost:8080/users/update-oauth2-user",
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ phone, address, role }),
+              }
+            );
+
+            if (!response.ok) {
+              const errText = await response.text();
+              throw new Error(errText || "Failed to update user");
+            }
+
+            document.getElementById("message").textContent =
+              "Details updated successfully!";
+            document.getElementById("message").className = "message success";
+            localStorage.setItem("token", token);
+            localStorage.setItem("role", role);
+            localStorage.setItem("id", userId);
+
+            setTimeout(() => {
+              if (role === "ROLE_DONOR") {
+                window.location.href = "donate-dashboard.html";
+              } else if (role === "ROLE_NGO") {
+                window.location.href = "receive-dashboard.html";
+              } else {
+                window.location.href = "home.html";
+              }
+            }, 1500);
+          } catch (error) {
+            console.error("Error updating user:", error);
+            document.getElementById("message").textContent =
+              "Failed to update";
+            document.getElementById("message").className = "message error";
+          }
+        });
+    </script>
+  </body>
+</html>

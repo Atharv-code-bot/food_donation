@@ -2,24 +2,23 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Recieve dashboard</title>
-    <meta content="Dash - Webflow HTML website template" property="og:title" />
-    <meta
-      content="Dash - Webflow HTML website template"
-      property="twitter:title"
-    />
+    <title>Receive dashboard</title>
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <meta content="Webflow" name="generator" />
+    <link
+      href="https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/61484409455df78d536c0980_Food_Connect_favicon.png"
+      rel="shortcut icon"
+      type="image/x-icon"
+    />
     <!-- <link
       href="https://assets.website-files.com/6057ab51530cb39d3fdac75d/css/dash-template.webflow.dda81817a.css"
       rel="stylesheet"
       type="text/css"
     /> -->
-    <link rel="stylesheet" href="../styles/recieve-dashboard.css" />
-    <script
+    <link rel="stylesheet" href="../styles/receive-dashboard.css" />
+    <!-- <script
       src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"
       type="text/javascript"
-    ></script>
+    ></script> -->
     <script type="text/javascript">
       WebFont.load({ google: { families: ["Inter:regular,500,600,700"] } });
     </script>
@@ -39,15 +38,20 @@
             (n.className += t + "touch");
       })(window, document);
     </script> -->
-    <link
+    <!-- <link
       href="https://assets.website-files.com/6057ab51530cb39d3fdac75d/608954b07e50af32f41306b7_Dash%20Favicon%20Small.png"
       rel="shortcut icon"
       type="image/x-icon"
-    />
-    <link
+    /> -->
+    <!-- <link
       href="https://assets.website-files.com/6057ab51530cb39d3fdac75d/608954b52729362300b39dc9_Dash%20Logo.png"
       rel="apple-touch-icon"
-    />
+    /> -->
+    <style>
+      body {
+        display: none;
+      }
+    </style>
   </head>
   <body>
     <div class="dashboard">
@@ -449,10 +453,7 @@
         <div class="dashboard-banner-header">
           <div class="breadcrumb-wrapper">
             <div class="breadcrumb-item">
-              <a
-                href="/dashboard-variants/default"
-                class="breadcrumb-text w-inline-block"
-                >Dashboard</a
+              <a class="breadcrumb-text w-inline-block">Dashboard</a
               ><img
                 src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/618291022450e8b448680ed1_chevron-right.svg"
                 loading="lazy"
@@ -465,7 +466,7 @@
             </div>
           </div>
           <div class="header-content">
-            <a href="/account" class="banner-avatar-wrapper w-inline-block"
+            <a href="profile.html" class="banner-avatar-wrapper w-inline-block"
               ><img
                 src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfa3d1f8120bfc88c26_Dash%20-%20Avatar%2002-min.jpg"
                 loading="lazy"
@@ -491,20 +492,18 @@
           >
             <div class="in-page-menu w-tab-menu">
               <a
-                data-w-tab="Overview"
-                class="in-page-menu-link w-inline-block w-tab-link w--current"
-                ><div>Overview</div></a
+                data-w-tab="All Orders"
+                class="in-page-menu-link w-inline-block w-tab-link w--current filter-tab"
+                ><div>Available</div></a
+              ><a
+                data-w-tab="Shipped"
+                class="in-page-menu-link w-inline-block w-tab-link filter-tab"
+                ><div>Claimed</div></a
+              ><a
+                data-w-tab="Processing"
+                class="in-page-menu-link w-inline-block w-tab-link filter-tab"
+                ><div>Collected</div></a
               >
-              <!-- <a
-                data-w-tab="Tasks"
-                class="in-page-menu-link w-inline-block w-tab-link"
-                ><div>Tasks</div></a
-              >
-              <a
-                data-w-tab="Files"
-                class="in-page-menu-link w-inline-block w-tab-link"
-                ><div>Files</div></a
-              > -->
             </div>
             <div class="tabs-content w-tab-content">
               <div data-w-tab="Overview" class="w-tab-pane w--tab-active">
@@ -615,11 +614,11 @@
                     <div class="table-content">
                       <div class="table-list">
                         <div class="w-layout-grid table-headers _5-columns">
-                          <div class="caption-large">Donation ID</div>
-                          <div class="caption-large">Donator</div>
-                          <div class="caption-large">Status</div>
+                          <div class="caption-large">Item</div>
                           <div class="caption-large">Quantity</div>
+                          <div class="caption-large">Donator</div>
                           <div class="caption-large">Donation date</div>
+                          <div class="caption-large">View Details</div>
                         </div>
                         <!-- <a href="#" class="table-row-link w-inline-block"
                           ><div class="w-layout-grid table-row">
@@ -836,721 +835,6 @@
                   </div>
                 </div>
               </div>
-              <!-- <div data-w-tab="Tasks" class="w-tab-pane">
-                <div class="kanban">
-                  <div class="kanban-wrapper">
-                    <h4>In progress</h4>
-                    <div class="kanban-color-bar in-progress"></div>
-                    <div class="kanban-card">
-                      <div>
-                        📝 This is an example task that can be used within a
-                        Kanban system.
-                      </div>
-                    </div>
-                    <div class="kanban-card">
-                      <div>
-                        📝 This is an example task that can be used within a
-                        Kanban system.
-                      </div>
-                      <div class="kanban-details">
-                        <div class="kanban-avatar-row">
-                          <img
-                            loading="lazy"
-                            src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaebf62f4f1b3ef035_Dash%20-%20Avatar%2007-min.jpg"
-                            alt=""
-                            class="kanban-avatar first"
-                          /><img
-                            loading="lazy"
-                            src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfa3d1f8120bfc88c26_Dash%20-%20Avatar%2002-min.jpg"
-                            alt=""
-                            class="kanban-avatar"
-                          /><img
-                            loading="lazy"
-                            src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3da5bf3949e3151291c5_Dash%20-%20Avatar%2008-min.jpg"
-                            alt=""
-                            class="kanban-avatar"
-                          />
-                        </div>
-                        <div>Jun 12</div>
-                      </div>
-                    </div>
-                    <div class="kanban-card">
-                      <img
-                        srcset="
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290d8f89d5e26b68e8194_Project%2520Visual%252004-min-p-800.jpeg   800w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290d8f89d5e26b68e8194_Project%2520Visual%252004-min-p-1080.jpeg 1080w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290d8f89d5e26b68e8194_Project%2520Visual%252004-min-p-1600.jpeg 1600w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290d8f89d5e26b68e8194_Project%2520Visual%252004-min-p-2000.jpeg 2000w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290d8f89d5e26b68e8194_Project%2520Visual%252004-min-p-2600.jpeg 2600w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290d8f89d5e26b68e8194_Project%2520Visual%252004-min-p-3200.jpeg 3200w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290d8f89d5e26b68e8194_Project%20Visual%2004-min.jpg             4500w
-                        "
-                        sizes="218px"
-                        src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290d8f89d5e26b68e8194_Project%20Visual%2004-min.jpg"
-                        loading="lazy"
-                        alt=""
-                        class="kanban-image"
-                      />
-                      <div>
-                        📝 This is an example task that can be used within a
-                        Kanban system.
-                      </div>
-                    </div>
-                    <a href="#" class="kanban-link">Add Card</a>
-                  </div>
-                  <div class="kanban-wrapper">
-                    <h4>Next up</h4>
-                    <div class="kanban-color-bar next-up"></div>
-                    <div class="kanban-card">
-                      <img
-                        srcset="
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618293485ae7ec65fa765a9c_Project%2520Visual%252002-min-p-800.jpeg   800w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618293485ae7ec65fa765a9c_Project%2520Visual%252002-min-p-1080.jpeg 1080w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618293485ae7ec65fa765a9c_Project%2520Visual%252002-min-p-1600.jpeg 1600w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618293485ae7ec65fa765a9c_Project%2520Visual%252002-min-p-2000.jpeg 2000w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618293485ae7ec65fa765a9c_Project%2520Visual%252002-min-p-2600.jpeg 2600w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618293485ae7ec65fa765a9c_Project%2520Visual%252002-min-p-3200.jpeg 3200w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618293485ae7ec65fa765a9c_Project%20Visual%2002-min.jpg             4500w
-                        "
-                        sizes="218px"
-                        src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/618293485ae7ec65fa765a9c_Project%20Visual%2002-min.jpg"
-                        loading="lazy"
-                        alt=""
-                        class="kanban-image"
-                      />
-                      <div>
-                        📝 This is an example task that can be used within a
-                        Kanban system.
-                      </div>
-                      <div class="kanban-details">
-                        <div class="kanban-avatar-row">
-                          <img
-                            loading="lazy"
-                            src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfa3d1f8120bfc88c26_Dash%20-%20Avatar%2002-min.jpg"
-                            alt=""
-                            class="kanban-avatar first"
-                          /><img
-                            loading="lazy"
-                            src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3da7dc8be9a597d4e84c_Dash%20-%20Avatar%2010-min.jpg"
-                            alt=""
-                            class="kanban-avatar"
-                          /><img
-                            loading="lazy"
-                            src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfa1a46298c089755f6_Dash%20-%20Avatar%2005-min.jpg"
-                            alt=""
-                            class="kanban-avatar"
-                          />
-                        </div>
-                        <div>Jun 12</div>
-                      </div>
-                    </div>
-                    <div class="kanban-card">
-                      <div>
-                        ⏱ This is an example task that can be used within a
-                        Kanban system.
-                      </div>
-                    </div>
-                    <div class="kanban-card">
-                      <div>
-                        📝 This is an example task that can be used within a
-                        Kanban system.
-                      </div>
-                      <div class="kanban-details">
-                        <div class="kanban-avatar-row">
-                          <img
-                            loading="lazy"
-                            src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaebf62f4f1b3ef035_Dash%20-%20Avatar%2007-min.jpg"
-                            alt=""
-                            class="kanban-avatar first"
-                          /><img
-                            loading="lazy"
-                            src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfa3d1f8120bfc88c26_Dash%20-%20Avatar%2002-min.jpg"
-                            alt=""
-                            class="kanban-avatar"
-                          /><img
-                            loading="lazy"
-                            src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3da5bf3949e3151291c5_Dash%20-%20Avatar%2008-min.jpg"
-                            alt=""
-                            class="kanban-avatar"
-                          />
-                        </div>
-                        <div>Jun 12</div>
-                      </div>
-                    </div>
-                    <div class="kanban-card">
-                      <div>
-                        📝 This is an example task that can be used within a
-                        Kanban system.
-                      </div>
-                    </div>
-                    <a href="#" class="kanban-link">Add Card</a>
-                  </div>
-                  <div class="kanban-wrapper">
-                    <h4>Done</h4>
-                    <div class="kanban-color-bar done"></div>
-                    <div class="kanban-card">
-                      <div>
-                        📝 This is an example task that can be used within a
-                        Kanban system.
-                      </div>
-                    </div>
-                    <div class="kanban-card">
-                      <img
-                        srcset="
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290cffe17403887a80e16_Project%2520Visual%252006-min-p-800.jpeg   800w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290cffe17403887a80e16_Project%2520Visual%252006-min-p-1080.jpeg 1080w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290cffe17403887a80e16_Project%2520Visual%252006-min-p-1600.jpeg 1600w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290cffe17403887a80e16_Project%2520Visual%252006-min-p-2000.jpeg 2000w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290cffe17403887a80e16_Project%2520Visual%252006-min-p-2600.jpeg 2600w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290cffe17403887a80e16_Project%2520Visual%252006-min-p-3200.jpeg 3200w,
-                          https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290cffe17403887a80e16_Project%20Visual%2006-min.jpg             4501w
-                        "
-                        sizes="218px"
-                        src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/618290cffe17403887a80e16_Project%20Visual%2006-min.jpg"
-                        loading="lazy"
-                        alt=""
-                        class="kanban-image"
-                      />
-                      <div>
-                        📝 This is an example task that can be used within a
-                        Kanban system.
-                      </div>
-                      <div class="kanban-details">
-                        <div class="kanban-avatar-row">
-                          <img
-                            loading="lazy"
-                            src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfa3d1f8120bfc88c26_Dash%20-%20Avatar%2002-min.jpg"
-                            alt=""
-                            class="kanban-avatar first"
-                          /><img
-                            loading="lazy"
-                            src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3da7dc8be9a597d4e84c_Dash%20-%20Avatar%2010-min.jpg"
-                            alt=""
-                            class="kanban-avatar"
-                          /><img
-                            loading="lazy"
-                            src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfa1a46298c089755f6_Dash%20-%20Avatar%2005-min.jpg"
-                            alt=""
-                            class="kanban-avatar"
-                          />
-                        </div>
-                        <div>Jun 12</div>
-                      </div>
-                    </div>
-                    <div class="kanban-card">
-                      <div>
-                        📝 This is an example task that can be used within a
-                        Kanban system.
-                      </div>
-                    </div>
-                    <a href="#" class="kanban-link">Add Card</a>
-                  </div>
-                </div>
-              </div>
-              <div data-w-tab="Files" class="w-tab-pane">
-                <div class="w-layout-grid main-grid">
-                  <div class="w-layout-grid _4-grid">
-                    <a href="#" class="module-link w-inline-block"
-                      ><div class="content-storage">
-                        <div>
-                          <div class="storage-square">
-                            <img
-                              loading="lazy"
-                              src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605882d37ee33fcb3f67627f_hard-drive.svg"
-                              alt=""
-                              class="icon"
-                            />
-                            <div class="light-fill"></div>
-                          </div>
-                          <h4>Drive Storage</h4>
-                        </div>
-                        <div>
-                          <div class="percentage-info">
-                            <div class="small-description">60 GB</div>
-                            <div class="small-description">100 GB</div>
-                          </div>
-                          <div class="percentage-bar-wrapper">
-                            <div class="percentage-bar bg-primary-blue"></div>
-                          </div>
-                        </div></div></a
-                    ><a href="#" class="module-link w-inline-block"
-                      ><div class="content-storage">
-                        <div>
-                          <div class="storage-square">
-                            <img
-                              loading="lazy"
-                              src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605883eff0807bad77363c90_hard-drive.svg"
-                              alt=""
-                              class="icon"
-                            />
-                            <div class="light-fill bg-primary-rose"></div>
-                          </div>
-                          <h4>Cloud Storage</h4>
-                        </div>
-                        <div class="percentage-info">
-                          <div class="small-description">30 GB</div>
-                          <div class="small-description">50 GB</div>
-                        </div>
-                        <div>
-                          <div class="percentage-bar-wrapper">
-                            <div class="percentage-bar bg-primary-rose"></div>
-                          </div>
-                        </div></div
-                    ></a>
-                    <div
-                      id="w-node-_75c0a142-7cc7-2dfb-adf6-ae0e4bed8b34-ef2958bf"
-                      class="module"
-                    >
-                      <div class="content-percentage">
-                        <div class="content-storage">
-                          <div class="storage-square">
-                            <img
-                              width="24"
-                              loading="lazy"
-                              src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/6058831413ede764f64a258d_pie-chart.svg"
-                              alt=""
-                              class="icon"
-                            />
-                            <div class="light-fill bg-primary-green"></div>
-                          </div>
-                          <h4>User Storage</h4>
-                          <div class="small-description">
-                            Check your storage on your dashboard.
-                          </div>
-                        </div>
-                        <img
-                          loading="lazy"
-                          src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/608ac26976322417838e72f4_Dash%20Chart%2003.svg"
-                          alt=""
-                          class="data-visualisation-storage"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <h3 class="main-grid-title">Folders</h3>
-                  <div class="w-layout-grid _4-grid">
-                    <a href="#" class="module-link w-inline-block"
-                      ><div class="content-folder">
-                        <div class="storage-folder-content">
-                          <div class="storage-square">
-                            <img
-                              width="24"
-                              loading="lazy"
-                              src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605882d30a1fe8e9228d47ed_folder.svg"
-                              alt=""
-                              class="icon"
-                            />
-                            <div class="light-fill"></div>
-                          </div>
-                          <div class="project-avatars">
-                            <img
-                              loading="lazy"
-                              src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3da5bf3949e3151291c5_Dash%20-%20Avatar%2008-min.jpg"
-                              alt=""
-                              class="project-avatar first"
-                            /><img
-                              loading="lazy"
-                              src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaf4e4096750a7795e_Dash%20-%20Avatar%2004-min.jpg"
-                              alt=""
-                              class="project-avatar"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <h4>Resources</h4>
-                          <div class="folder-info">
-                            <div class="small-description">15 files</div>
-                            <div class="small-description">15 GB</div>
-                          </div>
-                        </div>
-                      </div></a
-                    ><a href="#" class="module-link w-inline-block"
-                      ><div class="content-folder">
-                        <div class="storage-folder-content">
-                          <div class="storage-square">
-                            <img
-                              loading="lazy"
-                              src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605882d30a1fe8e9228d47ed_folder.svg"
-                              alt=""
-                              class="icon"
-                            />
-                            <div class="light-fill"></div>
-                          </div>
-                          <div class="project-avatars">
-                            <img
-                              loading="lazy"
-                              src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3da6bf39491be81291c6_Dash%20-%20Avatar%2009-min.jpg"
-                              alt=""
-                              class="project-avatar first"
-                            /><img
-                              loading="lazy"
-                              src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaebf62f4f1b3ef035_Dash%20-%20Avatar%2007-min.jpg"
-                              alt=""
-                              class="project-avatar"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <h4>Research</h4>
-                          <div class="folder-info">
-                            <div class="small-description">10 files</div>
-                            <div class="small-description">5 GB</div>
-                          </div>
-                        </div>
-                      </div></a
-                    >
-                    <div
-                      id="w-node-e9e0a3b4-7fb6-5b87-776a-feb40fa71312-ef2958bf"
-                      class="w-layout-grid _2-grid"
-                    >
-                      <div class="module">
-                        <div class="content-chart">
-                          <div class="chart-square">
-                            <img
-                              loading="lazy"
-                              src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605882d03baf8a2d544bd28f_dollar-sign.svg"
-                              alt=""
-                              class="icon"
-                            />
-                            <div class="light-fill"></div>
-                          </div>
-                          <div class="div-block">
-                            <div class="caption">Budget</div>
-                            <div class="numbers-wrapper">
-                              <h3 class="number">$12,500</h3>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="module">
-                        <div class="content-chart">
-                          <div class="chart-square">
-                            <img
-                              width="24"
-                              loading="lazy"
-                              src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605883083baf8ae9a34bd3e6_clock.svg"
-                              alt=""
-                              class="icon"
-                            />
-                            <div class="light-fill bg-primary-green"></div>
-                          </div>
-                          <div class="div-block">
-                            <div class="caption">Hours</div>
-                            <div class="numbers-wrapper">
-                              <h3 class="number">719</h3>
-                              <div class="negative-value">(- 10%)</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        id="w-node-e9e0a3b4-7fb6-5b87-776a-feb40fa7132b-ef2958bf"
-                        class="module"
-                      >
-                        <div class="content-chart">
-                          <div class="chart-square">
-                            <img
-                              width="24"
-                              loading="lazy"
-                              src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605883bbba1d7412377fefe7_truck.svg"
-                              alt=""
-                              class="icon"
-                            />
-                            <div class="light-fill bg-primary-orange"></div>
-                          </div>
-                          <div class="div-block">
-                            <div class="caption">Deliveries</div>
-                            <div class="numbers-wrapper">
-                              <h3 class="number">10.5K</h3>
-                              <div class="positive-value">(+ 19%)</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="module">
-                        <div class="content-chart">
-                          <div class="chart-square">
-                            <img
-                              width="24"
-                              loading="lazy"
-                              src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605884b47ee33f1eb5676cce_target.svg"
-                              alt=""
-                              class="icon"
-                            />
-                            <div class="light-fill bg-primary-yellow"></div>
-                          </div>
-                          <div class="div-block">
-                            <div class="caption">Target Ratio</div>
-                            <div class="numbers-wrapper">
-                              <h3 class="number">95%</h3>
-                              <div class="positive-value">(+ 10%)</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="table-module">
-                    <div class="table-header">
-                      <h4 class="no-space-bottom">Latest Files</h4>
-                    </div>
-                    <div class="table-content">
-                      <div class="table-list">
-                        <div class="w-layout-grid table-headers">
-                          <div class="caption-large">File name</div>
-                          <div class="caption-large">Size</div>
-                          <div class="caption-large">Members</div>
-                          <div class="caption-large">Modified</div>
-                        </div>
-                        <a href="#" class="table-row-link w-inline-block"
-                          ><div class="w-layout-grid table-row">
-                            <div class="file-title">
-                              <div class="file-square">
-                                <img
-                                  width="24"
-                                  loading="lazy"
-                                  src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605882d30a1fe8e9228d47ed_folder.svg"
-                                  alt=""
-                                  class="file-icon"
-                                />
-                                <div class="light-fill"></div>
-                              </div>
-                              <div class="table-title">Logo.svg</div>
-                            </div>
-                            <div>30 KB</div>
-                            <div class="table-avatar-row">
-                              <img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaf4c9ca97e6dee1e3_Dash%20-%20Avatar%2006-min.jpg"
-                                alt=""
-                                class="in-row-avatar first"
-                              /><img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaebf62f4f1b3ef035_Dash%20-%20Avatar%2007-min.jpg"
-                                alt=""
-                                class="project-avatar"
-                              /><img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3da5bf3949e3151291c5_Dash%20-%20Avatar%2008-min.jpg"
-                                alt=""
-                                class="project-avatar"
-                              />
-                            </div>
-                            <div
-                              id="w-node-_47781695-558a-0a06-8b84-c0477457f26b-ef2958bf"
-                            >
-                              February 10, 2020
-                            </div>
-                          </div></a
-                        ><a href="#" class="table-row-link w-inline-block"
-                          ><div class="w-layout-grid table-row">
-                            <div class="file-title">
-                              <div class="file-square">
-                                <img
-                                  width="24"
-                                  loading="lazy"
-                                  src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/6058830c84df4cc3944f4b5d_file.svg"
-                                  alt=""
-                                  class="file-icon"
-                                />
-                                <div class="light-fill bg-primary-green"></div>
-                              </div>
-                              <div class="table-title">Document</div>
-                            </div>
-                            <div>25 KB</div>
-                            <div class="table-avatar-row">
-                              <img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaf4e4096750a7795e_Dash%20-%20Avatar%2004-min.jpg"
-                                alt=""
-                                class="in-row-avatar first"
-                              /><img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaf4c9ca97e6dee1e3_Dash%20-%20Avatar%2006-min.jpg"
-                                alt=""
-                                class="project-avatar"
-                              /><img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaf4e4099af5a7795f_Dash%20-%20Avatar%2003-min.jpg"
-                                alt=""
-                                class="project-avatar"
-                              />
-                            </div>
-                            <div
-                              id="w-node-_47781695-558a-0a06-8b84-c0477457f279-ef2958bf"
-                            >
-                              February 10, 2020
-                            </div>
-                          </div></a
-                        ><a href="#" class="table-row-link w-inline-block"
-                          ><div class="w-layout-grid table-row">
-                            <div class="file-title">
-                              <div class="file-square">
-                                <img
-                                  width="24"
-                                  loading="lazy"
-                                  src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605883f1d059b284ac9889e4_image.svg"
-                                  alt=""
-                                  class="file-icon"
-                                />
-                                <div class="light-fill bg-primary-rose"></div>
-                              </div>
-                              <div class="table-title">Webflow.svg</div>
-                            </div>
-                            <div>159 MB</div>
-                            <div class="table-avatar-row">
-                              <img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaf4c9ca97e6dee1e3_Dash%20-%20Avatar%2006-min.jpg"
-                                alt=""
-                                class="in-row-avatar first"
-                              /><img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaebf62f4f1b3ef035_Dash%20-%20Avatar%2007-min.jpg"
-                                alt=""
-                                class="project-avatar"
-                              /><img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3da5bf3949e3151291c5_Dash%20-%20Avatar%2008-min.jpg"
-                                alt=""
-                                class="project-avatar"
-                              />
-                            </div>
-                            <div
-                              id="w-node-_47781695-558a-0a06-8b84-c0477457f287-ef2958bf"
-                            >
-                              February 10, 2020
-                            </div>
-                          </div></a
-                        ><a href="#" class="table-row-link w-inline-block"
-                          ><div class="w-layout-grid table-row">
-                            <div class="file-title">
-                              <div class="file-square">
-                                <img
-                                  width="24"
-                                  loading="lazy"
-                                  src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/60588457470f84dae1576e8d_volume-2.svg"
-                                  alt=""
-                                  class="file-icon"
-                                />
-                                <div class="light-fill bg-primary-purple"></div>
-                              </div>
-                              <div class="table-title">podcast.mp4</div>
-                            </div>
-                            <div>300 MB</div>
-                            <div class="table-avatar-row">
-                              <img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3da6bf39491be81291c6_Dash%20-%20Avatar%2009-min.jpg"
-                                alt=""
-                                class="in-row-avatar first"
-                              /><img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfa3d1f8120bfc88c26_Dash%20-%20Avatar%2002-min.jpg"
-                                alt=""
-                                class="project-avatar"
-                              /><img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfa1a46298c089755f6_Dash%20-%20Avatar%2005-min.jpg"
-                                alt=""
-                                class="project-avatar"
-                              />
-                            </div>
-                            <div
-                              id="w-node-_47781695-558a-0a06-8b84-c0477457f295-ef2958bf"
-                            >
-                              February 10, 2020
-                            </div>
-                          </div></a
-                        ><a href="#" class="table-row-link w-inline-block"
-                          ><div class="w-layout-grid table-row">
-                            <div class="file-title">
-                              <div class="file-square">
-                                <img
-                                  width="24"
-                                  loading="lazy"
-                                  src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605882d9f0807b8fd3363889_pie-chart.svg"
-                                  alt=""
-                                  class="file-icon"
-                                />
-                                <div class="light-fill"></div>
-                              </div>
-                              <div class="table-title">Charts.xls</div>
-                            </div>
-                            <div>152 MB</div>
-                            <div class="table-avatar-row">
-                              <img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaf4e4096750a7795e_Dash%20-%20Avatar%2004-min.jpg"
-                                alt=""
-                                class="in-row-avatar first"
-                              /><img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaf4c9ca97e6dee1e3_Dash%20-%20Avatar%2006-min.jpg"
-                                alt=""
-                                class="project-avatar"
-                              /><img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaf4e4099af5a7795f_Dash%20-%20Avatar%2003-min.jpg"
-                                alt=""
-                                class="project-avatar"
-                              />
-                            </div>
-                            <div
-                              id="w-node-_47781695-558a-0a06-8b84-c0477457f2a3-ef2958bf"
-                            >
-                              February 10, 2020
-                            </div>
-                          </div></a
-                        ><a href="#" class="table-row-link w-inline-block"
-                          ><div class="w-layout-grid table-row">
-                            <div class="file-title">
-                              <div class="file-square">
-                                <img
-                                  width="24"
-                                  loading="lazy"
-                                  src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605883f1d059b284ac9889e4_image.svg"
-                                  alt=""
-                                  class="file-icon"
-                                />
-                                <div class="light-fill bg-primary-rose"></div>
-                              </div>
-                              <div class="table-title">Logo.svg</div>
-                            </div>
-                            <div>291 KB</div>
-                            <div class="table-avatar-row">
-                              <img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaf4c9ca97e6dee1e3_Dash%20-%20Avatar%2006-min.jpg"
-                                alt=""
-                                class="in-row-avatar first"
-                              /><img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3cfaebf62f4f1b3ef035_Dash%20-%20Avatar%2007-min.jpg"
-                                alt=""
-                                class="project-avatar"
-                              /><img
-                                loading="lazy"
-                                src="https://assets.website-files.com/6057ab51530cb39d3fdac75d/605b3da5bf3949e3151291c5_Dash%20-%20Avatar%2008-min.jpg"
-                                alt=""
-                                class="project-avatar"
-                              />
-                            </div>
-                            <div
-                              id="w-node-_47781695-558a-0a06-8b84-c0477457f2b1-ef2958bf"
-                            >
-                              February 10, 2020
-                            </div>
-                          </div></a
-                        >
-                      </div>
-                    </div>
-                    <div class="table-bottom-caption">
-                      <div>All files under non-disclosure agreement</div>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
             </div>
           </div>
         </div>
@@ -1583,7 +867,7 @@
     <!--[if lte IE 9
       ]><script src="//cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script
     ><![endif]-->
-    <script>
+    <!-- <script>
       // Dummy donation data
       const donations = [
         {
@@ -1678,6 +962,273 @@
     `;
 
         tableBody.appendChild(row);
+      });
+      function applyFilters() {
+        let status = document.getElementById("statusFilter").value;
+        let startDate = document.getElementById("startDate").value;
+        let endDate = document.getElementById("endDate").value;
+        let donorName = document.getElementById("donorSearch").value;
+
+        let query = new URLSearchParams({
+          status: status,
+          startDate: startDate,
+          endDate: endDate,
+          donor: donorName,
+        }).toString();
+
+        fetch(`/api/donations/filter?${query}`)
+          .then((response) => response.json())
+          .then((data) => renderTable(data))
+          .catch((error) =>
+            console.error("Error fetching filtered donations:", error)
+          );
+      }
+    </script> -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const token = localStorage.getItem("token");
+        console.log(token);
+
+        if (!token) {
+          // Store the URL the user was trying to access
+          localStorage.setItem("redirectAfterLogin", window.location.href);
+          // Redirect to signin page
+          window.location.href = "not-logged-in.html";
+        } else {
+          document.body.style.display = "block"; // Show page if logged in
+        }
+      });
+    </script>
+    <!-- <script>
+      const API_URL = "http://localhost:8080/donations/claimed"; // Replace with your actual API
+      // const BEARER_TOKEN = "your_token_here"; // Replace with your actual token
+
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchDonations();
+      });
+
+      async function fetchDonations() {
+        const BEARER_TOKEN = localStorage.getItem("token");
+        console.log(BEARER_TOKEN);
+        try {
+          const response = await fetch(API_URL, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${BEARER_TOKEN}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const donations = await response.json();
+          renderTable(donations);
+          return donations;
+        } catch (error) {
+          console.error("Error fetching donations:", error);
+        }
+      }
+
+      function renderTable(donations) {
+        const tableBody = document.getElementById("donationTable");
+        tableBody.innerHTML = ""; // Clear previous rows
+
+        donations.forEach((donation) => {
+          let row = document.createElement("a");
+          row.href = "#";
+          row.classList.add("table-row-link", "w-inline-block");
+
+          // Add click event to open the details page with donation ID in the URL
+          row.addEventListener("click", () => {
+            window.location.href = `donation-details.html?id=${donation.donationId}`;
+          });
+
+          row.innerHTML = `
+            <div class="w-layout-grid table-row _5-columns">
+              <div class="table-title">${donation.donationId}</div>
+              <div class="table-title">${donation.itemName}</div>
+              <div class="table-title">${donation.quantity}</div>
+              <div class="table-title">${donation.donorName}</div>
+              <div class="table-title">${donation.updatedAt}</div>
+            </div>
+          `;
+
+          tableBody.appendChild(row);
+        });
+      }
+
+      async function applyFilters() {
+        const donorFilter = document
+          .getElementById("donorSearch")
+          .value.toLowerCase();
+        const statusFilter = document.getElementById("statusFilter").value;
+        const dateFilter = document.getElementById("dateFilter").value;
+        // const quantityFilter = document.getElementById("quantityFilter").value.toLowerCase();
+
+        try {
+          const donations = await fetchDonations();
+
+          if (!donations) return;
+
+          const filteredData = donations.filter((donation) => {
+            return (
+              (!donorFilter ||
+                donation.donor.toLowerCase().includes(donorFilter)) &&
+              (!statusFilter ||
+                donation.status.toLowerCase() === statusFilter.toLowerCase()) &&
+              (!dateFilter || donation.updatedAt === dateFilter)
+              // (!quantityFilter || donation.quantity.toLowerCase().includes(quantityFilter))
+            );
+          });
+
+          renderTable(filteredData);
+        } catch (error) {
+          console.error("Error applying filters:", error);
+        }
+      }
+    </script> -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        setupFilterTabs();
+        fetchDonations("available"); // default
+      });
+      const AVAIABLE_URL = "http://localhost:8080/donations/status/";
+      const BASE_API_URL = "http://localhost:8080/donations/ngo/";
+      let url;
+
+      function setupFilterTabs() {
+        const filters = document.querySelectorAll(".filter-tab");
+
+        filters.forEach((filter) => {
+          filter.addEventListener("click", async () => {
+            const status = filter.textContent.trim().toLowerCase();
+            console.log(localStorage.getItem("token"));
+            setCurrentTab(filter);
+            await fetchDonations(status);
+          });
+        });
+      }
+
+      function setCurrentTab(activeTab) {
+        const allTabs = document.querySelectorAll(".filter-tab");
+        allTabs.forEach((tab) => tab.classList.remove("w--current"));
+        activeTab.classList.add("w--current");
+      }
+
+      async function fetchDonations(status) {
+        const BEARER_TOKEN = localStorage.getItem("token");
+        console.log(status);
+        if (status == "available") {
+          url = `${AVAIABLE_URL}${status}`;
+          // console.log('1')
+        } else {
+          url = `${BASE_API_URL}${status}`;
+          // console.log('2')
+        }
+        try {
+          console.log(url);
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${BEARER_TOKEN}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const donations = await response.json();
+          renderTable(donations);
+        } catch (error) {
+          console.error("Error fetching donations:", error);
+        }
+      }
+
+      function renderTable(donations) {
+        const table = document.getElementById("donationTable");
+        table.innerHTML = "";
+
+        donations.forEach((donation) => {
+          const row = document.createElement("div");
+          row.className = "w-layout-grid table-row _5-columns";
+
+          row.addEventListener("click", () => {
+            window.location.href = `donation-details.html?id=${donation.donationId}`;
+          });
+
+          row.innerHTML = `
+            <div class="table-title">${donation.itemName}</div>
+            <div class="table-title">${donation.quantity}</div>
+            <div class="table-title">${donation.donorName}</div>
+            <div class="table-title">${new Date(
+              donation.createdAt
+            ).toLocaleString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })}</div>
+<button>
+    
+    <div class="arrow-wrapper">
+        <div class="arrow"></div>
+
+    </div>
+</button>
+          `;
+
+          table.appendChild(row);
+        });
+      }
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const avatarImg = document.querySelectorAll(
+          ".user-avatar, .banner-avatar-image"
+        );
+        const bannerName = document.querySelector(".banner-avatar-name");
+        const token = localStorage.getItem("token");
+
+        // Fetch and populate data
+        fetch("http://localhost:8080/users/current", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            bannerName.innerHTML = data.fullname;
+
+            // Show user profile image securely with token
+            if (data.photoUrl) {
+              fetch(`http://localhost:8080${data.photoUrl}`, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+                .then((res) => {
+                  if (!res.ok) throw new Error("Image fetch failed");
+                  return res.blob();
+                })
+                .then((blob) => {
+                  const blobUrl = URL.createObjectURL(blob);
+                  avatarImg.forEach((img) => {
+                    img.src = blobUrl;
+                  });
+                })
+                .catch((err) => {
+                  console.error("Error loading profile image:", err);
+                  avatarImg.src = "fallback.png"; // optional fallback image
+                });
+            }
+          });
       });
     </script>
   </body>

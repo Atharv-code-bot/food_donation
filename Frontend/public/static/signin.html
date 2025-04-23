@@ -9,28 +9,31 @@
 >
   <head>
     <meta charset="utf-8" />
-    <title>Sign In - Zaifi - Webflow Ecommerce Website Template</title>
-    <meta
-      content="Sign In - Zaifi - Webflow Ecommerce Website Template"
-      property="og:title"
-    />
-    <meta
-      content="Sign In - Zaifi - Webflow Ecommerce Website Template"
-      property="twitter:title"
-    />
+    <title>Sign In</title>
+    <meta content="Sign In" property="og:title" />
+    <meta content="Sign In" property="twitter:title" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <meta content="Webflow" name="generator" />
+    <!-- <meta content="Webflow" name="generator" /> -->
     <!-- <link
       href="https://cdn.prod.website-files.com/673d832f13afd1d74f38cc90/css/zaifi.webflow.96a91c705.css"
       rel="stylesheet"
       type="text/css"
     /> -->
-    <link rel="stylesheet" href="../styles/signin.css">
+    <link rel="stylesheet" href="../styles/signin.css" />
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link
       href="https://fonts.gstatic.com"
       rel="preconnect"
       crossorigin="anonymous"
+    />
+    <link
+    href="https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/61484409455df78d536c0980_Food_Connect_favicon.png"
+    rel="shortcut icon"
+    type="image/x-icon"
+  />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <script
       src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"
@@ -56,15 +59,15 @@
             (n.className += t + "touch");
       })(window, document);
     </script>
-    <link
-      href="https://cdn.prod.website-files.com/673d832f13afd1d74f38cc90/6746b6595a91aa3d395625d2_fav-icon.png"
+    <!-- <link
+      href="https://cdn.prod.website-files.com/60dd9083125eb44675d01dba/61484409455df78d536c0980_Food_Connect_favicon.png"
       rel="shortcut icon"
       type="image/x-icon"
-    />
-    <link
+    /> -->
+    <!-- <link
       href="https://cdn.prod.website-files.com/673d832f13afd1d74f38cc90/6746b65f73f4ba5266d0803e_webclip-icon.png"
       rel="apple-touch-icon"
-    />
+    /> -->
     <script type="text/javascript">
       window.__WEBFLOW_CURRENCY_SETTINGS = {
         currencyCode: "USD",
@@ -106,7 +109,7 @@
                         </p>
                       </div>
                       <form
-                        id="wf-form-Sing-In-Email-Form"
+                        id="login-form"
                         name="wf-form-Sing-In-Email-Form"
                         data-name="Sing In Email Form"
                         method="get"
@@ -117,18 +120,18 @@
                         <div class="sign-in-single-fields">
                           <div class="booking-field-wrap">
                             <label
-                              for="Your-Email"
+                              for="Your-Username"
                               class="booking-field-label sign-in"
-                              >Email
+                              >Username
                               <span class="sign-in-input-color">*</span></label
                             ><input
                               class="booking-field w-input"
                               maxlength="256"
-                              name="Your-Email"
+                              name="Your-Username"
                               data-name="Your Email"
-                              placeholder="name@example.com"
-                              type="email"
-                              id="Your-Email"
+                              placeholder="Enter your Username"
+                              type="text"
+                              id="username"
                               required=""
                             />
                           </div>
@@ -145,7 +148,7 @@
                               data-name="Your Password"
                               placeholder="Enter your password"
                               type="password"
-                              id="Your-Password"
+                              id="password"
                               required=""
                             />
                           </div>
@@ -157,6 +160,13 @@
                             >Forgot Password?</a
                           >
                         </div> -->
+                        <div
+                          class="form-error w-form-fail-pass"
+                          style="display: none"
+                        >
+                          <i class="fa fa-exclamation-triangle"></i>
+                          <div>Username/Password entered is wrong. Please try again.</div>
+                        </div>
                         <div class="sign-in-btn-wrap">
                           <input
                             type="submit"
@@ -165,12 +175,27 @@
                             value="Sign In"
                           />
                         </div>
+                        <a href="http://localhost:8080/oauth2/authorization/google">
+                        <div class="google-login-button">
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" version="1.1" x="0px" y="0px" class="google-icon" viewBox="0 0 48 48" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12
+                c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24
+                c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                          <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657
+                C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
+                          <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36
+                c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
+                          <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571
+                c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                        </svg>
+                        <span>Log in with Google</span>
+                      </div>
+                    </a>
+                    </div>
                         <div class="sign-in-alternative">
                           <div class="alternative-details">
                             Not registered yet?
-                            <a
-                              href="signup.html"
-                              class="alternative-link"
+                            <a href="signup.html" class="alternative-link"
                               >Sign Up</a
                             >
                           </div>
@@ -418,7 +443,8 @@
         </div>
       </section> -->
     </div>
-    <script
+
+    <!-- <script
       src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=673d832f13afd1d74f38cc90"
       type="text/javascript"
       integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
@@ -427,7 +453,34 @@
     <script
       src="https://cdn.prod.website-files.com/673d832f13afd1d74f38cc90/js/webflow.9ca49c7b.c83970dc213c5830.js"
       type="text/javascript"
-    ></script>
-    <script src="auth.js"></script>
+    ></script> -->
+    <script src="../js/auth.js"></script>
+    <script>
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent page reload
+
+          // Capture input values
+          const username = document.getElementById("username").value;
+          const password = document.getElementById("password").value;
+
+          // Debugging logs
+          console.log("Login form submitted");
+          console.log("Username:", username);
+          console.log("Password:", password.length > 0 ? "●●●●●" : "(empty)"); // Mask password for security
+
+          // Check if inputs are filled
+          if (!username || !password) {
+            console.error("Error: Username or password is missing");
+            alert("Please enter both username and password");
+            return;
+          }
+
+          // Call login function from auth.js
+          console.log("Calling login() function...");
+          login(username, password);
+        });
+    </script>
   </body>
 </html>

@@ -483,6 +483,7 @@ public class DonationService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Donation not found"));
 
         donation.setQuantity(request.getQuantity());
+        donation.setItemName(request.getItemName());
         donation.setBestBeforeDate(request.getBestBeforeDate());
         donation.setPickupLocation(request.getPickupLocation());
         donation.setAvailabilityStart(request.getAvailabilityStart());

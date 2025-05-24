@@ -74,6 +74,8 @@ public class UserService {
         user.setProvider(AuthProvider.LOCAL);
         user.setAddress(request.getAddress());
         user.setProfileImageUrl(PLACEHOLDER_IMAGE_URL);
+        user.setDefaultLatitude(request.getLatitude());
+        user.setDefaultLongitude(request.getLongitude());
 
 
         User savedUser = userRepository.save(user);
@@ -110,6 +112,10 @@ public class UserService {
         response.setCreatedAt(user.getCreatedAt());
         response.setUpdatedAt(user.getUpdatedAt());
         response.setPhotoUrl("/users/images"+user.getProfileImageUrl());
+        response.setLatitude(user.getDefaultLatitude());
+        response.setLongitude(user.getDefaultLongitude());
+
+
         return response;
     }
 
@@ -147,6 +153,8 @@ public class UserService {
         user.setFullname(request.getFullname());
         user.setPhone(request.getPhone());
         user.setAddress(request.getAddress());
+        user.setDefaultLatitude(request.getLatitude());
+        user.setDefaultLongitude(request.getLongitude());
 
         if (imageFile != null && !imageFile.isEmpty()) {
             String oldImageUrl = user.getProfileImageUrl();
@@ -276,6 +284,8 @@ public class UserService {
         // Update details only for OAuth2 users
         user.setPhone(request.getPhone());
         user.setAddress(request.getAddress());
+        user.setDefaultLatitude(request.getLatitude());
+        user.setDefaultLongitude(request.getLongitude());
 
         // Role update (optional, ensure security rules before allowing this)
         if (request.getRole() != null) {

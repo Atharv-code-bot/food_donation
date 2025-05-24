@@ -79,7 +79,8 @@ public class DonationService {
         donation.setPickupLocation(request.getPickupLocation());
         donation.setAvailabilityStart(request.getAvailabilityStart());
         donation.setAvailabilityEnd(request.getAvailabilityEnd());
-
+        donation.setLatitude(request.getLatitude());
+        donation.setLongitude(request.getLongitude());
         // Handle image upload separately
         if (image != null && !image.isEmpty()) {
             String fileName = fileStorageService.storeFile(image);
@@ -141,6 +142,8 @@ public class DonationService {
         response.setUpdatedAt(donation.getUpdatedAt());
         response.setNgoId(ngoId);
         response.setNgoName(ngoName);
+        response.setLatitude(donation.getLatitude());
+        response.setLongitude(donation.getLongitude());
         return response;
     }
 

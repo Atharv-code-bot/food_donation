@@ -42,6 +42,12 @@ public class User {
     @Column(nullable = true, columnDefinition = "TEXT") // Optional for OAuth2 users
     private String address;
 
+    @Column(nullable = true)
+    private Double defaultLatitude;
+
+    @Column(nullable = true)
+    private Double defaultLongitude;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AuthProvider provider;  // OAuth provider (Google, Facebook, etc.)

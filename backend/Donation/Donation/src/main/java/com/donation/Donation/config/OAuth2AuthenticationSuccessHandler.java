@@ -39,7 +39,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
 
         User user = userOptional.get();
-        String token = jwtUtil.generateToken(user.getEmail()); // Generate JWT using email
+        String token = jwtUtil.generateToken(user.getEmail(),user.getRole(),user.getUserId()); // Generate JWT using email
 
         // ✅ Explicitly set authentication in SecurityContextHolder
         SecurityContextHolder.getContext().setAuthentication(authentication);

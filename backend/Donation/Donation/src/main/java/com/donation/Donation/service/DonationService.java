@@ -4,9 +4,11 @@ import com.donation.Donation.config.AuthUtil;
 import com.donation.Donation.dto.DonationRequest;
 import com.donation.Donation.dto.DonationResponse;
 import com.donation.Donation.model.Donations;
+import com.donation.Donation.model.Otp;
 import com.donation.Donation.model.Status;
 import com.donation.Donation.model.User;
 import com.donation.Donation.repository.DonationRepository;
+import com.donation.Donation.repository.OtpRepository;
 import com.donation.Donation.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,6 +53,9 @@ public class DonationService {
 
     @Autowired
     private AuthUtil authUtil;
+
+    @Autowired
+    private OtpRepository otpRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -326,13 +331,25 @@ public class DonationService {
     }
 
 
-    public DonationResponse completeDonation(int id) {
+    public DonationResponse completeDonation(int id,String enteredOtp) {
+
+        Otp otpEntity = otpRepository.findByDonation_Id(id)
+                .orElseThrow(() -> new RuntimeException("OTP not found for this donation."));
+
+        if (otpEntity.getExpiryTime().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("OTP has expired.");
+        }
+
+        if (!otpEntity.getCode().equals(enteredOtp)) {
+            throw new RuntimeException("Invalid OTP.");
+        }
         Donations donation = donationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Donation not found"));
 
         // Update status to COLLECTED
         donation.setStatus(Status.COLLECTED);
         donationRepository.save(donation);
+        otpRepository.delete(otpEntity); // Clean up OTP
 
         // Get donor details
         User donor = donation.getDonor();

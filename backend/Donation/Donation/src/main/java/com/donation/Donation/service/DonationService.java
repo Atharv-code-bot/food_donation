@@ -1,6 +1,7 @@
 package com.donation.Donation.service;
 
 import com.donation.Donation.config.AuthUtil;
+import com.donation.Donation.dto.DonationEventDTO;
 import com.donation.Donation.dto.DonationRequest;
 import com.donation.Donation.dto.DonationResponse;
 import com.donation.Donation.model.Donations;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -68,6 +70,15 @@ public class DonationService {
     private ObjectMapper objectMapper;
 
 
+    @Value("${donation.expiry.grace-hours}")
+    private long graceHours;
+
+
+    @Autowired
+    private KafkaProducerService kafkaProducerService;
+
+
+
     @Transactional
     public DonationResponse createDonation(DonationRequest request, MultipartFile image) {
 
@@ -93,6 +104,14 @@ public class DonationService {
         }
 
         Donations savedDonation = donationRepository.save(donation);
+
+        DonationEventDTO event = new DonationEventDTO();
+        event.setDonationId(savedDonation.getDonationId());
+        event.setDonorId(savedDonation.getDonor().getUserId());
+        event.setLatitude(savedDonation.getLatitude());
+        event.setLongitude(savedDonation.getLongitude());
+
+        kafkaProducerService.sendDonationCreated(event);
 
         try {
             String emailSubject = "Your Food Donation is Live!";
@@ -251,6 +270,16 @@ public class DonationService {
         donationRepository.save(donation);
 
 
+        DonationEventDTO event = new DonationEventDTO();
+        event.setDonationId(donation.getDonationId());
+        event.setDonorId(donation.getDonor().getUserId());
+        event.setNgoId(donation.getClaimedByNgo().getUserId());
+        event.setLatitude(donation.getLatitude());
+        event.setLongitude(donation.getLongitude());
+
+        kafkaProducerService.sendDonationRequested(event);
+
+
 
         try {
 
@@ -333,7 +362,7 @@ public class DonationService {
 
     public DonationResponse completeDonation(int id,String enteredOtp) {
 
-        Otp otpEntity = otpRepository.findByDonation_Id(id)
+        Otp otpEntity = otpRepository.findByDonation_DonationId(id)
                 .orElseThrow(() -> new RuntimeException("OTP not found for this donation."));
 
         if (otpEntity.getExpiryTime().isBefore(LocalDateTime.now())) {
@@ -350,6 +379,18 @@ public class DonationService {
         donation.setStatus(Status.COLLECTED);
         donationRepository.save(donation);
         otpRepository.delete(otpEntity); // Clean up OTP
+
+
+        DonationEventDTO event = new DonationEventDTO();
+        event.setDonationId(donation.getDonationId());
+        event.setDonorId(donation.getDonor().getUserId());
+        event.setNgoId(donation.getClaimedByNgo().getUserId());
+        event.setLatitude(donation.getLatitude());
+        event.setLongitude(donation.getLongitude());
+
+        kafkaProducerService.sendDonationCompleted(event);
+
+
 
         // Get donor details
         User donor = donation.getDonor();
@@ -547,6 +588,37 @@ public class DonationService {
     public void cleanupOrphanedDonations() {
         int deletedCount = donationRepository.deleteOrphanedDonations();
         System.out.println("🗑 Cleanup: " + deletedCount + " orphaned donations removed.");
+    }
+
+    @Scheduled(fixedRate = 60 * 60 * 1000) // Every hour
+    public void deleteExpiredDonations() {
+        String cacheKey = "donations:status:" + Status.AVAILABLE;
+        Object cachedData = redisService.get(cacheKey);
+        List<Donations> donations;
+
+        if (cachedData != null) {
+            try {
+                donations = objectMapper.convertValue(
+                        cachedData, new TypeReference<List<Donations>>() {});
+            } catch (Exception e) {
+                System.err.println("Redis Data Conversion Error: " + e.getMessage());
+                // Fallback to DB if Redis fails
+                donations = donationRepository.findByStatus(Status.AVAILABLE);
+            }
+        } else {
+            // No cache, get fresh data
+            donations = donationRepository.findByStatus(Status.AVAILABLE);
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+
+        for (Donations donation : donations) {
+            LocalDateTime expiryThreshold = donation.getAvailabilityEnd().plusHours(graceHours);
+            if (now.isAfter(expiryThreshold)) {
+                donationRepository.delete(donation);
+                System.out.println("Deleted expired donation with ID: " + donation.getDonationId());
+            }
+        }
     }
 
 

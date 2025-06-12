@@ -14,8 +14,8 @@ public class Otp {
     private LocalDateTime expiryTime;
 
     @OneToOne
+    @JoinColumn(name = "donation_id")  // specify join column explicitly
     private Donations donation;
-
 
     public Long getId() {
         return id;

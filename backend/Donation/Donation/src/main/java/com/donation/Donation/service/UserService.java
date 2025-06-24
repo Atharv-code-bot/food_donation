@@ -85,10 +85,10 @@ public class UserService {
             emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
 
-            if (user.getPhone() != null) {
-                String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
-                smsService.sendSms(user.getPhone(), smsMessage);
-            }
+//            if (user.getPhone() != null) {
+//                String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
+//                smsService.sendSms(user.getPhone(), smsMessage);
+//            }
 
         } catch (Exception e) {
             logger.error("Failed to send notification: Rolling back user registration", e);
@@ -241,10 +241,10 @@ public class UserService {
             emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
 
-            if (user.getPhone() != null) {
-                String smsMessage = "Your password has been changed successfully. If this wasn't you, contact support immediately.";
-                smsService.sendSms(user.getPhone(), smsMessage);
-            }
+//            if (user.getPhone() != null) {
+//                String smsMessage = "Your password has been changed successfully. If this wasn't you, contact support immediately.";
+//                smsService.sendSms(user.getPhone(), smsMessage);
+//            }
 
         } catch (Exception e) {
             logger.error("Failed to send notification: Password change will not be committed", e);
@@ -291,10 +291,10 @@ public class UserService {
             emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
 
-            if (user.getPhone() != null) {
-                String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
-                smsService.sendSms(user.getPhone(), smsMessage);
-            }
+//            if (user.getPhone() != null) {
+//                String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
+//                smsService.sendSms(user.getPhone(), smsMessage);
+//            }
 
         } catch (Exception e) {
             logger.error("Failed to send notification: Rolling back user registration", e);

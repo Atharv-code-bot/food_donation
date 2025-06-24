@@ -1,6 +1,7 @@
 package com.donation.Donation.controller;
 
 import com.donation.Donation.config.AuthUtil;
+import com.donation.Donation.config.JwtUtil;
 import com.donation.Donation.dto.*;
 import com.donation.Donation.model.User;
 import com.donation.Donation.service.ImageStorageService;
@@ -31,6 +32,9 @@ public class UserController {
 
     @Autowired
     private ImageStorageService imageStorageService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     @GetMapping("/admin")
@@ -73,12 +77,14 @@ public class UserController {
 
     @PutMapping("/update")
     public ResponseEntity<?> updateUser(
-            @RequestParam("userRequest") String userRequestJson,
+            @RequestParam(value = "userRequest", required = false) String userRequestJson,
             @RequestPart(value = "image", required = false) MultipartFile imageFile) {
         try {
-            // Convert JSON request body to UserRequest object
-            ObjectMapper objectMapper = new ObjectMapper();
-            UserRequest request = objectMapper.readValue(userRequestJson, UserRequest.class);
+            UserRequest request = null;
+            if (userRequestJson != null && !userRequestJson.isBlank()) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                request = objectMapper.readValue(userRequestJson, UserRequest.class);
+            }
 
             UserResponse response = userService.updateUser(request, imageFile);
             return ResponseEntity.ok(response);
@@ -129,9 +135,10 @@ public class UserController {
     }
 
     @PutMapping("/update-oauth2-user")
-    public ResponseEntity<UserResponse> updateOAuth2User(@RequestBody Auth2UpdateRequest request) {
+    public ResponseEntity<?> updateOAuth2User(@RequestBody Auth2UpdateRequest request) {
         UserResponse updatedUser = userService.updateOAuth2User(request);
-        return ResponseEntity.ok(updatedUser);
+        String token = jwtUtil.generateToken(updatedUser.getUsername(),updatedUser.getRole(),updatedUser.getUserId());
+        return ResponseEntity.ok(new AuthResponse(token, updatedUser.getRole().name(),updatedUser.getUserId()));
     }
 
     @PutMapping("/set-password")

@@ -32,10 +32,6 @@ public class UserController {
 
     @Autowired
     private JwtUtil jwtUtil;
-<<<<<<< HEAD
-=======
-
->>>>>>> 55c91daa4a208e64edf90da2125cc5913fc367d6
 
     @GetMapping("/admin")
     public ResponseEntity<?> getAllUsers() {
@@ -129,13 +125,8 @@ public class UserController {
     @PutMapping("/update-oauth2-user")
     public ResponseEntity<?> updateOAuth2User(@RequestBody Auth2UpdateRequest request) {
         UserResponse updatedUser = userService.updateOAuth2User(request);
-<<<<<<< HEAD
         String token = jwtUtil.generateToken(updatedUser.getUsername(), updatedUser.getRole(), updatedUser.getUserId());
         return ResponseEntity.ok(new AuthResponse(token, updatedUser.getRole().name(), updatedUser.getUserId()));
-=======
-        String token = jwtUtil.generateToken(updatedUser.getUsername(),updatedUser.getRole(),updatedUser.getUserId());
-        return ResponseEntity.ok(new AuthResponse(token, updatedUser.getRole().name(),updatedUser.getUserId()));
->>>>>>> 55c91daa4a208e64edf90da2125cc5913fc367d6
     }
 
     @PutMapping("/set-password")

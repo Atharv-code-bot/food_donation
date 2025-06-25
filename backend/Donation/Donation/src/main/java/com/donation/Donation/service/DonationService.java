@@ -93,17 +93,10 @@ public class DonationService {
             String emailBody = "Thank you for donating food! Your donation is now available for NGOs to claim.";
             emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
-<<<<<<< HEAD
             // if (user.getPhone() != null) {
             //     String smsMessage = "Your food donation is live! NGOs can now claim it.";
             //     smsService.sendSms(user.getPhone(), smsMessage);
             // }
-=======
-//            if (user.getPhone() != null) {
-//                String smsMessage = "Your food donation is live! NGOs can now claim it.";
-//                smsService.sendSms(user.getPhone(), smsMessage);
-//            }
->>>>>>> 55c91daa4a208e64edf90da2125cc5913fc367d6
         }
         catch (Exception e) {
             logger.error("Failed to send notification: Donation will not be committed", e);
@@ -309,17 +302,10 @@ public class DonationService {
 
             emailService.sendEmail(donor.getEmail(), emailSubject, emailBody);
 
-<<<<<<< HEAD
             // if (donor.getPhone() != null) {
             //     String smsMessage = "Your donation has been claimed by " + ngo.getFullname() + "! Thank you for your generosity.";
             //     smsService.sendSms(donor.getPhone(), smsMessage);
             // }
-=======
-//            if (donor.getPhone() != null) {
-//                String smsMessage = "Your donation has been claimed by " + ngo.getFullname() + "! Thank you for your generosity.";
-//                smsService.sendSms(donor.getPhone(), smsMessage);
-//            }
->>>>>>> 55c91daa4a208e64edf90da2125cc5913fc367d6
         }
         catch (Exception e) {
             logger.error("Failed to send notification: Donation claim will not be committed", e);
@@ -388,7 +374,6 @@ public class DonationService {
         }
 
         // Prepare SMS content
-<<<<<<< HEAD
         // if (donor.getPhone() != null && !donor.getPhone().isEmpty()) {
         //     String smsMessage = "Dear " + donor.getFullname() + ", your donation has been successfully collected! Thank you for your generosity.";
         //     try {
@@ -399,18 +384,6 @@ public class DonationService {
         //         throw new RuntimeException("SMS sending failed: " + e.getMessage());
         //     }
         // }
-=======
-//        if (donor.getPhone() != null && !donor.getPhone().isEmpty()) {
-//            String smsMessage = "Dear " + donor.getFullname() + ", your donation has been successfully collected! Thank you for your generosity.";
-//            try {
-//                smsService.sendSms(donor.getPhone(), smsMessage);
-//
-//            } catch (Exception e) {
-//                logger.error("❌ Failed to send SMS to donor {}", donor.getPhone(), e);
-//                throw new RuntimeException("SMS sending failed: " + e.getMessage());
-//            }
-//        }
->>>>>>> 55c91daa4a208e64edf90da2125cc5913fc367d6
 
         redisService.delete("donations:status:COLLECTED");
         String userCacheKey = "donations:user:" + donation.getDonor() + ":status:COLLECTED";

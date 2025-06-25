@@ -1,0 +1,137 @@
+<header class="donation-header flex items-center justify-between">
+  <h1 class=" text-3xl donation-">Donation Details</h1>
+  <div id="status-badge">{{ donation()?.status }}</div>
+</header>
+
+<div class="donation-page">
+  <div class="donation-info">
+    <h2 id="item-name" class="donation-title">Item {{ donation()?.itemName }}</h2>
+
+    <div class="info-section">
+      <h3><i class="fa fa-box"></i> Item Details</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">Quantity</span>
+          <span id="quantity" class="value">{{ donation()?.quantity }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Best Before</span>
+          <span id="best-before" class="value">{{
+            donation()?.bestBeforeDate | date : "fullDate"
+          }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h3><i class="fa fa-map-marker-alt"></i> Pickup Details</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">Location</span>
+          <span id="location" class="value">{{
+            donation()?.pickupLocation
+          }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Available From</span>
+          <span id="available-from" class="value">{{
+            donation()?.availabilityStart | date : "fullDate"
+          }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Available Until</span>
+          <span id="available-until" class="value">{{
+            donation()?.availabilityEnd | date : "fullDate"
+          }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h3><i class="fa fa-info-circle"></i> Reference Information</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">Donation ID</span>
+          <span id="donation-id" class="value">{{
+            donation()?.donationId
+          }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Donor ID</span>
+          <span id="donor-id" class="value">{{ donation()?.donorId }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">NGO ID</span>
+          <span id="ngo-id" class="value">{{ donation()?.ngoId }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="timestamps">
+      <div class="timestamp-item">
+        <i class="fa fa-calendar-plus"></i> Created:
+        <span id="created-at">{{
+          donation()?.createdAt | date : "fullDate"
+        }}</span>
+      </div>
+      <div class="timestamp-item">
+        <i class="fa fa-calendar-check"></i> Updated:
+        <span id="updated-at">{{
+          donation()?.updatedAt | date : "fullDate"
+        }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="image-preview flex items-center justify-center">
+    <img
+      [src]="imageUrl"
+      alt="Donation Image"
+      class="donation-image"
+      *ngIf ="imageUrl"
+    />
+    <div *ngIf="!imageUrl" class="no-image">
+      <i class="fa fa-image"></i> No Image Available
+    </div>
+  </div>
+  <div class="button-div">
+    @if (role === 'ROLE_DONOR' && donation()?.status === 'AVAILABLE') {
+    <button [routerLink]="['update']">Update</button>
+    <button
+      type="button"
+      class="delete-btn"
+      [disabled]="isSubmittingDelete"
+      (click)="deleteDonation(donationId)"
+    >
+      @if (!isSubmittingDelete) { Delete } @else {
+      <span><i class="fa fa-spinner fa-spin"></i> Deleting...</span>
+      }
+    </button>
+
+    } @else if (role === 'ROLE_NGO') { @if (donation()?.status === 'AVAILABLE'){
+    <button
+      type="button"
+      [disabled]="isSubmittingClaim"
+      (click)="claimDonation()"
+    >
+      @if (!isSubmittingClaim) { Claim } @else {
+      <span><i class="fa fa-spinner fa-spin"></i> Claiming...</span>
+      }
+    </button>
+
+    } @else if (donation()?.status === 'CLAIMED') {
+    <button
+      type="button"
+      [disabled]="isSubmittingComplete"
+      (click)="completeDonation()"
+    >
+      @if (!isSubmittingComplete) {
+      <span><i class="fa fa-check"></i> Mark as Completed</span>
+      } @else {
+      <span><i class="fa fa-spinner fa-spin"></i> Completing...</span>
+      }
+    </button>
+    } }
+
+    <button type="button" class="back-btn" (click)="goBack()">← Back</button>
+  </div>
+</div>

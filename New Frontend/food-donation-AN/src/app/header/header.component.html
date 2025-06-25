@@ -1,0 +1,64 @@
+<header
+  class="flex justify-between items-center p-4 bg-gray-800 text-white shadow-md"
+>
+  <!-- <img src="task-management-logo.png" alt="A todo list" /> -->
+  <h1>Food</h1>
+  <div *ngIf="!isLoggedIn" class="flex items-center gap-4">
+    <button class="rounded-full bg-blue-500 text-white px-4 py-2">
+      <a [routerLink]="['/auth/signin']" routerLinkActive="active">Sign-in</a>
+    </button>
+    <button class="rounded-full bg-blue-500 text-white px-4 py-2">
+      <a [routerLink]="['/auth/signup']" routerLinkActive="active">Sign-up</a>
+    </button>
+  </div>
+  <div *ngIf="isLoggedIn" class="flex items-center gap-4">
+    <!-- ====== Avatars Section Start -->
+    <section class="py-[75px] dark:bg-dark">
+      <div class="mx-auto px-4 sm:container">
+        <div x-data="{openDropDown: true}" class="relative inline-block">
+          <button
+            (click)="openDropDown = !openDropDown"
+            class="flex items-center text-left"
+          >
+            <div class="relative mr-4 h-[42px] w-[42px] rounded-full">
+              <img
+                *ngIf="profileImageUrl"
+                [src]="profileImageUrl"
+                alt="avatar"
+                class="h-full w-full rounded-full object-cover object-center"
+              />
+              <span
+                class="absolute -right-0.5 -top-0.5 block h-[14px] w-[14px] rounded-full border-[2.3px] border-white bg-[#219653] dark:border-dark"
+              ></span>
+            </div>
+          </button>
+          <div
+            *ngIf="openDropDown"
+            (document:click)="openDropDown = false"
+            class="absolute right-0 top-full z-40 w-[200px] space-y-1 rounded-sm bg-black p-2 shadow-card dark:bg-dark-2 dark:shadow-box-dark"
+          >
+            <a
+              [routerLink]="['/dashboard']"
+              class="block w-full rounded-sm px-3 py-2 text-left text-sm text-body-color hover:bg-gray-2 dark:text-dark-6 dark:hover:bg-dark-3"
+            >
+              Dashboard
+            </a>
+            <a
+              [routerLink]="['/profile']"
+              class="block w-full rounded-sm px-3 py-2 text-left text-sm text-body-color hover:bg-gray-2 dark:text-dark-6 dark:hover:bg-dark-3"
+            >
+              Profile
+            </a>
+            <a
+              href="javascript:void(0)"
+              class="block w-full rounded-sm px-3 py-2 text-left text-sm text-body-color hover:bg-gray-2 dark:text-dark-6 dark:hover:bg-dark-3"
+            >
+              Sign Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ====== Avatars Section End -->
+  </div>
+</header>

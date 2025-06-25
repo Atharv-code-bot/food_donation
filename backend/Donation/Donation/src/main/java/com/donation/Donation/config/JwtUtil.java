@@ -1,6 +1,7 @@
 package com.donation.Donation.config;
 
 
+import com.donation.Donation.model.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -48,11 +49,12 @@ public class JwtUtil {
         return expiration == null || expiration.before(new Date());
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String username, Role role, int userId) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
+        claims.put("id", userId);
         return createToken(claims, username);
     }
-
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .claims(claims)

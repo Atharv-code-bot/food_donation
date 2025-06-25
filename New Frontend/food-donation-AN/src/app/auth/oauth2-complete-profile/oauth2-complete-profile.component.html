@@ -1,0 +1,20 @@
+<div class="card" *ngIf="profileForm">
+  <h2>Complete Your Profile</h2>
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <label>Phone:</label>
+    <input type="text" formControlName="phone" /><br />
+
+    <label>Address:</label>
+    <input type="text" formControlName="address" /><br />
+
+    <label>Role:</label>
+    <select formControlName="role">
+      <option value="ROLE_DONOR">Donor</option>
+      <option value="ROLE_NGO">NGO</option></select
+    ><br />
+
+    <button type="submit" [disabled]="profileForm.invalid || isSubmitting">
+      {{ isSubmitting ? "Submitting..." : "Submit" }}
+    </button>
+  </form>
+</div>

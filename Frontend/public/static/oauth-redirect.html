@@ -147,19 +147,19 @@
           localStorage.setItem("token", token);
           localStorage.setItem("role", roleFromUrl);
           localStorage.setItem("id", userId);
-          window.location.href = "donate-dashboard.html";
+          window.location.href = "receive-dashboard.html";
         } else if (roleFromUrl == "ROLE_DONOR") {
           localStorage.setItem("token", token);
           localStorage.setItem("role", roleFromUrl);
           localStorage.setItem("id", userId);
-          window.location.href = "receive-dashboard.html";
+          window.location.href = "donate-dashboard.html";
         }
       };
     </script>
   </head>
   <body>
     <div class="container">
-      <p>Redirecting... please wait.</p>
+      <p id="message">Redirecting... please wait.</p>
 <div class="dot-spinner">
     <div class="dot-spinner__dot"></div>
     <div class="dot-spinner__dot"></div>

@@ -39,7 +39,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
 
         User user = userOptional.get();
-        String token = jwtUtil.generateToken(user.getEmail()); // Generate JWT using email
+        String token = jwtUtil.generateToken(user.getEmail(),user.getRole(),user.getUserId()); // Generate JWT using email
 
         // ✅ Explicitly set authentication in SecurityContextHolder
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -49,7 +49,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         System.out.println("Granted Authorities: " + authentication2.getAuthorities());
 
         // Redirect with token & role
-        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:5500/oauth2/redirect")
+        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:4200/auth/oauth2/redirect")
                 .queryParam("token", token)
                 .queryParam("role", user.getRole().name())
                 .build().toUriString();

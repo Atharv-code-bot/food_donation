@@ -1,6 +1,7 @@
 package com.donation.Donation.controller;
 
 import com.donation.Donation.config.AuthUtil;
+import com.donation.Donation.config.JwtUtil;
 import com.donation.Donation.dto.*;
 import com.donation.Donation.model.User;
 import com.donation.Donation.service.ImageStorageService;
@@ -23,62 +24,59 @@ public class UserController {
     @Autowired
     UserService userService;
 
-
-
     @Autowired
     private AuthUtil authUtil;
-
 
     @Autowired
     private ImageStorageService imageStorageService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @GetMapping("/admin")
-    public ResponseEntity<?>getAllUsers(){
+    public ResponseEntity<?> getAllUsers() {
         try {
-            List<UserResponse> response=userService.getAllUser();
+            List<UserResponse> response = userService.getAllUser();
             return ResponseEntity.ok(response);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?>getUserById(@PathVariable int id){
-        try{
-            UserResponse response=userService.getUserById(id);
+    public ResponseEntity<?> getUserById(@PathVariable int id) {
+        try {
+            UserResponse response = userService.getUserById(id);
             return ResponseEntity.ok(response);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/current")
-    public ResponseEntity<?>getCurrentUser(){
-        try{
-            UserResponse response=userService.getCurrentUser();
-            if(response!=null) {
+    public ResponseEntity<?> getCurrentUser() {
+        try {
+            UserResponse response = userService.getCurrentUser();
+            if (response != null) {
                 return ResponseEntity.ok(response);
-            }
-            else {
+            } else {
                 return ResponseEntity.badRequest().body("User Not Found");
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("/update")
     public ResponseEntity<?> updateUser(
-            @RequestParam("userRequest") String userRequestJson,
+            @RequestParam(value = "userRequest", required = false) String userRequestJson,
             @RequestPart(value = "image", required = false) MultipartFile imageFile) {
         try {
-            // Convert JSON request body to UserRequest object
-            ObjectMapper objectMapper = new ObjectMapper();
-            UserRequest request = objectMapper.readValue(userRequestJson, UserRequest.class);
+            UserRequest request = null;
+            if (userRequestJson != null && !userRequestJson.isBlank()) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                request = objectMapper.readValue(userRequestJson, UserRequest.class);
+            }
 
             UserResponse response = userService.updateUser(request, imageFile);
             return ResponseEntity.ok(response);
@@ -87,19 +85,16 @@ public class UserController {
         }
     }
 
-
-
     @DeleteMapping
     public ResponseEntity<?> deleteUser() {
         try {
-            User user=authUtil.getLoggedInUser();
-            if (user==null){
+            User user = authUtil.getLoggedInUser();
+            if (user == null) {
                 return ResponseEntity.badRequest().body("You are not logged in");
             }
             userService.deleteUser();
             return ResponseEntity.ok().body("User deleted successfully");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -107,10 +102,9 @@ public class UserController {
     @PutMapping("/password-change")
     public ResponseEntity<?> changePassword(@RequestBody PasswordChangeRequest request) {
         try {
-            ResponseEntity response=userService.changePassword(request);
+            ResponseEntity response = userService.changePassword(request);
             return ResponseEntity.ok(response);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
@@ -129,9 +123,10 @@ public class UserController {
     }
 
     @PutMapping("/update-oauth2-user")
-    public ResponseEntity<UserResponse> updateOAuth2User(@RequestBody Auth2UpdateRequest request) {
+    public ResponseEntity<?> updateOAuth2User(@RequestBody Auth2UpdateRequest request) {
         UserResponse updatedUser = userService.updateOAuth2User(request);
-        return ResponseEntity.ok(updatedUser);
+        String token = jwtUtil.generateToken(updatedUser.getUsername(), updatedUser.getRole(), updatedUser.getUserId());
+        return ResponseEntity.ok(new AuthResponse(token, updatedUser.getRole().name(), updatedUser.getUserId()));
     }
 
     @PutMapping("/set-password")
@@ -140,4 +135,3 @@ public class UserController {
     }
 
 }
-

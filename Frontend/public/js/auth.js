@@ -27,8 +27,9 @@ async function login(username, password) {
       // Redirect user based on role
       // Check if there's a saved page to go back to
       const redirectPage = localStorage.getItem("redirectAfterLogin");
-      if (redirectPage) {
-        localStorage.removeItem("redirectAfterLogin"); // Clear after use
+      console.log(redirectPage)
+      if (redirectPage && redirectPage.includes("oauth-update.html")) {
+        localStorage.removeItem("redirectAfterLogin");
         window.location.href = redirectPage;
       } else if (data.role === "ROLE_NGO") {
         console.log("Redirecting to NGO dashboard...");

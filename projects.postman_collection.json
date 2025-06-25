@@ -1,0 +1,982 @@
+{
+	"info": {
+		"_postman_id": "123b65c7-7680-441f-ba5f-391d0965b718",
+		"name": "projects",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37211972"
+	},
+	"item": [
+		{
+			"name": "Food Donation Application",
+			"item": [
+				{
+					"name": "User Controller",
+					"item": [
+						{
+							"name": "ALL USERS",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb25vcl90ZXN0IiwiaWF0IjoxNzQwOTQ0MzA2LCJleHAiOjE3NDA5NDczMDZ9.SBQHxfpIsDR-5GwBfUxhBe09Bg_udPAXwT7mIXN52SQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/users/admin",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users",
+										"admin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User By ID",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "password123",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "atharv",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/users/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update user",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhayIsImlhdCI6MTc0MDg1OTQ2MCwiZXhwIjoxNzQwODYyNDYwfQ.91-PYH_l_7rwBgst2u9y_5RP2N3NtbDQ7_AhxzWvfm0",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "userRequest",
+											"value": "{\n    \"username\": \"ak\",\n    \"email\": \"atharvkamerkar.22310390@viit.ac.in\",\n    \"password\": \"password123\",\n    \"role\": \"ROLE_DONOR\",\n    \"fullname\": \"Atharv Kamerkar\",\n    \"phone\": \"8605785559\",\n    \"address\": \"Ratnagiri, India\"\n}\n",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "postman-cloud:///1efe55c1-dda1-4c40-a9fa-23243e94f1a0"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:8080/users/update",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users",
+										"update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete user",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhayIsImlhdCI6MTc0MDg1OTQ2MCwiZXhwIjoxNzQwODYyNDYwfQ.91-PYH_l_7rwBgst2u9y_5RP2N3NtbDQ7_AhxzWvfm0",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get current user",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGhhcnYiLCJpYXQiOjE3MzkzOTE4NjUsImV4cCI6MTczOTM5NDg2NX0.0sbxrxwtWA_pfnag1EItgS3gvSviCFHrLYnf4U4ByGU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/users/current",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users",
+										"current"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Password Change",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrYWxwZXNobSIsImlhdCI6MTczOTE5NDA2MiwiZXhwIjoxNzM5MTk3MDYyfQ.iI7550ialarUcuaR5aXFwmYfGSiZ6-M5pLVE0ejOc1M",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"currentPassword\":\"password123\",\r\n    \"newPassword\":\"kalpeshm\"\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/users/password-change",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users",
+										"password-change"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update remaining details of auth2 users",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGhhcnYuMjIzMTAzOTBAdmlpdC5hYy5pbiIsImlhdCI6MTczOTcxMjYzOCwiZXhwIjoxNzM5NzE1NjM4fQ.U9u9ejO_K23usse1u1Cb4OsQHiLOfRdgriJT5Fq4f1E",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"phone\": \"8605785559\",\r\n  \"address\": \"Updated OAuth2 User Address for college email \",\r\n  \"role\": \"ROLE_DONOR\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/users/update-oauth2-user",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users",
+										"update-oauth2-user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "set-password",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGhhcnZrYW1lcmthcjA2QGdtYWlsLmNvbSIsImlhdCI6MTc0MDg1NTIwNCwiZXhwIjoxNzQwODU4MjA0fQ.f7LRN_-6TUz9qwz9WoKpaCBcr32NSSB5JZNKMKEdyGQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"newPassword\": \"password123!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/users/set-password",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users",
+										"set-password"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Auth Controller",
+					"item": [
+						{
+							"name": "Register",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"ngo_test\",\r\n    \"email\": \"ngo_test@example.com\",\r\n    \"password\": \"Password123\",\r\n    \"role\": \"ROLE_NGO\",\r\n    \"fullname\": \"Helping Hands NGO\",\r\n    \"phone\": \"8605785559\",\r\n    \"address\": \"Delhi, India\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/auth/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"username\": \"donor_test\",\r\n  \"password\": \"Password123\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/auth/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "logout",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGhhcnYiLCJpYXQiOjE3Mzg4OTg0MjYsImV4cCI6MTczODkwMTQyNn0.iZgLI-nTVGQ5h1U2g0Zh83LciS6SeXZAUh9gbyglX1E",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/auth/logout",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "google login",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/oauth2/authorization/google",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"oauth2",
+										"authorization",
+										"google"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Donation Controller",
+					"item": [
+						{
+							"name": "filtering and sorting",
+							"item": [
+								{
+									"name": "filtering available",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZ29fdGVzdCIsImlhdCI6MTc0MDk0MzY4NSwiZXhwIjoxNzQwOTQ2Njg1fQ.JpqN0BlvUqPMTo7kbowvH7-wuSOPG_ofA6IwkU0prJk",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/donations/available?foodCategory=Rice?expirationDate=2025-03-20",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"donations",
+												"available"
+											],
+											"query": [
+												{
+													"key": "foodCategory",
+													"value": "Rice?expirationDate=2025-03-20"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "filtering claimed",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZ29fdGVzdCIsImlhdCI6MTc0MDk0MzY4NSwiZXhwIjoxNzQwOTQ2Njg1fQ.JpqN0BlvUqPMTo7kbowvH7-wuSOPG_ofA6IwkU0prJk",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/donations/claimed",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"donations",
+												"claimed"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "all past donations od donor",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb25vcl90ZXN0IiwiaWF0IjoxNzQwOTQ0MzA2LCJleHAiOjE3NDA5NDczMDZ9.SBQHxfpIsDR-5GwBfUxhBe09Bg_udPAXwT7mIXN52SQ",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/donations/past?expirationDate=2025-03-15&sortBy=quantity&order=desc",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"donations",
+												"past"
+											],
+											"query": [
+												{
+													"key": "expirationDate",
+													"value": "2025-03-15"
+												},
+												{
+													"key": "sortBy",
+													"value": "quantity"
+												},
+												{
+													"key": "order",
+													"value": "desc"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Create Donation",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb25vcl90ZXN0IiwiaWF0IjoxNzQwOTMyMzk2LCJleHAiOjE3NDA5MzUzOTZ9.DJ3XNx9PdF1L5uAHnwjh_lBCExkwUk3LCqkCzMGhh2s",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "donationRequest",
+											"value": "{\n  \"itemName\": \"Milk\",\n  \"quantity\": 5,\n  \"bestBeforeDate\": \"2025-03-10\",\n  \"pickupLocation\": \"789 Road, City\",\n  \"availabilityStart\": \"2025-03-03T07:00:00\",\n  \"availabilityEnd\": \"2025-03-03T19:00:00\"\n}\n",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:8080/donations",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"donations"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all donations",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGhhcnYiLCJpYXQiOjE3NDA4NDA0MTUsImV4cCI6MTc0MDg0MzQxNX0.ZYAzeGVd-wX50ceLSr9OGvxvHiItcoqLPM-UQCzS800",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/donations/admin",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"donations",
+										"admin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "donation by id",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGhhcnYiLCJpYXQiOjE3Mzg5NTA5NDUsImV4cCI6MTczODk1Mzk0NX0.41Hh-n_O5mXTp1nDAEziU6AxO5nXuJu2VXLaD-vGQXQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/donations/8",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"donations",
+										"8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "claim donation by id",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZ29fdGVzdCIsImlhdCI6MTc0MDkzMzI3NiwiZXhwIjoxNzQwOTM2Mjc2fQ.Jn7ie6MpsVY_AXl3vk2sIM99tjiu-VHFWGzWsohskn8",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/donations/3/claim",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"donations",
+										"3",
+										"claim"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Complete Donation by id",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhazIiLCJpYXQiOjE3NDA4NTkyOTksImV4cCI6MTc0MDg2MjI5OX0.OMUlFj21OPvx_W07Lu3fHIbZdFwZ4EvCF8U5J6cUIYQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/donations/1/complete",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"donations",
+										"1",
+										"complete"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get donation by status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGhhcnYiLCJpYXQiOjE3Mzg5NTA5NDUsImV4cCI6MTczODk1Mzk0NX0.41Hh-n_O5mXTp1nDAEziU6AxO5nXuJu2VXLaD-vGQXQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/donations/status/pending",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"donations",
+										"status",
+										"pending"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get image",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGhhcnYiLCJpYXQiOjE3Mzg5NTMyNjIsImV4cCI6MTczODk1NjI2Mn0.wjTeOE26_c1Y1SMzcXLDyCOgoeQIO9HG-S2_YMGqmn0",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/donations/images/fa28dbd2-4503-4792-8575-c37f5ef8a60e_Atharv Mahesh Kamerkar.png",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"donations",
+										"images",
+										"fa28dbd2-4503-4792-8575-c37f5ef8a60e_Atharv Mahesh Kamerkar.png"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get donation by current user and status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhayIsImlhdCI6MTc0MDg1NjAxMiwiZXhwIjoxNzQwODU5MDEyfQ.Vjve4xjh6wDAggUYfD6Z2MakqYsBp67orgobUNbvuFc",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/donations/user/claimed",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"donations",
+										"user",
+										"claimed"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Donation",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdGhhcnYiLCJpYXQiOjE3MzkwMTEwMTUsImV4cCI6MTczOTAxNDAxNX0.seRsTC4NmYOI_eraBcGPL8I1UkcQlwAbBccxpqstEaw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "donationRequest",
+											"value": "{\n  \"itemName\": \"Bhakri\",\n  \"quantity\": 25,\n  \"bestBeforeDate\": \"2025-03-15\",\n  \"pickupLocation\": \"456 Avenue, City\",\n  \"availabilityStart\": \"2025-02-07T09:00:00\",\n  \"availabilityEnd\": \"2025-02-07T17:00:00\"\n}\n",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/D:/ATHARV DOCUMENTS/download.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:8080/donations/11",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"donations",
+										"11"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete donation",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhayIsImlhdCI6MTc0MDg1NjAxMiwiZXhwIjoxNzQwODU5MDEyfQ.Vjve4xjh6wDAggUYfD6Z2MakqYsBp67orgobUNbvuFc",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8080/donations/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"donations",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get donation by ngo and status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhayIsImlhdCI6MTc0MDg1NjAxMiwiZXhwIjoxNzQwODU5MDEyfQ.Vjve4xjh6wDAggUYfD6Z2MakqYsBp67orgobUNbvuFc",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/donations/ngo/claimed",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"donations",
+										"ngo",
+										"claimed"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

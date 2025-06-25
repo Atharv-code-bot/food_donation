@@ -134,23 +134,24 @@ public class DonationController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateDonation( @RequestParam("donationRequest") String donationRequest,
-                                             @RequestPart(value = "image", required = false) MultipartFile image,
-                                             @PathVariable int id) {
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateDonation(
+            @RequestParam("donationRequest") String donationRequest,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @PathVariable int id) {
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             DonationRequest donation = objectMapper.readValue(donationRequest, DonationRequest.class);
 
-            DonationResponse response = donationService.updateDonation(donation, image,id);
+            DonationResponse response = donationService.updateDonation(donation, image, id);
             return ResponseEntity.ok(response);
-        }
-        catch (Exception e) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body("Error parsing request: " + e.getMessage());
         }
     }
+
 
 
     @DeleteMapping("/{id}")

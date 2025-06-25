@@ -1,0 +1,152 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+.filter-tab button {
+  cursor: pointer;
+}
+
+.filter-tab.current button {
+  color: green;
+}
+
+/* Wrapper for layout if not already set */
+.main-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.container {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+table {
+  overflow: auto;
+}
+
+.content {
+  padding: 20px;
+  flex: 1;
+}
+
+.boton {
+  --primary-color: #645bff;
+  --secondary-color: #fff;
+  --hover-color: #443be7;
+  --arrow-width: 10px;
+  --arrow-stroke: 2px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 20px;
+  color: var(--secondary-color);
+  padding: 0.75em 1.2em;
+  background: var(--primary-color);
+  display: flex;
+  transition: 0.2s background;
+  align-items: center;
+  gap: 0.6em;
+  font-weight: bold;
+  max-width: fit-content;
+  /* margin-bottom: 5px; */
+}
+
+.boton .arrow-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.boton .arrow {
+  margin-top: 1px;
+  width: var(--arrow-width);
+  background: var(--primary-color);
+  height: var(--arrow-stroke);
+  position: relative;
+  transition: 0.2s;
+}
+
+.boton .arrow::before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  border: solid var(--secondary-color);
+  border-width: 0 var(--arrow-stroke) var(--arrow-stroke) 0;
+  display: inline-block;
+  top: -3px;
+  right: 3px;
+  transition: 0.2s;
+  padding: 3px;
+  transform: rotate(-45deg);
+}
+
+.boton:hover {
+  background-color: var(--hover-color);
+}
+
+.boton:hover .arrow {
+  background: var(--secondary-color);
+}
+
+.boton:hover .arrow:before {
+  right: 0;
+}
+
+table {
+  /* border-radius: 10px !important; */
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #ddd;
+  overflow: hidden;
+}
+
+tr:not(:last-child) td {
+  /* padding-bottom: 20px; */
+  border-bottom: 0.5px solid #ddd; /* your desired separator*/
+}
+
+/* From Uiverse.io by vinodjangid07 */ 
+.button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  /* background-color: white; */
+  border: none;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+  cursor: pointer;
+  transition-duration: 0.3s;
+  overflow: hidden;
+  position: relative;
+  gap: 2px;
+}
+
+.svgIcon {
+  width: 10px;
+  transition-duration: 0.3s;
+}
+
+.svgIcon path {
+  fill: black;
+}
+
+.button:hover {
+  transition-duration: 0.3s;
+  /* background-color: rgb(255, 69, 69); */
+  align-items: center;
+  gap: 0;
+}
+
+.bin-top {
+  transform-origin: bottom right;
+}
+.button:hover .bin-top {
+  transition-duration: 0.5s;
+  transform: rotate(100deg);
+}

@@ -1,0 +1,111 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+* {
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+.profile-container {
+  display: flex;
+}
+
+.profile-content {
+  padding: 20px;
+  flex: 1;
+  height: calc(100vh - 70px); /* Adjust if header exists outside */
+  overflow-y: scroll
+}
+
+button {
+  @apply rounded-full;
+}
+
+.card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-header img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 30px;
+  margin-top: 12px;
+}
+.avatar-section {
+  display: flex;
+  background: #f6f6f6;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0 5%;
+  justify-content: space-between;
+}
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.error-text {
+  color: red;
+  font-size: 0.9rem;
+}
+
+.card {
+  background: #f6f6f6;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.info-grid,
+#password-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.info-grid label {
+  display: flex;
+  flex-direction: column;
+}
+
+.button-group {
+  margin-top: 15px;
+}
+
+/* #password-container {
+  display: flex;
+  padding-right: 70px;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+} */
+
+.password-form {
+  display: grid;
+  grid-row-gap: 14px;
+}
+

@@ -1,0 +1,190 @@
+<header>
+  <app-header />
+</header>
+<div class="profile-container">
+  <app-sidebar></app-sidebar>
+
+  <div class="profile-content">
+    <h2 class="text-xl font-semibold mb-4">Account Settings</h2>
+
+    <!-- Avatar Section -->
+    <div class="avatar-section">
+      <div>
+        <p class="text-sm text-gray-600">Your Avatar</p>
+        <img [src]="profileImageUrl" class="avatar" alt="Your Avatar" />
+      </div>
+      <div>
+        <input
+          type="file"
+          (change)="onAvatarSelected($event)"
+          hidden
+          #avatarInput
+        />
+        <button
+          type="button"
+          (click)="avatarInput.click()"
+          class="btn btn--primary rounded-full"
+        >
+          Upload New Avatar
+        </button>
+      </div>
+    </div>
+
+    <!-- Profile Edit Form -->
+    <!-- User Info -->
+    <div class="card" *ngIf="profileForm">
+      <h3 class="mb-2.5 block text-base font-medium text-dark dark:text-white">
+        Profile Information
+      </h3>
+      <form [formGroup]="profileForm">
+        <div class="info-grid">
+          <!-- <label
+            >Username:
+            <p>{{ user?.username }}</p></label
+          >
+          <label
+            >Email:
+            <p>{{ user?.email }}</p></label
+          >
+          <label
+            >Full Name:
+            <input formControlName="fullname" />
+          </label>
+          <label
+            >Phone:
+            <input formControlName="phone" />
+          </label>
+          <label
+            >Address:
+            <input formControlName="address" />
+          </label> -->
+          <div>  
+            <label class="form-label m-0">
+              Username:
+            </label>
+            <p class="mb-1">{{ user?.username }}</p>
+          </div>
+          <div>
+            <label class="form-label">
+              Email:
+            </label>
+            <p class="mb-1">{{ user?.email }}</p>
+          </div>
+
+          <div>
+            <label for="default-input" class="form-label"> Full Name </label>
+            <input
+              type="text"
+              name="default-input"
+              placeholder="Enter you full name"
+              class="form-input"
+              formControlName="fullname"
+            />
+          </div>
+          <div>
+            <label for="default-input" class="form-label"> Phone Number </label>
+            <input
+              type="text"
+              name="default-input"
+              placeholder="Enter your phone number"
+              class="form-input"
+              formControlName="phone"
+            />
+          </div>
+          <div>
+            <label for="default-input" class="form-label"> Address </label>
+            <input
+              type="text"
+              name="default-input"
+              placeholder="Enter your address"
+              class="form-input"
+              formControlName="address"
+            />
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button
+            *ngIf="!isEditing"
+            type="button"
+            (click)="enableEditing()"
+            class="btn btn--primary rounded-full"
+          >
+            Edit details
+          </button>
+          <div *ngIf="isEditing" style="display: flex; gap: 10px">
+            <button
+              type="button"
+              (click)="cancelEdit()"
+              class="btn btn--info rounded-full"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              (click)="saveChanges()"
+              class="btn btn--primary rounded-full"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Change Password Form -->
+    <div class="card" *ngIf="passwordForm" id="password-container">
+      <h4>Change Password</h4>
+      <form
+        [formGroup]="passwordForm"
+        (ngSubmit)="updatePassword()"
+        class="password-form"
+      >
+        <div>
+          <label for="currentPassword" class="form-label">
+            Current Password
+          </label>
+          <input
+            type="password"
+            formControlName="currentPassword"
+            name="currentPassword"
+            class="form-input"
+          />
+        </div>
+        <div>
+          <label for="newPassword" class="form-label"> New Password </label>
+          <input
+            type="password"
+            formControlName="newPassword"
+            name="newPassword"
+            class="form-input"
+          />
+        </div>
+        <div>
+          <label for="confirmPassword" class="form-label">
+            Confirm Password
+          </label>
+          <input
+            type="password"
+            formControlName="confirmPassword"
+            placeholder="Confirm New Password"
+            (blur)="checkPasswordMatch()"
+            class="form-input"
+          />
+        </div>
+        @if (passwordMismatch) {
+        <p class="error-text">Passwords do not match.</p>
+        }
+        <button
+          type="submit"
+          [disabled]="
+            passwordForm.invalid || passwordMismatch || isUpdatingPassword
+          "
+          class="btn btn--primary rounded-full"
+        >
+          {{ isUpdatingPassword ? "Updating..." : "Update Password" }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

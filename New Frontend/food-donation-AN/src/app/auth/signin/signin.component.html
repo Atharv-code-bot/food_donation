@@ -1,0 +1,22 @@
+<div
+  class="signin-container flex flex-col items-center justify-center h-screen border border-gray-300"
+>
+  <form (ngSubmit)="onLogin()" class="signin-form flex flex-col p-6 bg-white shadow-md rounded">
+    <h1>Sign-in</h1>
+    <label for="username" class="form-label">Username</label>
+    <input type="text" name="username" id="username" [(ngModel)]="username" class="mb-4 form-input" />
+    <label for="password" class="form-label">Password</label>
+    <input
+      type="password"
+      name="password"
+      id="password"
+      [(ngModel)]="password"
+      class="mb-4 form-input"
+    />
+    <button class="btn btn--primary rounded">Sign In</button>
+    <button type="button" (click)="loginWithGoogle()" class="btn mt-2 btn--primary rounded">
+      Sign in with Google
+    </button>
+    <p class="mt-2">Don't have an account? <a [routerLink]="['/auth/signup']" class="text-blue-500 hover:underline">Signup</a> instead</p>
+  </form>
+</div>

@@ -1,0 +1,33 @@
+<div class="sidebar" [class.collapsed]="isCollapsed">
+  <nav>
+    <a class="sidebar-link rounded-md" [routerLink]="['/dashboard']" routerLinkActive="active">
+      <i class="fas fa-home"></i>
+      <span *ngIf="!isCollapsed">Dashboard</span>
+    </a>
+
+    <a class="sidebar-link rounded-md"
+      [routerLink]="['/dashboard']"
+      [queryParams]="{ status: 'collected' }"
+      routerLinkActive="active"
+    >
+      <i class="fas fa-history"></i>
+      <span *ngIf="!isCollapsed">History</span>
+    </a>
+
+    <a class="sidebar-link rounded-md" [routerLink]="['/profile']" routerLinkActive="active">
+      <i class="fas fa-user"></i>
+      <span *ngIf="!isCollapsed">Profile</span>
+    </a>
+  </nav>
+
+  
+  <div class="logout-container">
+    <button class="logout-btn rounded-md" (click)="logout()">
+      <i class="fas fa-sign-out-alt"></i>
+      <span *ngIf="!isCollapsed">Logout</span>
+    </button>
+  </div>
+  <button class="toggle-btn" (click)="toggleSidebar()">
+    {{ isCollapsed ? '>' : '<' }}
+  </button>
+</div>

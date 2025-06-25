@@ -1,0 +1,45 @@
+th {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 26px 0;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+}
+
+tr {
+  display: grid;
+  padding: 16px 24px;
+  align-items: center;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  font-size: 14px;
+}
+
+tr._5-columns {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  gap: 1rem; /* Optional for spacing */
+  background-color: #fff8f2;
+}
+
+tr._4-columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+  gap: 1rem; /* Optional for spacing */
+  background-color: #fff8f2;
+}
+
+tbody tr:hover {
+  box-shadow: 0 3px 8px 0 rgba(118, 135, 154, 0.08),
+    0 1px 1px 0 rgba(118, 135, 154, 0.24);
+}

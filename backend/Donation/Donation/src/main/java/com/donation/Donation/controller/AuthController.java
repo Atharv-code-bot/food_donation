@@ -46,7 +46,7 @@ public class AuthController {
 
             if (newUser.isPresent()) {
                 User user = newUser.get();
-                String token = jwtUtil.generateToken(user.getUsername());
+                String token = jwtUtil.generateToken(user.getUsername(),user.getRole(),user.getUserId());
                 return ResponseEntity.ok(new AuthResponse(token, user.getRole().name(),user.getUserId()));
             }
 
@@ -82,7 +82,7 @@ public class AuthController {
 
             // Generate JWT Token
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String token = jwtUtil.generateToken(userDetails.getUsername());
+            String token = jwtUtil.generateToken(user.getUsername(),user.getRole(),user.getUserId());
 
             // Return token and role
             return ResponseEntity.ok(new AuthResponse(token, user.getRole().name(),user.getUserId()));

@@ -51,7 +51,6 @@ public class UserService {
 
     private final String PLACEHOLDER_IMAGE_URL = "/profile_images/placeholder.png"; // Path to Placeholder
 
-
     @Transactional
     public UserResponse createUser(UserRequest request) {
         Optional<User> existingUser = userRepository.findByUsername(request.getUsername());
@@ -75,20 +74,19 @@ public class UserService {
         user.setAddress(request.getAddress());
         user.setProfileImageUrl(PLACEHOLDER_IMAGE_URL);
 
-
         User savedUser = userRepository.save(user);
 
         try {
 
             String emailSubject = "Welcome to Food Donation Platform";
-            String emailBody = "Hello " + user.getFullname() + ",\n\nThank you for registering! Start donating and claiming food now.";
+            String emailBody = "Hello " + user.getFullname()
+                    + ",\n\nThank you for registering! Start donating and claiming food now.";
             emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
-
-            if (user.getPhone() != null) {
-                String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
-                smsService.sendSms(user.getPhone(), smsMessage);
-            }
+            // if (user.getPhone() != null) {
+            //     String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
+            //     smsService.sendSms(user.getPhone(), smsMessage);
+            // }
 
         } catch (Exception e) {
             logger.error("Failed to send notification: Rolling back user registration", e);
@@ -109,15 +107,14 @@ public class UserService {
         response.setAddress(user.getAddress());
         response.setCreatedAt(user.getCreatedAt());
         response.setUpdatedAt(user.getUpdatedAt());
-        response.setPhotoUrl("/users/images"+user.getProfileImageUrl());
+        response.setPhotoUrl("/users/images" + user.getProfileImageUrl());
         return response;
     }
-
 
     public List<UserResponse> getAllUser() {
         List<User> users = userRepository.findAll();
 
-        List<UserResponse> userResponses =users
+        List<UserResponse> userResponses = users
                 .stream()
                 .map(this::mapToUserResponse)
                 .collect(Collectors.toList());
@@ -128,7 +125,6 @@ public class UserService {
     public UserResponse getUserById(int id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
 
         return mapToUserResponse(user);
     }
@@ -141,12 +137,18 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not logged in");
         }
 
-
-
-        // Update user fields
-        user.setFullname(request.getFullname());
-        user.setPhone(request.getPhone());
-        user.setAddress(request.getAddress());
+        if (request != null) {
+            if (request.getFullname() != null)
+                user.setFullname(request.getFullname());
+            if (request.getPhone() != null)
+                user.setPhone(request.getPhone());
+            if (request.getAddress() != null)
+                user.setAddress(request.getAddress());
+            // if (request.getLatitude() != null)
+            //     user.setDefaultLatitude(request.getLatitude());
+            // if (request.getLongitude() != null)
+            //     user.setDefaultLongitude(request.getLongitude());
+        }
 
         if (imageFile != null && !imageFile.isEmpty()) {
             String oldImageUrl = user.getProfileImageUrl();
@@ -162,11 +164,8 @@ public class UserService {
 
         userRepository.save(user); // Ensure user is saved
 
-
         return mapToUserResponse(user);
     }
-
-
 
     @Transactional
     public void deleteUser() {
@@ -182,7 +181,8 @@ public class UserService {
             }
         } else if (user.getRole() == Role.ROLE_NGO) {
             if (donationRepository.existsByClaimedByNgoAndStatus(user, Status.CLAIMED)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot delete NGO with uncollected donations");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Cannot delete NGO with uncollected donations");
             }
         }
 
@@ -205,14 +205,11 @@ public class UserService {
         userRepository.deleteById(user.getUserId());
     }
 
-
-
     public UserResponse getCurrentUser() {
-        User currentUser=authUtil.getLoggedInUser();
-        if(currentUser!=null) {
+        User currentUser = authUtil.getLoggedInUser();
+        if (currentUser != null) {
             return mapToUserResponse(currentUser);
-        }
-        else{
+        } else {
             return null;
         }
     }
@@ -237,14 +234,14 @@ public class UserService {
         try {
 
             String emailSubject = "Password Changed Successfully";
-            String emailBody = "Hello " + user.getFullname() + ",\n\nYour password has been changed successfully. If you did not make this change, please contact support immediately.";
+            String emailBody = "Hello " + user.getFullname()
+                    + ",\n\nYour password has been changed successfully. If you did not make this change, please contact support immediately.";
             emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
-
-            if (user.getPhone() != null) {
-                String smsMessage = "Your password has been changed successfully. If this wasn't you, contact support immediately.";
-                smsService.sendSms(user.getPhone(), smsMessage);
-            }
+            // if (user.getPhone() != null) {
+            //     String smsMessage = "Your password has been changed successfully. If this wasn't you, contact support immediately.";
+            //     smsService.sendSms(user.getPhone(), smsMessage);
+            // }
 
         } catch (Exception e) {
             logger.error("Failed to send notification: Password change will not be committed", e);
@@ -253,7 +250,6 @@ public class UserService {
 
         return ResponseEntity.ok("Password changed successfully!");
     }
-
 
     @Transactional
     public UserResponse updateOAuth2User(Auth2UpdateRequest request) {
@@ -287,14 +283,14 @@ public class UserService {
         try {
 
             String emailSubject = "Welcome to Food Donation Platform";
-            String emailBody = "Hello " + user.getFullname() + ",\n\nThank you for registering! Start donating and claiming food now.";
+            String emailBody = "Hello " + user.getFullname()
+                    + ",\n\nThank you for registering! Start donating and claiming food now.";
             emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
-
-            if (user.getPhone() != null) {
-                String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
-                smsService.sendSms(user.getPhone(), smsMessage);
-            }
+            // if (user.getPhone() != null) {
+            //     String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
+            //     smsService.sendSms(user.getPhone(), smsMessage);
+            // }
 
         } catch (Exception e) {
             logger.error("Failed to send notification: Rolling back user registration", e);
@@ -304,26 +300,23 @@ public class UserService {
         return mapToUserResponse(updatedUser);
     }
 
+    public ResponseEntity<?> setPassword(SetPasswordRequest request) {
+        User user = authUtil.getLoggedInUser(); // Get logged-in user directly
 
-        public ResponseEntity<?> setPassword(SetPasswordRequest request) {
-            User user = authUtil.getLoggedInUser(); // Get logged-in user directly
-
-            if (user == null) {
-                return ResponseEntity.badRequest().body("User is not authenticated.");
-            }
-
-            // Ensure the user signed up using OAuth2 (Google)
-            if (user.getProvider() != AuthProvider.GOOGLE) {
-                return ResponseEntity.badRequest().body("You are not an OAuth2 user.");
-            }
-
-            // Set the new password
-            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-            userRepository.save(user);
-
-
-
-            return ResponseEntity.ok("Password set successfully. You can now log in with your email and password.");
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User is not authenticated.");
         }
+
+        // Ensure the user signed up using OAuth2 (Google)
+        if (user.getProvider() != AuthProvider.GOOGLE) {
+            return ResponseEntity.badRequest().body("You are not an OAuth2 user.");
+        }
+
+        // Set the new password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Password set successfully. You can now log in with your email and password.");
+    }
 
 }

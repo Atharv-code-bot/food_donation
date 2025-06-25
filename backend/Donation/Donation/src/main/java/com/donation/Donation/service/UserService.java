@@ -83,10 +83,18 @@ public class UserService {
                     + ",\n\nThank you for registering! Start donating and claiming food now.";
             emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
+<<<<<<< HEAD
             // if (user.getPhone() != null) {
             //     String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
             //     smsService.sendSms(user.getPhone(), smsMessage);
             // }
+=======
+
+//            if (user.getPhone() != null) {
+//                String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
+//                smsService.sendSms(user.getPhone(), smsMessage);
+//            }
+>>>>>>> 55c91daa4a208e64edf90da2125cc5913fc367d6
 
         } catch (Exception e) {
             logger.error("Failed to send notification: Rolling back user registration", e);
@@ -238,10 +246,18 @@ public class UserService {
                     + ",\n\nYour password has been changed successfully. If you did not make this change, please contact support immediately.";
             emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
+<<<<<<< HEAD
             // if (user.getPhone() != null) {
             //     String smsMessage = "Your password has been changed successfully. If this wasn't you, contact support immediately.";
             //     smsService.sendSms(user.getPhone(), smsMessage);
             // }
+=======
+
+//            if (user.getPhone() != null) {
+//                String smsMessage = "Your password has been changed successfully. If this wasn't you, contact support immediately.";
+//                smsService.sendSms(user.getPhone(), smsMessage);
+//            }
+>>>>>>> 55c91daa4a208e64edf90da2125cc5913fc367d6
 
         } catch (Exception e) {
             logger.error("Failed to send notification: Password change will not be committed", e);
@@ -287,10 +303,18 @@ public class UserService {
                     + ",\n\nThank you for registering! Start donating and claiming food now.";
             emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
+<<<<<<< HEAD
             // if (user.getPhone() != null) {
             //     String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
             //     smsService.sendSms(user.getPhone(), smsMessage);
             // }
+=======
+
+//            if (user.getPhone() != null) {
+//                String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
+//                smsService.sendSms(user.getPhone(), smsMessage);
+//            }
+>>>>>>> 55c91daa4a208e64edf90da2125cc5913fc367d6
 
         } catch (Exception e) {
             logger.error("Failed to send notification: Rolling back user registration", e);

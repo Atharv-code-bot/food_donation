@@ -19,8 +19,13 @@ public class CorsConfig {
         // ✅ Allow credentials
         config.setAllowCredentials(true);
 
+<<<<<<< HEAD
         // ✅ Allow frontend URLs
         config.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost:5500", "http://127.0.0.1:5500"));
+=======
+        // ✅ Use allowedOriginPatterns instead of allowedOrigins
+        config.setAllowedOriginPatterns(List.of("*")); // ✅ Safe with credentials
+>>>>>>> 55c91daa4a208e64edf90da2125cc5913fc367d6
 
         // ✅ Allow all HTTP methods
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

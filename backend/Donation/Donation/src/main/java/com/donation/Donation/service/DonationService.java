@@ -4,10 +4,7 @@ import com.donation.Donation.config.AuthUtil;
 import com.donation.Donation.dto.DonationEventDTO;
 import com.donation.Donation.dto.DonationRequest;
 import com.donation.Donation.dto.DonationResponse;
-import com.donation.Donation.model.Donations;
-import com.donation.Donation.model.Otp;
-import com.donation.Donation.model.Status;
-import com.donation.Donation.model.User;
+import com.donation.Donation.model.*;
 import com.donation.Donation.repository.DonationRepository;
 import com.donation.Donation.repository.OtpRepository;
 import com.donation.Donation.repository.UserRepository;
@@ -15,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +78,7 @@ public class DonationService {
 
 
     @Transactional
-    public DonationResponse createDonation(DonationRequest request, MultipartFile image) {
+    public DonationResponse createDonation(DonationRequest request, MultipartFile image) throws BadRequestException {
 
         User user=authUtil.getLoggedInUser();
         if(user==null){
@@ -97,6 +95,13 @@ public class DonationService {
         donation.setAvailabilityEnd(request.getAvailabilityEnd());
         donation.setLatitude(request.getLatitude());
         donation.setLongitude(request.getLongitude());
+        try {
+            QuantityUnit unit = QuantityUnit.valueOf(request.getQuantityUnit());
+            donation.setQuantityUnit(unit);
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Invalid quantity unit: " + request.getQuantityUnit());
+        }
+
         // Handle image upload separately
         if (image != null && !image.isEmpty()) {
             String fileName = fileStorageService.storeFile(image);
@@ -168,6 +173,11 @@ public class DonationService {
         response.setNgoName(ngoName);
         response.setLatitude(donation.getLatitude());
         response.setLongitude(donation.getLongitude());
+
+        QuantityUnit unit = donation.getQuantityUnit();
+        response.setQuantityUnit(unit.name());               // e.g. "KILOGRAMS"
+        response.setQuantityUnitLabel(unit.getAbbreviation());  // e.g. "kgs"
+
         return response;
     }
 
@@ -539,7 +549,7 @@ public class DonationService {
 
 
 
-    public DonationResponse updateDonation(DonationRequest request, MultipartFile image, int id) {
+    public DonationResponse updateDonation(DonationRequest request, MultipartFile image, int id) throws BadRequestException {
         Donations donation = donationRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Donation not found"));
 
@@ -549,6 +559,14 @@ public class DonationService {
         donation.setPickupLocation(request.getPickupLocation());
         donation.setAvailabilityStart(request.getAvailabilityStart());
         donation.setAvailabilityEnd(request.getAvailabilityEnd());
+        donation.setLatitude(request.getLatitude());
+        donation.setLongitude(request.getLongitude());
+        try {
+            QuantityUnit unit = QuantityUnit.valueOf(request.getQuantityUnit());
+            donation.setQuantityUnit(unit);
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Invalid quantity unit: " + request.getQuantityUnit());
+        }
 
         if (image != null && !image.isEmpty()) {
             if (donation.getPhotoUrl() != null) {

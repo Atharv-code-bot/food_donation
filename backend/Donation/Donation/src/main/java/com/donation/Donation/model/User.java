@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -66,6 +68,11 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_firebase_tokens", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "token")
+    private Set<String> firebaseTokens = new HashSet<>();
 
 
 

@@ -16,6 +16,16 @@ public class DonationRequest {
     private Double latitude;   // ➕ Latitude
     private Double longitude;  // ➕ Longitude
 
+    private String quantityUnit;
+
+    public String getQuantityUnit() {
+        return quantityUnit;
+    }
+
+    public void setQuantityUnit(String quantityUnit) {
+        this.quantityUnit = quantityUnit;
+    }
+
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate bestBeforeDate;

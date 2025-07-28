@@ -8,6 +8,6 @@ public class Auth2UpdateRequest {
     private Role role;
     private String phone;
     private String address;
-    private Double latitude;
-    private Double longitude;
+    // private Double latitude;
+    // private Double longitude;
 }

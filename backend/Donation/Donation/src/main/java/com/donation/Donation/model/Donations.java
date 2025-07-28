@@ -32,6 +32,8 @@ public class Donations {
     @Column(nullable = false)
     private int quantity;
 
+    // @Column(nullable = false)
+    // private String unit;
 
     @Column(name = "best_before_date", nullable = false)
     private LocalDate bestBeforeDate;

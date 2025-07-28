@@ -86,8 +86,9 @@ public class UserService {
             emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
             // if (user.getPhone() != null) {
-            //     String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
-            //     smsService.sendSms(user.getPhone(), smsMessage);
+            // String smsMessage = "Welcome, " + user.getFullname() + "! Your account has
+            // been successfully created.";
+            // smsService.sendSms(user.getPhone(), smsMessage);
             // }
 
         } catch (Exception e) {
@@ -109,10 +110,9 @@ public class UserService {
         response.setAddress(user.getAddress());
         response.setCreatedAt(user.getCreatedAt());
         response.setUpdatedAt(user.getUpdatedAt());
-        response.setPhotoUrl("/users/images"+user.getProfileImageUrl());
+        response.setPhotoUrl("/users/images" + user.getProfileImageUrl());
         response.setLatitude(user.getDefaultLatitude());
         response.setLongitude(user.getDefaultLongitude());
-
 
         return response;
     }
@@ -135,22 +135,37 @@ public class UserService {
         return mapToUserResponse(user);
     }
 
+    // UserService.java (Backend)
+
     @Transactional
     public UserResponse updateUser(UserRequest request, MultipartFile imageFile) {
-        User user = authUtil.getLoggedInUser();
+        User user = authUtil.getLoggedInUser(); // Get the logged-in user
 
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not logged in");
         }
 
-
-
-        // Update user fields
-        user.setFullname(request.getFullname());
-        user.setPhone(request.getPhone());
-        user.setAddress(request.getAddress());
-        user.setDefaultLatitude(request.getLatitude());
-        user.setDefaultLongitude(request.getLongitude());
+        // ✅ Robustly update user fields: only update if 'request' is not null AND the
+        // field value is provided
+        if (request != null) {
+            if (request.getFullname() != null) {
+                user.setFullname(request.getFullname());
+            }
+            if (request.getPhone() != null) {
+                user.setPhone(request.getPhone());
+            }
+            if (request.getAddress() != null) {
+                user.setAddress(request.getAddress());
+            }
+            // Assuming latitude and longitude are also in UserRequest
+            if (request.getLatitude() != null) { // Assuming getLatitude returns String or Double
+                user.setDefaultLatitude(request.getLatitude());
+            }
+            if (request.getLongitude() != null) { // Assuming getLongitude returns String or Double
+                user.setDefaultLongitude(request.getLongitude());
+            }
+            // ... handle other fields from UserRequest if they exist
+        }
 
         if (imageFile != null && !imageFile.isEmpty()) {
             String oldImageUrl = user.getProfileImageUrl();
@@ -158,14 +173,14 @@ public class UserService {
 
             if (newImageUrl != null) {
                 if (oldImageUrl != null && !oldImageUrl.equals(PLACEHOLDER_IMAGE_URL)) {
+                    // Ensure the delete image path is correct (e.g., relative to base path)
                     imageStorageService.deleteImage(oldImageUrl);
                 }
                 user.setProfileImageUrl(newImageUrl);
             }
         }
 
-        userRepository.save(user); // Ensure user is saved
-
+        userRepository.save(user);
         return mapToUserResponse(user);
     }
 
@@ -241,8 +256,9 @@ public class UserService {
             emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
             // if (user.getPhone() != null) {
-            //     String smsMessage = "Your password has been changed successfully. If this wasn't you, contact support immediately.";
-            //     smsService.sendSms(user.getPhone(), smsMessage);
+            // String smsMessage = "Your password has been changed successfully. If this
+            // wasn't you, contact support immediately.";
+            // smsService.sendSms(user.getPhone(), smsMessage);
             // }
 
         } catch (Exception e) {
@@ -274,8 +290,8 @@ public class UserService {
         // Update details only for OAuth2 users
         user.setPhone(request.getPhone());
         user.setAddress(request.getAddress());
-        user.setDefaultLatitude(request.getLatitude());
-        user.setDefaultLongitude(request.getLongitude());
+        // user.setDefaultLatitude(request.getLatitude());
+        // user.setDefaultLongitude(request.getLongitude());
 
         // Role update (optional, ensure security rules before allowing this)
         if (request.getRole() != null) {
@@ -289,11 +305,12 @@ public class UserService {
             String emailSubject = "Welcome to Food Donation Platform";
             String emailBody = "Hello " + user.getFullname()
                     + ",\n\nThank you for registering! Start donating and claiming food now.";
-            emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
+            // emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
             // if (user.getPhone() != null) {
-            //     String smsMessage = "Welcome, " + user.getFullname() + "! Your account has been successfully created.";
-            //     smsService.sendSms(user.getPhone(), smsMessage);
+            // String smsMessage = "Welcome, " + user.getFullname() + "! Your account has
+            // been successfully created.";
+            // smsService.sendSms(user.getPhone(), smsMessage);
             // }
 
         } catch (Exception e) {

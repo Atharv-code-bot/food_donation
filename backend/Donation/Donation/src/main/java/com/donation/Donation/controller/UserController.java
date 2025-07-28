@@ -67,6 +67,8 @@ public class UserController {
         }
     }
 
+    // UserController.java (or similar)
+
     @PutMapping("/update")
     public ResponseEntity<?> updateUser(
             @RequestParam(value = "userRequest", required = false) String userRequestJson,
@@ -75,13 +77,19 @@ public class UserController {
             UserRequest request = null;
             if (userRequestJson != null && !userRequestJson.isBlank()) {
                 ObjectMapper objectMapper = new ObjectMapper();
+                // This is where the JSON string is parsed into your UserRequest DTO
                 request = objectMapper.readValue(userRequestJson, UserRequest.class);
             }
 
-            UserResponse response = userService.updateUser(request, imageFile);
+            // Call your userService method, passing the potentially null request object.
+            // The service layer should handle null checks for individual fields.
+            UserResponse response = userService.updateUser(request, imageFile); // Pass 'request' as is
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            // Log the exception for debugging on the server side
+            e.printStackTrace();
+            // Return a more descriptive error message to the frontend if possible
+            return ResponseEntity.badRequest().body("Error updating user: " + e.getMessage());
         }
     }
 

@@ -1,190 +1,221 @@
-<header>
-  <app-header />
-</header>
-<div class="profile-container">
-  <app-sidebar></app-sidebar>
+<div class="page">
+  <header>
+    <app-header />
+  </header>
+  <div class="profile-container bg-green-50">
+    <app-sidebar></app-sidebar>
+    <p-toast></p-toast>
+      <p-confirmDialog></p-confirmDialog>
 
-  <div class="profile-content">
-    <h2 class="text-xl font-semibold mb-4">Account Settings</h2>
-
-    <!-- Avatar Section -->
-    <div class="avatar-section">
-      <div>
-        <p class="text-sm text-gray-600">Your Avatar</p>
-        <img [src]="profileImageUrl" class="avatar" alt="Your Avatar" />
-      </div>
-      <div>
-        <input
-          type="file"
-          (change)="onAvatarSelected($event)"
-          hidden
-          #avatarInput
-        />
-        <button
-          type="button"
-          (click)="avatarInput.click()"
-          class="btn btn--primary rounded-full"
-        >
-          Upload New Avatar
-        </button>
-      </div>
-    </div>
-
-    <!-- Profile Edit Form -->
-    <!-- User Info -->
-    <div class="card" *ngIf="profileForm">
-      <h3 class="mb-2.5 block text-base font-medium text-dark dark:text-white">
-        Profile Information
-      </h3>
-      <form [formGroup]="profileForm">
-        <div class="info-grid">
-          <!-- <label
-            >Username:
-            <p>{{ user?.username }}</p></label
-          >
-          <label
-            >Email:
-            <p>{{ user?.email }}</p></label
-          >
-          <label
-            >Full Name:
-            <input formControlName="fullname" />
-          </label>
-          <label
-            >Phone:
-            <input formControlName="phone" />
-          </label>
-          <label
-            >Address:
-            <input formControlName="address" />
-          </label> -->
-          <div>  
-            <label class="form-label m-0">
-              Username:
-            </label>
-            <p class="mb-1">{{ user?.username }}</p>
-          </div>
-          <div>
-            <label class="form-label">
-              Email:
-            </label>
-            <p class="mb-1">{{ user?.email }}</p>
-          </div>
-
-          <div>
-            <label for="default-input" class="form-label"> Full Name </label>
-            <input
-              type="text"
-              name="default-input"
-              placeholder="Enter you full name"
-              class="form-input"
-              formControlName="fullname"
-            />
-          </div>
-          <div>
-            <label for="default-input" class="form-label"> Phone Number </label>
-            <input
-              type="text"
-              name="default-input"
-              placeholder="Enter your phone number"
-              class="form-input"
-              formControlName="phone"
-            />
-          </div>
-          <div>
-            <label for="default-input" class="form-label"> Address </label>
-            <input
-              type="text"
-              name="default-input"
-              placeholder="Enter your address"
-              class="form-input"
-              formControlName="address"
-            />
-          </div>
-        </div>
-
-        <div class="button-group">
-          <button
-            *ngIf="!isEditing"
-            type="button"
-            (click)="enableEditing()"
-            class="btn btn--primary rounded-full"
-          >
-            Edit details
-          </button>
-          <div *ngIf="isEditing" style="display: flex; gap: 10px">
-            <button
-              type="button"
-              (click)="cancelEdit()"
-              class="btn btn--info rounded-full"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              (click)="saveChanges()"
-              class="btn btn--primary rounded-full"
-            >
-              Save Changes
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
-
-    <!-- Change Password Form -->
-    <div class="card" *ngIf="passwordForm" id="password-container">
-      <h4>Change Password</h4>
-      <form
-        [formGroup]="passwordForm"
-        (ngSubmit)="updatePassword()"
-        class="password-form"
+      <p-dialog
+        header="Edit Your Profile"
+        [(visible)]="showEditModal"
+        [modal]="true"
+        [style]="{ width: '90vw', maxWidth: '600px' }"
+        [draggable]="false"
+        [resizable]="false"
+        styleClass="p-dialog-rounded"
       >
-        <div>
-          <label for="currentPassword" class="form-label">
-            Current Password
-          </label>
-          <input
-            type="password"
-            formControlName="currentPassword"
-            name="currentPassword"
-            class="form-input"
-          />
+        <div class="p-fluid">
+          <form *ngIf="profileForm" [formGroup]="profileForm" class="space-y-5">
+            <div>
+              <label class="block text-sm font-semibold text-green-800 mb-2">Full Name</label>
+              <input
+                type="text"
+                pInputText
+                formControlName="fullname"
+                class="w-full p-3 border border-green-200 rounded-lg focus:ring-green-400 focus:border-green-400 transition duration-150 ease-in-out"
+                placeholder="Enter your full name"
+              />
+              <small
+                *ngIf="profileForm.get('fullname')?.invalid && profileForm.get('fullname')?.touched"
+                class="p-error block mt-1"
+              >
+                Full Name is required.
+              </small>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-green-800 mb-2">Phone Number</label>
+              <input
+                type="text"
+                pInputText
+                formControlName="phone"
+                class="w-full p-3 border border-green-200 rounded-lg focus:ring-green-400 focus:border-green-400 transition duration-150 ease-in-out"
+                placeholder="Enter your phone number"
+              />
+              <small
+                *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched"
+                class="p-error block mt-1"
+              >
+                Phone Number is required.
+              </small>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-green-800 mb-2">Address</label>
+              <textarea
+                pInputTextarea
+                rows="3"
+                formControlName="address"
+                class="w-full p-3 border border-green-200 rounded-lg focus:ring-green-400 focus:border-green-400 transition duration-150 ease-in-out resize-none"
+                placeholder="Enter your address"
+              ></textarea>
+              <small
+                *ngIf="profileForm.get('address')?.invalid && profileForm.get('address')?.touched"
+                class="p-error block mt-1"
+              >
+                Address is required.
+              </small>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-6 border-t border-green-100 mt-6">
+              <p-button
+                label="Cancel"
+                icon="pi pi-times"
+                styleClass="p-button-outlined p-button-danger"
+                (click)="cancelEdit()"
+              ></p-button>
+              <p-button
+                label="Save Changes"
+                icon="pi pi-check"
+                styleClass="p-button-success"
+                (click)="saveChanges()"
+                [disabled]="profileForm.invalid"
+              ></p-button>
+            </div>
+          </form>
         </div>
-        <div>
-          <label for="newPassword" class="form-label"> New Password </label>
-          <input
-            type="password"
-            formControlName="newPassword"
-            name="newPassword"
-            class="form-input"
-          />
+      </p-dialog>
+
+      <div class="profile-content max-w-9xl mx-auto space-y-8">
+        <h2 class="text-3xl font-bold mb-6 text-green-900 text-center">Your Profile</h2>
+
+        <div class="bg-white rounded-xl shadow-lg border border-green-100 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="flex flex-col sm:flex-row items-center gap-4">
+            <img
+              [src]="profileImageUrl"
+              class="w-24 h-24 rounded-full object-cover border-4 border-green-300 shadow-md"
+              alt="Your Avatar"
+            />
+            <div class="text-center sm:text-left">
+              <p class="text-md text-gray-700 font-semibold mb-1">Welcome,</p>
+              <h3 class="text-xl font-bold text-green-800">{{ user?.username }}</h3>
+              <p class="text-sm text-gray-500">{{ user?.role?.replace('ROLE_', '') || 'User' }}</p>
+            </div>
+          </div>
+          <div>
+            <input type="file" (change)="onAvatarSelected($event)" hidden #avatarInput />
+            <p-button
+              label="Upload New Avatar"
+              icon="pi pi-upload"
+              styleClass="p-button-outlined p-button-success"
+              (click)="avatarInput.click()"
+            ></p-button>
+          </div>
         </div>
-        <div>
-          <label for="confirmPassword" class="form-label">
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            formControlName="confirmPassword"
-            placeholder="Confirm New Password"
-            (blur)="checkPasswordMatch()"
-            class="form-input"
-          />
+
+        <div class="bg-white rounded-xl shadow-lg border border-green-100 p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-green-800">Basic Information</h3>
+            <p-button
+              label="Edit Details"
+              icon="pi pi-pencil"
+              styleClass="p-button-outlined p-button-secondary"
+              (click)="openEditModal()"
+            ></p-button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8">
+            <div>
+              <label class="block text-sm font-semibold text-gray-600 mb-1">Username</label>
+              <div class="profile-value">
+                {{ user?.username || 'Not provided' }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-600 mb-1">Email Address</label>
+              <div class="profile-value">
+                {{ user?.email || 'Not provided' }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-600 mb-1">Full Name</label>
+              <div class="profile-value">
+                {{ user?.fullname || 'Not provided' }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-600 mb-1">Phone Number</label>
+              <div class="profile-value">
+                {{ user?.phone || 'Not provided' }}
+              </div>
+            </div>
+
+            <div class="md:col-span-2 lg:col-span-3">
+              <label class="block text-sm font-semibold text-gray-600 mb-1">Address</label>
+              <div class="profile-value">
+                {{ user?.address || 'Not provided' }}
+              </div>
+            </div>
+          </div>
         </div>
-        @if (passwordMismatch) {
-        <p class="error-text">Passwords do not match.</p>
-        }
-        <button
-          type="submit"
-          [disabled]="
-            passwordForm.invalid || passwordMismatch || isUpdatingPassword
-          "
-          class="btn btn--primary rounded-full"
-        >
-          {{ isUpdatingPassword ? "Updating..." : "Update Password" }}
-        </button>
-      </form>
-    </div>
+
+        <div class="bg-white rounded-xl shadow-lg border border-green-100 p-6">
+          <h4 class="text-xl font-bold mb-6 text-green-800">Change Password</h4>
+          <form
+          *ngIf="passwordForm"
+            [formGroup]="passwordForm"
+            (ngSubmit)="updatePassword()"
+            class="space-y-5"
+          >
+            <input type="text" name="username" autocomplete="username" class="hidden" />
+
+            <div>
+              <label class="block text-sm font-semibold text-green-800 mb-2">Current Password</label>
+              <input
+                type="password"
+                pInputText
+                formControlName="currentPassword"
+                autocomplete="current-password"
+                class="w-full p-3 border border-green-200 rounded-lg focus:ring-green-400 focus:border-green-400 transition duration-150 ease-in-out"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-green-800 mb-2">New Password</label>
+              <input
+                type="password"
+                pInputText
+                formControlName="newPassword"
+                autocomplete="new-password"
+                class="w-full p-3 border border-green-200 rounded-lg focus:ring-green-400 focus:border-green-400 transition duration-150 ease-in-out"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-green-800 mb-2">Confirm Password</label>
+              <input
+                type="password"
+                pInputText
+                formControlName="confirmPassword"
+                autocomplete="new-password"
+                (blur)="checkPasswordMatch()"
+                class="w-full p-3 border border-green-200 rounded-lg focus:ring-green-400 focus:border-green-400 transition duration-150 ease-in-out"
+              />
+              <small *ngIf="passwordMismatch" class="p-error block mt-1">Passwords do not match.</small>
+            </div>
+
+            <p-button
+              type="submit"
+              label="{{ isUpdatingPassword ? 'Updating...' : 'Update Password' }}"
+              icon="pi pi-key"
+              styleClass="p-button-success w-full sm:w-auto"
+              [disabled]="passwordForm.invalid || passwordMismatch || isUpdatingPassword"
+            ></p-button>
+          </form>
+        </div>
+      </div>
   </div>
 </div>

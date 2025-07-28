@@ -1,17 +1,27 @@
+* {
+  box-sizing: border-box;
+}
+
+/* src/app/header/header.component.css */
+
 header {
   display: flex;
-  /* flex-direction: column;
-  align-items: center;
-  gap: 1rem; */
-  /* width: 75%; */
-  /* max-width: 50rem; */
-  /* margin: 0 auto 2rem auto; */
-  /* background: linear-gradient(to bottom, #2c0a4c, #450d80); */
-  /* box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6); */
-  /* text-align: center; */
   justify-content: space-between;
-  height: 70px;
-  padding: 1rem;
+  align-items: center; /* Vertically align items in the center */
+  height: 70px; /* Fixed height for the header */
+  padding: 0 1.5rem; /* px-6 from HTML; added to CSS for clarity if needed */
+  /* bg-white, shadow-sm, border-b, border-green-100 are from HTML */
+}
+
+/* Override PrimeNG default OverlayPanel padding */
+.p-overlaypanel .p-overlaypanel-content {
+  padding: 0 !important;
+}
+
+/* Optional: Fine-tune avatar online indicator color if needed */
+.bg-\[\#219653\] {
+  /* Tailwind's generated class for bg-[#219653] */
+  background-color: #219653; /* Ensure this is the desired green */
 }
 
 img {
@@ -29,4 +39,13 @@ p {
   margin: 0;
   font-size: 0.8rem;
   text-wrap: balance;
+}
+
+.p-overlaypanel {
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.p-overlaypanel .p-overlaypanel-content {
+  padding: 0 !important;
 }

@@ -12,18 +12,34 @@ import {
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, Location } from '@angular/common';
 import { catchError, of, retry, Subscription } from 'rxjs';
-
+import { ToastModule } from 'primeng/toast';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ButtonModule } from 'primeng/button';
 
 import { donation } from '../donation.model';
 import {
   DashboardService,
   ImageLoadState,
 } from '../../services/dashboard.service';
+import { MessageService } from 'primeng/api';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { LucideAngularModule } from 'lucide-angular';
+import { Router } from '@angular/router';
+import { Dialog } from 'primeng/dialog';
 
 @Component({
   selector: 'app-donation-form',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    ToastModule,
+    FileUploadModule,
+    ButtonModule,
+    ConfirmDialog,
+    LucideAngularModule,
+    Dialog,
+  ],
   templateUrl: './donation-form.component.html',
   styleUrls: ['./donation-form.component.css'],
   encapsulation: ViewEncapsulation.None, // ✅ Important
@@ -34,8 +50,13 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
   @Input() donation: donation | null = null;
   @Output() submitForm = new EventEmitter<void>();
   @Input() isSubmitting = false;
+  @Input() showSuccessDialog: boolean = false;
 
-  constructor(private location: Location) {}
+  constructor(
+    private location: Location,
+    private messageService: MessageService,
+    private router: Router,
+  ) {}
 
   goBack(): void {
     this.location.back();
@@ -58,17 +79,28 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
     if (this.imageSubscription) {
       this.imageSubscription.unsubscribe();
     }
-    
   }
 
   private loadDonationImage() {
-    if (!this.donation?.photoUrl || this.imageState === 'loaded') return;
+    const photoUrl = this.donation?.photoUrl;
 
-    console.log(this.donation.photoUrl);
+    if (!photoUrl || photoUrl.includes('/null')) {
+      this.imageState = 'error';
+      this.imageUrl = null;
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'No Image',
+        detail: 'No image available for this donation.',
+      });
+      return;
+    }
+
+    if (this.imageState === 'loaded') return;
+
     this.imageSubscription = this.donationImageService
-      .loadImage(this.donation.photoUrl)
+      .loadImage(photoUrl)
       .pipe(
-        retry(1), // retry once
+        retry(1),
         catchError((err) =>
           of({ state: 'error' as const, error: 'Image load failed' })
         )
@@ -76,6 +108,14 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
       .subscribe((imageState: ImageLoadState) => {
         this.imageState = imageState.state;
         this.imageUrl = imageState.url || null;
+
+        if (imageState.state === 'error') {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Image Load Failed',
+            detail: imageState.error || 'Could not load donation image.',
+          });
+        }
       });
   }
 
@@ -83,9 +123,10 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
     this.submitForm.emit();
   }
 
-  onImageSelected(event: Event) {
-    const file = (event.target as HTMLInputElement)?.files?.[0];
+  onImageSelected(event: any): void {
+    const file: File = event.files?.[0];
     console.log('Selected file:', file);
+
     if (file) {
       this.form.get('image')?.setValue(file);
 
@@ -100,9 +141,21 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
   }
 
   retryLoadImage() {
-    if (this.donation?.photoUrl) {
-      this.donationImageService.clearImageFromCache(this.donation.photoUrl);
+    const photoUrl = this.donation?.photoUrl;
+
+    if (photoUrl) {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Retrying',
+        detail: 'Trying to reload image...',
+      });
+
+      this.donationImageService.clearImageFromCache(photoUrl);
       this.loadDonationImage();
     }
+  }
+  navigateToDashboard() {
+    this.showSuccessDialog = false;
+    this.router.navigate(['/dashboard']);
   }
 }

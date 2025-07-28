@@ -39,9 +39,12 @@ public class Donations {
     @Column(name = "pickup_location", columnDefinition = "TEXT", nullable = false)
     private String pickupLocation;
 
-   // ✅ GPS Coordinates (Requires Custom Handling)
-//    @Column(name = "gps_coordinates", columnDefinition = "POINT")
-//    private String gpsCoordinates; // You need a custom converter if using MySQL Spatial Data
+    @Column(name = "latitude", nullable = true)
+    private Double latitude;
+
+    @Column(name = "longitude", nullable = true)
+    private Double longitude;
+
 
     @Column(name = "availability_start", nullable = false)
     private LocalDateTime availabilityStart;
@@ -115,6 +118,22 @@ public class Donations {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     public LocalDate getBestBeforeDate() {

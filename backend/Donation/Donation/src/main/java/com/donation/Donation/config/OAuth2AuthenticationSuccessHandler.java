@@ -52,6 +52,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:4200/auth/oauth2/redirect")
                 .queryParam("token", token)
                 .queryParam("role", user.getRole().name())
+                .queryParam("id", user.getUserId())
+
                 .build().toUriString();
 
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);

@@ -73,6 +73,8 @@ public class UserService {
         user.setProvider(AuthProvider.LOCAL);
         user.setAddress(request.getAddress());
         user.setProfileImageUrl(PLACEHOLDER_IMAGE_URL);
+        user.setDefaultLatitude(request.getLatitude());
+        user.setDefaultLongitude(request.getLongitude());
 
         User savedUser = userRepository.save(user);
 
@@ -107,7 +109,11 @@ public class UserService {
         response.setAddress(user.getAddress());
         response.setCreatedAt(user.getCreatedAt());
         response.setUpdatedAt(user.getUpdatedAt());
-        response.setPhotoUrl("/users/images" + user.getProfileImageUrl());
+        response.setPhotoUrl("/users/images"+user.getProfileImageUrl());
+        response.setLatitude(user.getDefaultLatitude());
+        response.setLongitude(user.getDefaultLongitude());
+
+
         return response;
     }
 
@@ -137,18 +143,14 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not logged in");
         }
 
-        if (request != null) {
-            if (request.getFullname() != null)
-                user.setFullname(request.getFullname());
-            if (request.getPhone() != null)
-                user.setPhone(request.getPhone());
-            if (request.getAddress() != null)
-                user.setAddress(request.getAddress());
-            // if (request.getLatitude() != null)
-            //     user.setDefaultLatitude(request.getLatitude());
-            // if (request.getLongitude() != null)
-            //     user.setDefaultLongitude(request.getLongitude());
-        }
+
+
+        // Update user fields
+        user.setFullname(request.getFullname());
+        user.setPhone(request.getPhone());
+        user.setAddress(request.getAddress());
+        user.setDefaultLatitude(request.getLatitude());
+        user.setDefaultLongitude(request.getLongitude());
 
         if (imageFile != null && !imageFile.isEmpty()) {
             String oldImageUrl = user.getProfileImageUrl();
@@ -272,6 +274,8 @@ public class UserService {
         // Update details only for OAuth2 users
         user.setPhone(request.getPhone());
         user.setAddress(request.getAddress());
+        user.setDefaultLatitude(request.getLatitude());
+        user.setDefaultLongitude(request.getLongitude());
 
         // Role update (optional, ensure security rules before allowing this)
         if (request.getRole() != null) {

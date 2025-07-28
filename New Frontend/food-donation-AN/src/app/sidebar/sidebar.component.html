@@ -1,33 +1,134 @@
-<div class="sidebar" [class.collapsed]="isCollapsed">
-  <nav>
-    <a class="sidebar-link rounded-md" [routerLink]="['/dashboard']" routerLinkActive="active">
-      <i class="fas fa-home"></i>
-      <span *ngIf="!isCollapsed">Dashboard</span>
+<div
+  class="sidebar h-full bg-green-100 text-green-900 flex flex-col transition-all duration-300 ease-in-out border-r border-green-200 shadow-md"
+  [class.collapsed]="isCollapsed"
+>
+  <nav class="flex flex-col gap-6 p-4 flex-grow">
+    <a
+      class="sidebar-link flex items-center gap-3 p-3 rounded-lg transition-colors duration-200 ease-in-out"
+      [routerLink]="['/dashboard']"
+      [routerLinkActiveOptions]="{
+        paths: 'exact',
+        queryParams: 'ignored',
+        fragment: 'ignored',
+        matrixParams: 'ignored'
+      }"
+      [ngClass]="{
+        'active-sidebar-link': isDashboardLinkActive(),
+        'active-sidebar-link-donor':
+          isDashboardLinkActive() && role === 'ROLE_DONOR',
+        'active-sidebar-link-ngo':
+          isDashboardLinkActive() && role === 'ROLE_NGO',
+        'active-sidebar-link-default':
+          isDashboardLinkActive() &&
+          (!role || role === 'ROLE_ADMIN' || role === 'ROLE_OAUTH2_USER'),
+        'text-green-800 hover:bg-green-200': !isDashboardLinkActive()
+      }"
+      routerLinkActive="IGNORE_ME"
+    >
+      <lucide-icon name="home-icon" class="w-6 h-6 flex-shrink-0"></lucide-icon>
+      <span class="flex-grow text-base" *ngIf="!isCollapsed">Dashboard</span>
     </a>
 
-    <a class="sidebar-link rounded-md"
+    <a
+      class="sidebar-link flex items-center gap-3 p-3 rounded-lg transition-colors duration-200 ease-in-out"
       [routerLink]="['/dashboard']"
       [queryParams]="{ status: 'collected' }"
-      routerLinkActive="active"
+      routerLinkActive="active-sidebar-link"
+      [routerLinkActiveOptions]="{
+        queryParams: 'subset',
+        paths: 'exact',
+        fragment: 'ignored',
+        matrixParams: 'ignored'
+      }"
+      [ngClass]="{
+        'active-sidebar-link-donor':
+          isLinkActive('/dashboard', false, { status: 'collected' }) &&
+          role === 'ROLE_DONOR',
+        'active-sidebar-link-ngo':
+          isLinkActive('/dashboard', false, { status: 'collected' }) &&
+          role === 'ROLE_NGO',
+        'text-green-800 hover:bg-green-200': !isLinkActive('/dashboard', true, {
+          queryParams: { status: 'collected' }
+        })
+      }"
     >
-      <i class="fas fa-history"></i>
-      <span *ngIf="!isCollapsed">History</span>
+      <lucide-icon name="history" class="w-6 h-6 flex-shrink-0"></lucide-icon>
+      <span class="flex-grow text-base" *ngIf="!isCollapsed">History</span>
     </a>
 
-    <a class="sidebar-link rounded-md" [routerLink]="['/profile']" routerLinkActive="active">
-      <i class="fas fa-user"></i>
-      <span *ngIf="!isCollapsed">Profile</span>
+    <a
+      class="sidebar-link flex items-center gap-3 p-3 rounded-lg transition-colors duration-200 ease-in-out"
+      [routerLink]="['/profile']"
+      routerLinkActive="active-sidebar-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [ngClass]="{
+        'active-sidebar-link-donor':
+          isLinkActive('/profile', true) && role === 'ROLE_DONOR',
+        'active-sidebar-link-ngo':
+          isLinkActive('/profile', true) && role === 'ROLE_NGO',
+        'active-sidebar-link-default':
+          isLinkActive('/profile', true) &&
+          (!role || role === 'ROLE_ADMIN' || role === 'ROLE_OAUTH2_USER'),
+        'text-green-800 hover:bg-green-200': !isLinkActive('/profile', true)
+      }"
+    >
+      <lucide-icon name="user" class="w-6 h-6 flex-shrink-0"></lucide-icon>
+      <span class="flex-grow text-base" *ngIf="!isCollapsed">Profile</span>
+    </a>
+
+    <a
+      class="sidebar-link flex items-center gap-3 p-3 rounded-lg transition-colors duration-200 ease-in-out"
+      [routerLink]="['/dashboard/create']"
+      routerLinkActive="active-sidebar-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [ngClass]="{
+        'active-sidebar-link-donor':
+          isLinkActive('/dashboard/create', true) && role === 'ROLE_DONOR',
+        'active-sidebar-link-ngo':
+          isLinkActive('/dashboard/create', true) && role === 'ROLE_NGO',
+        'active-sidebar-link-default':
+          isLinkActive('/dashboard/create', true) &&
+          (!role || role === 'ROLE_ADMIN' || role === 'ROLE_OAUTH2_USER'),
+        'text-green-800 hover:bg-green-200': !isLinkActive(
+          '/dashboard/create',
+          true
+        )
+      }"
+      *appHasRole="'ROLE_DONOR'"
+    >
+      <lucide-icon
+        name="plus-circle"
+        class="w-6 h-6 flex-shrink-0"
+      ></lucide-icon>
+      <span class="flex-grow text-base" *ngIf="!isCollapsed"
+        >Make a Donation</span
+      >
     </a>
   </nav>
 
-  
-  <div class="logout-container">
-    <button class="logout-btn rounded-md" (click)="logout()">
-      <i class="fas fa-sign-out-alt"></i>
-      <span *ngIf="!isCollapsed">Logout</span>
+  <div class="mt-auto p-4 pt-0 flex-shrink-0 flex flex-col">
+    <button
+      pButton
+      type="button"
+      (click)="logout()"
+      class="w-full flex items-center justify-center gap-3 p-3 rounded-lg transition-colors duration-200 ease-in-out text-green-800 hover:bg-green-200"
+      [ngClass]="{ 'justify-center': isCollapsed }"
+    >
+      <lucide-icon name="log-out" class="w-6 h-6 flex-shrink-0"></lucide-icon>
+      <span class="" *ngIf="!isCollapsed">Logout</span>
     </button>
   </div>
-  <button class="toggle-btn" (click)="toggleSidebar()">
-    {{ isCollapsed ? '>' : '<' }}
+
+  <button
+    class="toggle-btn bg-green-700 text-white w-full h-10 flex items-center justify-center text-lg font-semibold border-t border-green-600 flex-shrink-0"
+    (click)="toggleSidebar()"
+    [ngClass]="{
+      'rounded-b-lg': !isCollapsed,
+      'rounded-lg': isCollapsed,
+      'sm:rounded-none': !isCollapsed,
+      'sm:rounded-b-lg': !isCollapsed
+    }"
+  >
+    {{ isCollapsed ? "&gt;" : "&lt;" }}
   </button>
 </div>

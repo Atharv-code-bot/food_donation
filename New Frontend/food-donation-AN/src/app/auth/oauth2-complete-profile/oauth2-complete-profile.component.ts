@@ -10,16 +10,21 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { TokenService } from '../../services/token.service';
 import { CommonModule } from '@angular/common';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-complete-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, CommonModule],
+  imports: [ReactiveFormsModule, FormsModule, CommonModule, DropdownModule],
   templateUrl: './oauth2-complete-profile.component.html',
 })
 export class Oauth2CompleteProfileComponent {
   profileForm: FormGroup;
   isSubmitting = false;
+  roles = [
+    { label: 'Donor', value: 'ROLE_DONOR' },
+    { label: 'NGO', value: 'ROLE_NGO' },
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -40,6 +45,7 @@ export class Oauth2CompleteProfileComponent {
     this.isSubmitting = true;
 
     const token = this.tokenService.getToken();
+    console.log(this.profileForm.value);
 
     this.http
       .put<{ token: string; role: string; userId: number }>(

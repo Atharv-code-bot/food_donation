@@ -3,8 +3,11 @@ package com.donation.Donation.controller;
 import com.donation.Donation.dto.DonationRequest;
 import com.donation.Donation.dto.DonationResponse;
 import com.donation.Donation.dto.UserResponse;
+import com.donation.Donation.model.Donations;
+import com.donation.Donation.repository.DonationRepository;
 import com.donation.Donation.service.DonationService;
 import com.donation.Donation.service.FileStorageService;
+import com.donation.Donation.service.OtpService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,6 +28,12 @@ public class DonationController {
 
     @Autowired
     FileStorageService fileStorageService;
+
+    @Autowired
+    DonationRepository donationRepository;
+
+    @Autowired
+    OtpService otpService;
 
     @PostMapping
     public ResponseEntity<?> createDonation(
@@ -123,10 +132,18 @@ public class DonationController {
         }
     }
 
+    @PostMapping("/{id}/send-otp")
+    public ResponseEntity<String> sendOtp(@PathVariable int id) {
+        Donations donation = donationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Donation not found"));
+        otpService.sendOtpToNgo(donation);
+        return ResponseEntity.ok("OTP sent to NGO successfully.");
+    }
+
     @PutMapping("/{id}/complete")
-    public ResponseEntity<?>completeDonation(@PathVariable int id) {
+    public ResponseEntity<?>completeDonation(@PathVariable int id, @RequestParam String otp) {
         try{
-            DonationResponse response = donationService.completeDonation(id);
+            DonationResponse response = donationService.completeDonation(id,otp);
             return ResponseEntity.ok(response);
         }
         catch (Exception e) {

@@ -1,1 +1,334 @@
-<app-header />
+<div class="min-h-screen bg-gradient-to-b from-green-50 to-white">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm border-b border-green-100">
+    <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-2">
+          <lucide-icon name="leaf" class="h-8 w-8 text-green-600"></lucide-icon>
+          <span class="text-2xl font-bold text-green-800">FoodBridge</span>
+        </div>
+        <div class="hidden md:flex items-center space-x-8">
+          <a
+            *ngFor="let it of navItems"
+            [href]="it.anchor"
+            class="text-gray-700 hover:text-green-600 transition-colors"
+          >
+            {{ it.label }}
+          </a>
+          <button
+            class="border border-green-600 text-green-600 hover:bg-green-50 px-4 py-2 rounded-lg transition"
+            [routerLink]="['/auth/signin']"
+          >
+            Login
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="relative py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-8">
+        <h1 class="text-3xl md:text-6xl font-bold text-gray-900 leading-tight">
+          Bridge the Gap Between
+          <span class="text-green-400 block">Food & Need</span>
+        </h1>
+        <p class="text-xl text-gray-600 leading-relaxed">
+          Connect surplus food with those who need it most. Our platform makes
+          food donation simple, efficient, and impactful for both donors and
+          NGOs. lorem
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button
+            class="bg-green-400 hover:bg-green-500 text-white px-8 py-4 rounded-lg flex items-center justify-center gap-2 text-lg transition"
+            [routerLink]="['/dashboard']"
+          >
+            <lucide-icon name="hand-heart" class="h-5 w-5"></lucide-icon>
+            Donate Now
+          </button>
+          <button
+            class="border border-green-400 text-green-400 hover:bg-green-50 hover: px-8 py-4 rounded-lg text-lg transition"
+          >
+            Learn More
+          </button>
+        </div>
+        <div class="flex items-center space-x-8 text-sm text-gray-600">
+          <div class="flex items-center space-x-2">
+            <lucide-icon
+              name="check-circle"
+              class="h-5 w-5 text-green-600"
+            ></lucide-icon>
+            <span>Free to use</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <lucide-icon
+              name="check-circle"
+              class="h-5 w-5 text-green-600"
+            ></lucide-icon>
+            <span>Verified NGOs</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <lucide-icon
+              name="check-circle"
+              class="h-5 w-5 text-green-600"
+            ></lucide-icon>
+            <span>Real-time tracking</span>
+          </div>
+        </div>
+      </div>
+      <div class="relative">
+        <img
+          src="/assets/placeholder.svg"
+          alt="Food illustration"
+          class="rounded-2xl shadow-2xl relative z-10"
+          width="600"
+          height="500"
+        />
+        <div
+          class="absolute -top-4 -right-4 w-full h-full bg-gradient-to-br from-green-400 to-green-600 rounded-2xl opacity-20"
+        ></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What We Do -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div data-aos="fade-up" class="text-center space-y-4 mb-16">
+        <h2 class="text-2xl md:text-4xl font-bold text-gray-900">What We Do</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          We connect food donors with registered NGOs to fight hunger and reduce
+          waste.
+        </p>
+      </div>
+
+      <!-- Feature Cards -->
+      <!-- Feature Cards -->
+      <div class="grid md:grid-cols-3 gap-8">
+        <div
+          *ngFor="let item of features; let i = index"
+          class="border border-green-100 rounded-lg transform transition-all duration-500 ease-out hover:scale-150 hover:shadow-[0_12px_32px_-8px_rgba(34,197,94,0.4)] hover:shadow-lg hover:border-green-300 bg-white p-8 text-center space-y-4"
+          data-aos="fade-up"
+          [attr.data-aos-delay]="i * 200"
+        >
+          <div
+            class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto"
+          >
+            <lucide-icon
+              [name]="item.icon"
+              class="h-8 w-8 text-green-600"
+            ></lucide-icon>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-900">
+            {{ item.title }}
+          </h3>
+          <p class="text-gray-600">{{ item.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works" class="py-20 bg-green-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div data-aos="fade-up" class="text-center space-y-4 mb-16">
+        <h2 class="text-2xl md:text-4xl font-bold text-gray-900">
+          How It Works
+        </h2>
+        <p class="text-xl text-gray-600">
+          Simple steps to make a meaningful impact
+        </p>
+      </div>
+      <div class="grid mt-2 md:grid-cols-4 gap-8">
+        <ng-container
+          *ngFor="
+            let step of [
+              {
+                num: '1',
+                icon: 'hand-heart',
+                title: 'List Your Food',
+                desc: 'Donors list surplus food with details.'
+              },
+              {
+                num: '2',
+                icon: 'building2',
+                title: 'NGO Requests',
+                desc: 'NGOs browse and request donations.'
+              },
+              {
+                num: '3',
+                icon: 'Clock',
+                title: 'Schedule Pickup',
+                desc: 'Coordinate pickup logistics.'
+              },
+              {
+                num: '4',
+                icon: 'MapPin',
+                title: 'Track & Deliver',
+                desc: 'Real-time tracking until delivery.'
+              }
+            ];
+            let i = index
+          "
+        >
+          <div
+            data-aos="fade-up"
+            [attr.data-aos-delay]="i * 150"
+            data-aos-duration="800"
+            class="text-center space-y-4 transform transition-all duration-500 hover:scale-150 hover:bg-green-50 rounded-xl p-4 group"
+          >
+            <div
+              class="w-20 h-20 bg-green-600 group-hover:animate-bounce rounded-full flex items-center justify-center mx-auto transition-all duration-300 group-hover:shadow-green-300 group-hover:shadow-md"
+            >
+              <span class="text-2xl font-bold text-white">{{ step.num }}</span>
+            </div>
+
+            <div class="space-y-2">
+              <span
+                class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto transition-transform duration-300 group-hover:animate-pulse"
+              >
+                <lucide-icon
+                  [name]="step.icon"
+                  class="h-6 w-6 text-green-600"
+                ></lucide-icon>
+              </span>
+              <h3 class="text-lg font-semibold text-gray-900">
+                {{ step.title }}
+              </h3>
+              <p class="text-gray-600 text-sm">{{ step.desc }}</p>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </section>
+
+  <!-- Impact Statistics -->
+  <section
+    id="impact"
+    class="py-20 bg-gradient-to-r from-green-600 to-green-700 text-center text-white"
+  >
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-5xl font-bold">
+        Every Donation Creates Ripples of Change
+      </h2>
+      <p class="text-xl text-green-100 max-w-4xl mx-auto leading-relaxed my-8">
+        When you donate through FoodBridge, you're nourishing families,
+        supporting communities, and creating a sustainable future.
+      </p>
+      <div class="grid md:grid-cols-3 gap-8 mt-12">
+        <div>
+          <div class="text-3xl font-bold">10K+</div>
+          <div>Meals Donated</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold">500+</div>
+          <div>Active Donors</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold">50+</div>
+          <div>Partner NGOs</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NGO Signup -->
+  <section id="ngo-signup" class="py-20 bg-white">
+    <div
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center"
+    >
+      <div class="space-y-6">
+        <h2 class="text-5xl md:text-4xl font-bold text-gray-900">
+          Are You an NGO?
+        </h2>
+        <p class="text-xl text-gray-600 leading-relaxed">
+          Join our network of verified organizations and get regular food
+          donations to serve your community better.
+        </p>
+        <div class="space-y-4">
+          <div class="flex items-center space-x-3">
+            <lucide-icon
+              name="check-circle"
+              class="h-6 w-6 text-green-600"
+            ></lucide-icon
+            ><span>Free registration</span>
+          </div>
+          <div class="flex items-center space-x-3">
+            <lucide-icon
+              name="check-circle"
+              class="h-6 w-6 text-green-600"
+            ></lucide-icon
+            ><span>Browse donations</span>
+          </div>
+          <div class="flex items-center space-x-3">
+            <lucide-icon
+              name="check-circle"
+              class="h-6 w-6 text-green-600"
+            ></lucide-icon
+            ><span>Coordinate pickups</span>
+          </div>
+          <div class="flex items-center space-x-3">
+            <lucide-icon
+              name="check-circle"
+              class="h-6 w-6 text-green-600"
+            ></lucide-icon
+            ><span>Track donation history</span>
+          </div>
+        </div>
+        <button
+          class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg flex items-center justify-center gap-2 text-lg transition"
+          [routerLink]="['/auth/signup']"
+        >
+          Sign Up Your NGO
+          <lucide-icon name="arrow-right" class="h-5 w-5"></lucide-icon>
+        </button>
+      </div>
+      <img
+        src="/assets/placeholder.svg"
+        alt="NGO team"
+        class="rounded-2xl shadow-xl"
+        width="500"
+        height="400"
+      />
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-12">
+    <div
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-4 gap-8"
+    >
+      <div class="space-y-4">
+        <lucide-icon name="leaf" class="h-8 w-8 text-green-400"></lucide-icon>
+        <span class="text-2xl font-bold">FoodBridge</span>
+        <p class="text-gray-400">
+          Connecting surplus food with those who need it most.
+        </p>
+      </div>
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold">Platform</h3>
+        <a href="#" class="block text-gray-400 hover:text-white">How It Works</a
+        ><a href="#" class="block text-gray-400 hover:text-white">For Donors</a
+        ><a href="#" class="block text-gray-400 hover:text-white">For NGOs</a>
+      </div>
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold">Support</h3>
+        <a href="#" class="block text-gray-400 hover:text-white">Help Center</a
+        ><a href="#" class="block text-gray-400 hover:text-white">Contact Us</a
+        ><a href="#" class="block text-gray-400 hover:text-white">Community</a>
+      </div>
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold">Legal</h3>
+        <a href="#" class="block text-gray-400 hover:text-white">Privacy</a
+        ><a href="#" class="block text-gray-400 hover:text-white">Terms</a
+        ><a href="#" class="block text-gray-400 hover:text-white">Cookie</a>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+      &copy; 2025 FoodBridge. All rights reserved.
+    </div>
+  </footer>
+</div>

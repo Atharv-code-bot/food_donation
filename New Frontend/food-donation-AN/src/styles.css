@@ -1,6 +1,7 @@
-/* Import Roboto font */
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
-
+/* Import Poppins font */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+@import "primeicons/primeicons.css";
+/* @import "tailwindcss"; */
 :root {
   /* Color palette */
   --primary: #3b6e4d;
@@ -12,10 +13,50 @@
   --bg-color: #f8f9fa;
 
   /* Font */
-  --font-family: "Roboto", sans-serif;
+  --font-family: "Poppins", sans-serif;
 
   /* Border radius */
   --radius: 6px;
+}
+/* Define custom CSS variables for your colors */
+:root {
+  /* Green Palette (as per your theme) */
+  --color-green-50: #f0fdf4; /* Lightest green */
+  --color-green-100: #dcfce7;
+  --color-green-200: #bbf7d0;
+  --color-green-500: #22c55e; /* A mid-range green for active states */
+  --color-green-600: #16a34a; /* Your primary green for buttons */
+  --color-green-700: #15803d; /* Darker green for headers */
+  --color-green-800: #14532d;
+  --color-green-900: #0c2e1f; /* Darkest green */
+
+  /* Donor Accent - Orange Palette */
+  --color-donor-accent-50: #fff7ed;
+  --color-donor-accent-100: #ffedd5;
+  --color-donor-accent-500: #F79678; /* Main orange for donors */
+  --color-donor-accent-600: #ea580c;
+
+  /* NGO Accent - Blue Palette */
+  --color-ngo-accent-50: #eff6ff;
+  --color-ngo-accent-100: #dbeafe;
+  --color-ngo-accent-500: #3b82f6; /* Main blue for NGOs */
+  --color-ngo-accent-600: #2563eb;
+
+  /* General Text Colors */
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-text-light: #aaaaaa;
+  --color-white: #ffffff;
+}
+
+/* Optional: Define specific utility variables for common uses */
+:root {
+  --primary-button-bg: var(--color-green-600);
+  --primary-button-hover-bg: var(--color-green-700);
+  --donor-active-bg: var(--color-donor-accent-500);
+  --donor-hover-bg: var(--color-donor-accent-100);
+  --ngo-active-bg: var(--color-ngo-accent-600);
+  --ngo-hover-bg: var(--color-ngo-accent-100);
 }
 
 * {
@@ -24,12 +65,19 @@
   padding: 0;
 }
 
+app-root {
+  display: block; /* Important for it to take up space */
+  min-height: 100vh; /* Ensure it covers full height */
+  background-color: #f0f8f0; /* Default background of the loader */
+  transition: background-color 0.3s ease; /* Optional: smooth transition */
+}
+
 body {
+  font-family: "Poppins", sans-serif;
   background-color: var(--bg-color);
   color: var(--text-dark);
   font-size: 16px;
   line-height: 1.6;
-  font-family: var(--font-family);
 }
 
 /* Universal Button Styles */
@@ -109,4 +157,41 @@ body {
 
 .form-input::placeholder {
   color: #bbbbbb;
+}
+
+#map {
+  height: 400px;
+  width: 100%;
+}
+
+/* Mobile specific sidebar styles */
+.mobile-sidebar-default {
+  position: fixed; /* Fixed position so it overlays content */
+  top: 70px; /* Adjust based on your header height */
+  bottom: 0;
+  left: 0;
+  width: 240px; /* Width when open */
+  transform: translateX(-100%); /* Hidden by default (slides out from left) */
+  transition: transform 0.3s ease-in-out;
+  z-index: 50; /* Ensure it's above other content but below modal overlays */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Add shadow */
+  /* Re-apply desktop styling that might be lost with 'position: fixed' */
+  background-color: var(--color-green-100); /* Keep consistent bg */
+  color: var(--color-green-900); /* Keep consistent text color */
+  border-right: 1px solid var(--color-green-200); /* Keep border */
+}
+
+.mobile-sidebar-active {
+  transform: translateX(0); /* Slide into view */
+}
+
+/* Overlay when mobile sidebar is open */
+.mobile-sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+  z-index: 40; /* Below sidebar, above main content */
 }

@@ -104,7 +104,7 @@ input:focus {
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
-button[type="submit"] {
+/* button[type="submit"] {
   background-color: #007bff;
   color: white;
   padding: 10px 20px;
@@ -118,7 +118,7 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
   background-color: #0056b3;
-}
+} */
 
 .back-btn {
   margin-bottom: 1rem;

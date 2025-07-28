@@ -1,29 +1,55 @@
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  inject,
+  PLATFORM_ID,
+  ViewChild,
+  ElementRef,
+  signal,
+  DestroyRef,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DashboardService } from '../../services/dashboard.service';
-import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { DonationFormComponent } from '../donation-form/donation-form.component';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { SuccessDialogComponent } from '../../shared/success-dialog/success-dialog.component';
+import { DashboardService } from '../../services/dashboard.service';
+import { DonationFormComponent } from '../donation-form/donation-form.component';
+import { MessageService } from 'primeng/api';
+import { Dialog } from 'primeng/dialog';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+// import * as L from 'leaflet';
 
 @Component({
   selector: 'app-create-donation',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DonationFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, DonationFormComponent, Dialog],
   template: `<app-donation-form
     [form]="form"
     mode="create"
+    [showSuccessDialog]="showSuccessDialog()"
     (submitForm)="handleSubmit()"
     [isSubmitting]="isSubmitting"
   />`,
 })
-export class CreateDonationComponent {
+export class CreateDonationComponent implements OnInit, AfterViewInit {
   isSubmitting = false;
+  showSuccessDialog = signal(false);
+  mapError = signal<string | null>(null);
+  mapLoading = signal(false);
+  // Default coordinates (Pune, India)
+  private readonly defaultMapLat = 18.5204;
+  private readonly defaultMapLng = 73.8567;
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
+  @ViewChild('map', { static: false }) mapElementRef!: ElementRef;
+
   constructor(
     private dashboardService: DashboardService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private messageService: MessageService,
+    private destroyRef: DestroyRef
   ) {}
   fb = inject(FormBuilder);
   form = this.fb.group({
@@ -34,12 +60,55 @@ export class CreateDonationComponent {
     availabilityStart: [''],
     availabilityEnd: [''],
     image: [null],
+    latitude: ['', Validators.required], // Initialize with empty string
+    longitude: ['', Validators.required], // Initialize with empty string
   });
 
-  handleSubmit() {
+  ngOnInit(): void {
+    // This part remains the same. It subscribes to coordinate changes
+    // emitted by the service's map methods and patches the form.
+    this.dashboardService.selectedCoordinates$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((coords) => {
+        this.form.patchValue({
+          latitude: coords.lat.toFixed(6),
+          longitude: coords.lng.toFixed(6),
+        });
+      });
+  }
+
+  // ✅ Call the map initialization here
+  async ngAfterViewInit(): Promise<void> {
+    if (!this.isBrowser) {
+      this.mapError.set('Map can only be loaded in a browser environment.');
+      return;
+    }
+
+    this.mapLoading.set(true);
+    // Call the method designed for location selection/creation
+    const error = await this.dashboardService.initializeLocationSelectionMap(
+      'map', // Use the ID of your map container
+      null, // No initial existing latitude for new creation
+      null, // No initial existing longitude for new creation
+      this.defaultMapLat, // Fallback default latitude
+      this.defaultMapLng // Fallback default longitude
+    );
+
+    if (error) {
+      this.mapError.set(error);
+    }
+    this.mapLoading.set(false);
+  }
+
+  ngOnDestroy(): void {
+    // Clean up the map instance when the component is destroyed
+    this.dashboardService.destroyMap();
+  }
+
+  handleSubmit(): void {
     if (this.form.invalid || this.isSubmitting) return;
 
-    this.isSubmitting = true; // ✅ Block multiple submissions
+    this.isSubmitting = true;
 
     const normalize = (val: string | null | undefined): string | null =>
       val ?? null;
@@ -49,8 +118,7 @@ export class CreateDonationComponent {
     ): string | null => {
       if (!value) return null;
       const date = new Date(value);
-      if (isNaN(date.getTime())) return null;
-      return date.toISOString().split('T')[0]; // "YYYY-MM-DD"
+      return isNaN(date.getTime()) ? null : date.toISOString().split('T')[0];
     };
 
     const formatDateTime = (
@@ -58,8 +126,7 @@ export class CreateDonationComponent {
     ): string | null => {
       if (!value) return null;
       const date = new Date(value);
-      if (isNaN(date.getTime())) return null;
-      return date.toISOString().slice(0, 19); // "YYYY-MM-DDTHH:mm:ss"
+      return isNaN(date.getTime()) ? null : date.toISOString().slice(0, 19);
     };
 
     const donationData = {
@@ -69,6 +136,8 @@ export class CreateDonationComponent {
       pickupLocation: normalize(this.form.value.pickupLocation),
       availabilityStart: formatDateTime(this.form.value.availabilityStart),
       availabilityEnd: formatDateTime(this.form.value.availabilityEnd),
+      latitude: normalize(this.form.value.latitude),
+      longitude: normalize(this.form.value.longitude),
     };
 
     const formData = new FormData();
@@ -77,20 +146,24 @@ export class CreateDonationComponent {
     if (this.form.value.image) {
       formData.append('image', this.form.value.image);
     }
-
+    console.log('Submitting donation data:', donationData);
     this.dashboardService.createDonation(formData).subscribe({
       next: () => {
         this.isSubmitting = false;
-        const dialogRef = this.dialog.open(SuccessDialogComponent, {
-          data: { message: 'Donation created successfully!' },
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Thank You!',
+          detail: 'Thank you for your donation!',
         });
-
-        dialogRef.afterClosed().subscribe(() => {
-          this.router.navigate(['/dashboard']); // or any other route
-        });
+        this.showSuccessDialog.set(true);
       },
       error: (err) => {
         console.error('Error creating donation:', err);
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Cancelled',
+          detail: 'Creation Failed',
+        });
         this.isSubmitting = false;
       },
     });

@@ -1,22 +1,110 @@
-<div
-  class="signin-container flex flex-col items-center justify-center h-screen border border-gray-300"
->
-  <form (ngSubmit)="onLogin()" class="signin-form flex flex-col p-6 bg-white shadow-md rounded">
-    <h1>Sign-in</h1>
-    <label for="username" class="form-label">Username</label>
-    <input type="text" name="username" id="username" [(ngModel)]="username" class="mb-4 form-input" />
-    <label for="password" class="form-label">Password</label>
-    <input
-      type="password"
-      name="password"
-      id="password"
-      [(ngModel)]="password"
-      class="mb-4 form-input"
-    />
-    <button class="btn btn--primary rounded">Sign In</button>
-    <button type="button" (click)="loginWithGoogle()" class="btn mt-2 btn--primary rounded">
-      Sign in with Google
-    </button>
-    <p class="mt-2">Don't have an account? <a [routerLink]="['/auth/signup']" class="text-blue-500 hover:underline">Signup</a> instead</p>
-  </form>
+<div class="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center p-4">
+  <div class="w-full max-w-md">
+    <!-- Logo Header -->
+    <div class="flex justify-center mb-8" [routerLink]="['/']">
+      <div class="flex items-center space-x-2">
+        <lucide-icon name="leaf" class="h-8 w-8 text-green-600"></lucide-icon>
+        <span class="text-2xl font-bold text-green-800">FoodBridge</span>
+      </div>
+    </div>
+
+    <!-- Sign-in Card -->
+    <div class="bg-white rounded-lg shadow-sm border border-green-100 p-8">
+      <h1 class="text-2xl font-bold text-center text-green-800 mb-6">Sign In</h1>
+
+      <form (ngSubmit)="onLogin()" class="space-y-4">
+        <!-- Username Field -->
+        <div>
+          <label for="username" class="block text-sm font-medium text-green-800 mb-1">Username</label>
+          <input
+            type="text"
+            id="username"
+            [(ngModel)]="username"
+            name="username"
+            class="w-full p-3 text-sm border border-green-200 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400"
+            placeholder="Enter your username"
+            required
+            autocomplete="username"
+            minlength="3"
+            [disabled]="isSigningIn || isSigningInWithGoogle"
+          />
+        </div>
+
+        <!-- Password Field -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-green-800 mb-1">Password</label>
+          <input
+            type="password"
+            id="password"
+            [(ngModel)]="password"
+            name="password"
+            class="w-full p-3 text-sm border border-green-200 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400"
+            placeholder="Enter your password"
+            required
+            autocomplete="current-password"
+            minlength="6"
+            [disabled]="isSigningIn || isSigningInWithGoogle"
+          />
+        </div>
+
+        <!-- Sign In Button -->
+        <button
+          type="submit"
+          class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
+          [disabled]="isSigningIn || isSigningInWithGoogle"
+        >
+          @if (!isSigningIn) {
+            <span>Sign In</span>
+          } @else {
+            <lucide-icon name="loader" class="h-5 w-5 animate-spin"></lucide-icon>
+            <span>Signing In...</span>
+          }
+        </button>
+
+        <!-- Google Sign In -->
+        <button
+          type="button"
+          (click)="loginWithGoogle()"
+          class="w-full border border-green-300 text-green-700 hover:bg-green-50 py-3 px-4 rounded-lg flex items-center justify-center gap-3 transition-colors mt-3"
+          [disabled]="isSigningInWithGoogle || isSigningIn"
+        >
+          <img
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            alt="Google"
+            class="h-5 w-5"
+          />
+          @if (!isSigningInWithGoogle) {
+            <span>Sign in with Google</span>
+          } @else {
+            <lucide-icon name="loader" class="h-5 w-5 animate-spin"></lucide-icon>
+            <span>Redirecting...</span>
+          }
+        </button>
+
+                <div
+          class="flex flex-col sm:flex-row justify-between items-center mt-8 pt-6 border-t border-green-100 text-sm text-gray-600"
+        >
+          <!-- Return to Home Link -->
+          <a
+            [routerLink]="['/']"
+            class="text-green-600 hover:underline flex items-center gap-2 mb-3 sm:mb-0"
+          >
+            <!-- <lucide-icon name="arrow-left" class="h-4 w-4"></lucide-icon> -->
+            Return to Home
+          </a>
+          <span class="hidden sm:inline">•</span>
+          <!-- Sign Up Link -->
+          <div class="text-center sm:text-right">
+            Don't have an account?
+            <a
+              [routerLink]="['/auth/signup']"
+              class="text-green-600 hover:underline font-medium ml-1"
+            >
+              Sign up
+            </a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

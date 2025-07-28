@@ -3,10 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-signup',
-  imports: [FormsModule, RouterLink, CommonModule],
+  imports: [FormsModule, RouterLink, CommonModule, LucideAngularModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css',
 })
@@ -14,7 +15,8 @@ export class SignupComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   formSubmitted = false;
-
+  isSigningUp = false;
+  isSigningUpWithGoogle = false;
 
   enteredUsername = '';
   enteredEmail = '';
@@ -38,42 +40,48 @@ export class SignupComponent {
   );
 
   onSubmit() {
-  if (
-    !this.enteredUsername.trim() ||
-    !this.enteredEmail.trim() ||
-    !this.enteredFullname.trim() ||
-    !this.enteredPassword.trim() ||
-    !this.enteredRole.trim() ||
-    !this.enteredPhone.trim().match(/^\d{10}$/) ||
-    !this.enteredAddress.trim()
-  ) {
-    this.errorMessage.set('Please fill out all fields correctly before submitting.');
-    return;
+    this.isSigningUp = true;
+    if (
+      !this.enteredUsername.trim() ||
+      !this.enteredEmail.trim() ||
+      !this.enteredFullname.trim() ||
+      !this.enteredPassword.trim() ||
+      !this.enteredRole.trim() ||
+      !this.enteredPhone.trim().match(/^\d{10}$/) ||
+      !this.enteredAddress.trim()
+    ) {
+      this.errorMessage.set(
+        'Please fill out all fields correctly before submitting.'
+      );
+      this.isSigningUp = false;
+      return;
+    }
+
+    this.authService
+      .register({
+        username: this.enteredUsername,
+        email: this.enteredEmail,
+        password: this.enteredPassword,
+        role: this.enteredRole,
+        fullname: this.enteredFullname,
+        phone: this.enteredPhone,
+        address: this.enteredAddress,
+      })
+      .subscribe({
+        next: (res) => {
+          this.authService.saveSession(res);
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          this.errorMessage.set(
+            err?.error || 'Registration failed. Please try again later.'
+          );
+        },
+      });
   }
 
-  this.authService.register({
-    username: this.enteredUsername,
-    email: this.enteredEmail,
-    password: this.enteredPassword,
-    role: this.enteredRole,
-    fullname: this.enteredFullname,
-    phone: this.enteredPhone,
-    address: this.enteredAddress,
-  }).subscribe({
-    next: (res) => {
-      this.authService.saveSession(res);
-      this.router.navigate(['/dashboard']);
-    },
-    error: (err) => {
-      this.errorMessage.set(
-        err?.error || 'Registration failed. Please try again later.'
-      );
-    },
-  });
-}
-
-
   loginWithGoogle() {
+    this.isSigningUpWithGoogle = true;
     window.location.href = 'http://localhost:8080/oauth2/authorization/google';
   }
 }

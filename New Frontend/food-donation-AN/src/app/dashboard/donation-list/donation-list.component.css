@@ -1,152 +1,199 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+/* src/app/dashboard/donation-list/donation-list.component.css */
 
-* {
-  font-family: "Poppins", sans-serif;
-}
+/* ... (other existing styles) ... */
 
-.filter-tab button {
-  cursor: pointer;
-}
-
-.filter-tab.current button {
-  color: green;
-}
-
-/* Wrapper for layout if not already set */
+/* The main-container's height calc(100vh-70px) is based on your header's height. */
 .main-container {
+  height: calc(100vh - 70px); /* Keep this as is */
   display: flex;
-  flex-direction: row;
+  background-color: theme('colors.gray.50');
 }
 
-.container {
-  flex-grow: 1;
-  overflow: auto;
-}
-
-table {
-  overflow: auto;
-}
-
-.content {
-  padding: 20px;
-  flex: 1;
-}
-
-.boton {
-  --primary-color: #645bff;
-  --secondary-color: #fff;
-  --hover-color: #443be7;
-  --arrow-width: 10px;
-  --arrow-stroke: 2px;
-  box-sizing: border-box;
-  border: 0;
-  border-radius: 20px;
-  color: var(--secondary-color);
-  padding: 0.75em 1.2em;
-  background: var(--primary-color);
-  display: flex;
-  transition: 0.2s background;
-  align-items: center;
-  gap: 0.6em;
-  font-weight: bold;
-  max-width: fit-content;
-  /* margin-bottom: 5px; */
-}
-
-.boton .arrow-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.boton .arrow {
-  margin-top: 1px;
-  width: var(--arrow-width);
-  background: var(--primary-color);
-  height: var(--arrow-stroke);
-  position: relative;
-  transition: 0.2s;
-}
-
-.boton .arrow::before {
-  content: "";
-  box-sizing: border-box;
-  position: absolute;
-  border: solid var(--secondary-color);
-  border-width: 0 var(--arrow-stroke) var(--arrow-stroke) 0;
-  display: inline-block;
-  top: -3px;
-  right: 3px;
-  transition: 0.2s;
-  padding: 3px;
-  transform: rotate(-45deg);
-}
-
-.boton:hover {
-  background-color: var(--hover-color);
-}
-
-.boton:hover .arrow {
-  background: var(--secondary-color);
-}
-
-.boton:hover .arrow:before {
-  right: 0;
-}
-
-table {
-  /* border-radius: 10px !important; */
-  border-collapse: separate;
-  border-spacing: 0;
-  border: 1px solid #ddd;
-  overflow: hidden;
-}
-
-tr:not(:last-child) td {
-  /* padding-bottom: 20px; */
-  border-bottom: 0.5px solid #ddd; /* your desired separator*/
-}
-
-/* From Uiverse.io by vinodjangid07 */ 
-.button {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  /* background-color: white; */
-  border: none;
-  font-weight: 600;
+.main-container > .flex-1 {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
-  cursor: pointer;
-  transition-duration: 0.3s;
+  flex-grow: 1;
+  overflow-y: auto; /* This causes the scrollbar for the entire right content pane */
+  padding: 1.5rem; /* p-6 */
+}
+
+.main-container > .flex-1 > div.max-w-full {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
   overflow: hidden;
-  position: relative;
-  gap: 2px;
 }
 
-.svgIcon {
-  width: 10px;
-  transition-duration: 0.3s;
+.main-container > .flex-1 > div.max-w-full > div:nth-child(2) {
+  flex-shrink: 0;
+  margin-bottom: 1.5rem;
 }
 
-.svgIcon path {
-  fill: black;
+.main-container > .flex-1 > div.max-w-full > div.overflow-x-auto {
+  display: flex;
+  flex-direction: column;
+  /* Removed flex-1 here to prevent it from growing when table is short */
+  overflow: hidden;
 }
 
-.button:hover {
-  transition-duration: 0.3s;
-  /* background-color: rgb(255, 69, 69); */
-  align-items: center;
-  gap: 0;
+.grid-cols-5 {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr)); /* Ensures equal width columns */
+  gap: 1rem; /* Adjust as needed */
 }
 
-.bin-top {
-  transform-origin: bottom right;
+/* Table header (thead) */
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: inherit;
+  white-space: nowrap;
 }
-.button:hover .bin-top {
-  transition-duration: 0.5s;
-  transform: rotate(100deg);
+
+/* ✅ FIX: The SCROLLABLE TABLE BODY WRAPPER */
+.table-body-scroll-wrapper {
+  /* Removed flex-grow: 1; */
+  /* This ensures it only takes the height of its content. */
+  /* Add a max-height to enable scrolling when content exceeds this limit. */
+  max-height: calc(100vh - 350px); /* Adjust this value as needed.
+                                     This calculates max height based on viewport
+                                     height minus header, padding, title, filters, and other elements above the table.
+                                     You might need to fine-tune 350px based on your actual layout.
+                                     A simpler, fixed max-height like 400px or 500px also works if you prefer less dynamic calc. */
+  overflow-y: auto; /* This creates the internal vertical scrollbar for table rows */
+  overflow-x: auto; /* Add horizontal scroll for tbody if columns are very wide */
+  border-bottom-left-radius: theme('borderRadius.lg');
+  border-bottom-right-radius: theme('borderRadius.lg');
+}
+
+/* Ensure the inner table (inside the scroll wrapper) spans full width and uses fixed layout */
+.table-body-scroll-wrapper table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* General cell alignment (if not already in HTML) */
+th, td {
+  text-align: center;
+  padding: 0.75rem 1rem;
+}
+
+/* Specific to hide default link underline */
+.filter-tab {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Ensure even/odd rows work */
+tbody tr:nth-child(odd) {
+  background-color: theme('colors.gray.50');
+}
+tbody tr:nth-child(even) {
+  background-color: theme('colors.white');
+}
+tbody tr:last-child {
+  border-bottom: none;
+}
+tbody tr:hover {
+    background-color: theme('colors.gray.100');
+}
+
+/* src/app/dashboard/donation-list/donation-list.component.css */
+
+/* Keep existing desktop styles first */
+
+/* General table styling for mobile fallback - hidden by default, shown by responsive prefixes */
+th, td {
+  text-align: center;
+  padding: 0.75rem 1rem;
+  white-space: nowrap; /* Prevent content from wrapping unless specifically allowed */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mobile specific table row layout (sm: prefix ensures this applies only on mobile) */
+@media (max-width: 639px) { /* Tailwind's 'sm' breakpoint is 640px, so this applies below it */
+  .main-container {
+    height: auto; /* Allow height to adjust on mobile */
+    min-height: calc(100vh - 70px); /* Ensure it still covers the screen */
+  }
+
+  .main-container > .flex-1 {
+    padding: 1rem; /* Reduce overall padding on mobile */
+  }
+
+  .main-container > .flex-1 > div.max-w-full {
+    padding: 1rem; /* Reduce card padding on mobile */
+  }
+
+  /* Table row transformed to a flex column (acting like cards) on mobile */
+  /* This ensures each td takes full width and stacks */
+  tbody tr {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align content to the start of the column */
+    padding: 1rem; /* Add padding to make each row look like a card */
+    margin-bottom: 0.75rem; /* Add space between 'cards' */
+    border-radius: 0.5rem; /* Slightly rounded corners for card effect */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Subtle shadow for card effect */
+    border: 1px solid theme('colors.gray.200'); /* Add a border */
+  }
+
+  tbody tr:nth-child(odd) {
+    background-color: theme('colors.white'); /* Ensure consistent bg for mobile cards */
+  }
+  tbody tr:nth-child(even) {
+    background-color: theme('colors.white');
+  }
+
+  /* Hide default table display for cells and show as block on mobile */
+  tbody td {
+    display: block; /* Make each cell a block element */
+    width: 100%; /* Take full width */
+    text-align: left; /* Align text to left in mobile card */
+    padding: 0.25rem 0; /* Adjust padding within mobile cells */
+    white-space: normal; /* Allow text to wrap within cells */
+    overflow: visible; /* Allow text to be fully visible */
+    text-overflow: clip; /* No ellipsis if text can wrap */
+  }
+
+  /* Hide the desktop table header cells on mobile */
+  thead th {
+    display: none;
+  }
+
+  /* Specific mobile header for the table actions (if you keep it) */
+  .sm\:hidden.col-span-5.text-center {
+    display: block !important; /* Force display on mobile */
+  }
+
+  /* Make action buttons take full width on mobile if they are in a flex container */
+  tbody td button {
+    width: 100%; /* Make action buttons full width within their td */
+    justify-content: center; /* Center content within button */
+    padding: 0.5rem 0; /* Add vertical padding */
+  }
+
+  /* Adjust gap for action buttons row on mobile if it's a flex container */
+  tbody td.flex {
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 0.5rem; /* Space between stacked buttons */
+    width: 100%; /* Take full width of parent td */
+    align-items: center; /* Center horizontally */
+  }
+
+  /* Filter buttons and "Make a donation" button responsiveness */
+  .flex-wrap > button {
+    flex-grow: 1; /* Allow buttons to grow and fill space, wrapping if needed */
+    flex-basis: auto; /* Default basis */
+  }
+}
+
+/* The table-body-scroll-wrapper needs to adjust its max-height on mobile */
+@media (max-width: 639px) {
+  .table-body-scroll-wrapper {
+    max-height: calc(100vh - 250px); /* Adjust based on header, filter, and other fixed elements above table */
+    /* This will ensure internal scrolling only when needed on mobile */
+  }
 }

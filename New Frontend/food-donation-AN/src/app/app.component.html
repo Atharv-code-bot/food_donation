@@ -1,2 +1,18 @@
+@if (!authService.isAuthCheckComplete()) {
+  <div class="app-loading-overlay">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Loading FoodBridge...</p>
+  </div>
+} @else {
+  <div [class.mobile-sidebar-open]="isMobileSidebarOpen" class="app-main-layout">
+    <app-header (toggleSidebarEvent)="toggleMobileSidebar()"></app-header>
+    
+    <div class="main-content-area flex h-[calc(100vh-70px)]"> <app-sidebar (statusSelected)="selectStatus($event)" 
+                   [class.mobile-sidebar-active]="isMobileSidebarOpen"
+                   class="mobile-sidebar-default sm:flex" ></app-sidebar>
+      
+      <router-outlet></router-outlet> </div>
 
-<router-outlet />
+    <div *ngIf="isMobileSidebarOpen" class="mobile-sidebar-overlay" (click)="closeMobileSidebar()"></div>
+  </div>
+}

@@ -1,195 +1,329 @@
 <header>
   <app-header />
 </header>
-<div class="main-container">
-  <app-sidebar (statusSelected)="selectStatus($event)" />
-  <div class="container m-4">
-    <h1 class="text-2xl font-small mb-4">Donations</h1>
-    @if(selectedStatus() !== "COLLECTED"){
-    <div class="mb-4 flex gap-5">
-      <a
-        class="filter-tab"
-        [class.current]="selectedStatus() === 'AVAILABLE'"
-        (click)="selectStatus('AVAILABLE')"
-      >
-        <button
-          class="rounded-full text-black border-green-700 border px-2 py-1"
-        >
-          Available
-        </button>
-      </a>
-      <a
-        class="filter-tab"
-        [class.current]="selectedStatus() === 'CLAIMED'"
-        (click)="selectStatus('CLAIMED')"
-      >
-        <button
-          class="rounded-full text-black border-green-700 border px-2 py-1"
-        >
-          Claimed
-        </button>
-      </a>
-    </div>
 
-    @if (role === 'ROLE_DONOR') {
-    <button
-      [routerLink]="['/dashboard/create']"
-      class="rounded bg-green-700 text-white px-3 py-1"
+<app-first-time-donation-popup
+  *ngIf="isFirstDonation() && role"
+  [role]="role"
+></app-first-time-donation-popup>
+
+<div class="main-container flex sm:flex-row">
+  <app-sidebar (statusSelected)="selectStatus($event)" class="hidden sm:flex" />
+
+  <div class="flex-1 p-4 sm:p-6 lg:p-8 flex flex-col">
+    <div
+      class="max-w-full container mx-auto bg-white rounded-xl shadow-lg border border-gray-100 p-6 flex-1 flex flex-col"
     >
-      Make a donation
-    </button>
-    } }
+      <h1
+        class="text-3xl font-bold mb-6 text-green-80 text-center sm:text-left"
+      >
+        {{
+          selectedStatus() === "COLLECTED"
+            ? "Completed Donations"
+            : "Donations List"
+        }}
+      </h1>
+      <p-toast></p-toast>
+      <p-confirmdialog key="global" [focusTrap]="false">
+        <ng-template pTemplate="message" let-message>
+          <div class="flex items-start gap-2">
+            <i
+              class="pi pi-exclamation-triangle text-xl mt-1"
+              [class.text-green-500]="role === 'ROLE_DONOR'"
+              [class.text-blue-500]="role === 'ROLE_NGO'"
+            ></i>
+            <span class="text-gray-700 text-base">{{ message?.message }}</span>
+          </div>
+        </ng-template>
+      </p-confirmdialog>
 
-    <table class="mt-6 w-full rounded-xl mt-4">
-      <thead class="bg-green-700 rounded-t-3xl">
-        <tr class="py-2 text-center rounded-t-xl text-white">
-          @if (role === 'ROLE_DONOR') {
-          <th
-            class="font-medium py-1 cursor-pointer rounded-tl-xl "
-            (click)="toggleSort('donationId')"
+      @if(selectedStatus() !== "COLLECTED"){
+      <div
+        class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 flex-shrink-0"
+      >
+        <div
+          class="flex flex-wrap justify-center sm:justify-start gap-3 w-full sm:w-auto"
+        >
+          <button
+            class="rounded-full border px-5 py-2 text-sm font-semibold transition-colors duration-200 ease-in-out"
+            [style.background-color]="
+              selectedStatus() === 'AVAILABLE' && role === 'ROLE_DONOR'
+                ? 'var(--color-donor-accent-500)'
+                : selectedStatus() === 'AVAILABLE' && role === 'ROLE_NGO'
+                ? 'var(--color-green-700)'
+                : selectedStatus() === 'AVAILABLE'
+                ? 'var(--color-green-700)'
+                : 'var(--color-white)'
+            "
+            [style.color]="
+              selectedStatus() === 'AVAILABLE'
+                ? 'var(--color-white)'
+                : role === 'ROLE_DONOR'
+                ? 'var(--color-donor-accent-700)'
+                : role === 'ROLE_NGO'
+                ? 'var(--color-ngo-accent-700)'
+                : 'var(--color-green-700)'
+            "
+            [style.borderColor]="
+              selectedStatus() === 'AVAILABLE'
+                ? 'initial'
+                : role === 'ROLE_DONOR'
+                ? 'var(--color-donor-accent-500)'
+                : role === 'ROLE_NGO'
+                ? 'var(--color-green-600)'
+                : 'var(--color-green-600)'
+            "
+            [class.hover:bg-green-50]="selectedStatus() !== 'AVAILABLE'"
+            (click)="selectStatus('AVAILABLE')"
           >
-            Donation ID
-            <span>
-              {{ sortDirections.get("donationId") === "asc" ? "▲" : "▼" }}
-            </span>
-          </th>
-          }
+            Available
+          </button>
 
-          <th
-            class="font-medium cursor-pointer py-2"
-            (click)="toggleSort('itemName')"
+          <button
+            class="rounded-full border px-5 py-2 text-sm font-semibold transition-colors duration-200 ease-in-out"
+            [style.background-color]="
+              selectedStatus() === 'CLAIMED' && role === 'ROLE_DONOR'
+                ? 'var(--color-donor-accent-500)'
+                : selectedStatus() === 'CLAIMED' && role === 'ROLE_NGO'
+                ? 'var(--color-green-700)'
+                : selectedStatus() === 'CLAIMED'
+                ? 'var(--color-green-700)'
+                : 'var(--color-white)'
+            "
+            [style.color]="
+              selectedStatus() === 'CLAIMED'
+                ? 'var(--color-white)'
+                : role === 'ROLE_DONOR'
+                ? 'var(--color-donor-accent-700)'
+                : role === 'ROLE_NGO'
+                ? 'var(--color-ngo-accent-700)'
+                : 'var(--color-green-700)'
+            "
+            [style.borderColor]="
+              selectedStatus() === 'CLAIMED'
+                ? 'initial'
+                : role === 'ROLE_DONOR'
+                ? 'var(--color-donor-accent-500)'
+                : role === 'ROLE_NGO'
+                ? 'var(--color-green-600)'
+                : 'var(--color-green-600)'
+            "
+            [class.hover:bg-green-50]="selectedStatus() !== 'CLAIMED'"
+            (click)="selectStatus('CLAIMED')"
           >
-            Item
-            <span>
-              {{ sortDirections.get("itemName") === "asc" ? "▲" : "▼" }}
-            </span>
-          </th>
+            Claimed
+          </button>
+        </div>
 
-          <th
-            class="font-medium cursor-pointer"
-            (click)="toggleSort('quantity')"
-          >
-            Quantity
-            <span>
-              {{ sortDirections.get("quantity") === "asc" ? "▲" : "▼" }}
-            </span>
-          </th>
-
-          @if (role === 'ROLE_NGO') {
-          <th class="font-medium">Donor Name</th>
-          }
-
-          <th
-            class="font-medium cursor-pointer"
-            (click)="toggleSort('createdAt')"
-          >
-            Donation Date
-            <span>
-              {{ sortDirections.get("createdAt") === "asc" ? "▲" : "▼" }}
-            </span>
-          </th>
-
-          <th class="font-medium rounded-tr-xl"></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        @for (donation of donations(); track donation.donationId) {
-        <tr class="hover:bg-green-100 text-center p-2">
-          @if (role === 'ROLE_DONOR') {
-          <td>{{ donation.donationId }}</td>
-          }
-          <td>{{ donation.itemName }}</td>
-          <td>{{ donation.quantity }}</td>
-
-          @if (role === 'ROLE_NGO') {
-          <td>{{ donation.donorName }}</td>
-          }
-
-          <td>{{ donation.createdAt | date : "fullDate" }}</td>
-          <td class="flex justify-center py-2 gap-5">
-            <!-- <button class="px-2 py-0.5  border-green-700 rounded-full"
-              [routerLink]="['/dashboard/donations', donation.donationId]"
-            >
-              View
-            </button> -->
-            <!-- <button
-              class="boton"
-              [routerLink]="['/dashboard/donations', donation.donationId]"
-            >
-              <div class="arrow-wrapper">
-                <div class="arrow"></div>
-              </div>
-            </button> -->
-            <button
-              class="button hover:bg-green-500"
-              [routerLink]="['/dashboard/donations', donation.donationId]"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 cursor-pointer"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                />
-              </svg>
-            </button>
-            @if (donation.status === 'AVAILABLE' && role === 'ROLE_DONOR') {
-            <button class="button hover:bg-red-400" (click)="deleteDonation(donation.donationId.toString())">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 69 14"
-                class="svgIcon bin-top hover:fill-green-700"
-              >
-                <g clip-path="url(#clip0_35_24)">
-                  <path
-                    fill="black"
-                    d="M20.8232 2.62734L19.9948 4.21304C19.8224 4.54309 19.4808 4.75 19.1085 4.75H4.92857C2.20246 4.75 0 6.87266 0 9.5C0 12.1273 2.20246 14.25 4.92857 14.25H64.0714C66.7975 14.25 69 12.1273 69 9.5C69 6.87266 66.7975 4.75 64.0714 4.75H49.8915C49.5192 4.75 49.1776 4.54309 49.0052 4.21305L48.1768 2.62734C47.3451 1.00938 45.6355 0 43.7719 0H25.2281C23.3645 0 21.6549 1.00938 20.8232 2.62734ZM64.0023 20.0648C64.0397 19.4882 63.5822 19 63.0044 19H5.99556C5.4178 19 4.96025 19.4882 4.99766 20.0648L8.19375 69.3203C8.44018 73.0758 11.6746 76 15.5712 76H53.4288C57.3254 76 60.5598 73.0758 60.8062 69.3203L64.0023 20.0648Z"
-                  ></path>
-                </g>
-                <defs>
-                  <clipPath id="clip0_35_24">
-                    <rect fill="white" height="14" width="69"></rect>
-                  </clipPath>
-                </defs>
-              </svg>
-
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 69 57"
-                class="svgIcon bin-bottom"
-              >
-                <g clip-path="url(#clip0_35_22)">
-                  <path
-                    fill="black"
-                    d="M20.8232 -16.3727L19.9948 -14.787C19.8224 -14.4569 19.4808 -14.25 19.1085 -14.25H4.92857C2.20246 -14.25 0 -12.1273 0 -9.5C0 -6.8727 2.20246 -4.75 4.92857 -4.75H64.0714C66.7975 -4.75 69 -6.8727 69 -9.5C69 -12.1273 66.7975 -14.25 64.0714 -14.25H49.8915C49.5192 -14.25 49.1776 -14.4569 49.0052 -14.787L48.1768 -16.3727C47.3451 -17.9906 45.6355 -19 43.7719 -19H25.2281C23.3645 -19 21.6549 -17.9906 20.8232 -16.3727ZM64.0023 1.0648C64.0397 0.4882 63.5822 0 63.0044 0H5.99556C5.4178 0 4.96025 0.4882 4.99766 1.0648L8.19375 50.3203C8.44018 54.0758 11.6746 57 15.5712 57H53.4288C57.3254 57 60.5598 54.0758 60.8062 50.3203L64.0023 1.0648Z"
-                  ></path>
-                </g>
-                <defs>
-                  <clipPath id="clip0_35_22">
-                    <rect fill="white" height="57" width="69"></rect>
-                  </clipPath>
-                </defs>
-              </svg>
-            </button>
-            }
-          </td>
-        </tr>
+        @if (role === 'ROLE_DONOR') {
+        <button
+          [routerLink]="['/dashboard/create']"
+          class="rounded-lg px-4 py-2 text-base font-semibold transition-colors duration-200 ease-in-out flex items-center gap-2 w-full sm:w-auto mt-4 sm:mt-0"
+          [class.bg-green-500]="role === 'ROLE_DONOR'"
+          [class.hover:bg-green-600]="role === 'ROLE_DONOR'"
+          [class.text-white]="role === 'ROLE_DONOR'"
+          [style.background-color]="'var(--color-donor-accent-500)'"
+        >
+          <lucide-icon name="plus" class="h-4 w-4"></lucide-icon>
+          Make a donation
+        </button>
         }
-      </tbody>
-    </table>
+      </div>
+      }
+
+      <div
+        class="overflow-x-auto rounded-lg shadow-md border border-gray-100 flex flex-col"
+      >
+        <table class="w-full text-left table-auto">
+          <thead class="text-white text-sm uppercase">
+            <tr
+              class="grid-cols-5 sm:table-row"
+              [style.background-color]="
+                role === 'ROLE_DONOR'
+                  ? 'var(--color-donor-accent-500)'
+                  : 'var(--color-green-700)'
+              "
+            >
+              @if (role === 'ROLE_DONOR') {
+              <th
+                class="py-3 px-4 cursor-pointer rounded-tl-lg hover:bg-opacity-90 hidden sm:table-cell"
+                (click)="toggleSort('donationId')"
+              >
+                Donation ID
+                <span class="ml-2">
+                  {{ sortDirections.get("donationId") === "asc" ? "▲" : "▼" }}
+                </span>
+              </th>
+              }
+
+              <th
+                class="py-3 px-4 cursor-pointer hover:bg-opacity-90 hidden sm:table-cell"
+                (click)="toggleSort('itemName')"
+              >
+                Item
+                <span class="ml-2">
+                  {{ sortDirections.get("itemName") === "asc" ? "▲" : "▼" }}
+                </span>
+              </th>
+
+              <th
+                class="py-3 px-4 cursor-pointer hover:bg-opacity-90 hidden sm:table-cell"
+                (click)="toggleSort('quantity')"
+              >
+                Quantity
+                <span class="ml-2">
+                  {{ sortDirections.get("quantity") === "asc" ? "▲" : "▼" }}
+                </span>
+              </th>
+
+              @if (role === 'ROLE_NGO') {
+              <th class="py-3 px-4 hover:bg-opacity-90 hidden sm:table-cell">
+                Donor Name
+              </th>
+              }
+
+              <th
+                class="py-3 px-4 cursor-pointer hover:bg-opacity-90 hidden sm:table-cell"
+                (click)="toggleSort('createdAt')"
+              >
+                Donation Date
+                <span class="ml-2">
+                  {{ sortDirections.get("createdAt") === "asc" ? "▲" : "▼" }}
+                </span>
+              </th>
+
+              <th
+                class="py-3 px-4 rounded-tr-lg hover:bg-opacity-90 hidden sm:table-cell"
+              >
+                Actions
+              </th>
+              <th class="py-3 px-4 sm:hidden col-span-5 text-center">
+                Donation Details & Actions
+              </th>
+            </tr>
+          </thead>
+        </table>
+        <div class="table-body-scroll-wrapper relative overflow-y-auto">
+          <table class="w-full text-left table-fixed">
+            <tbody>
+              @for (donation of donations(); track donation.donationId) {
+              <tr
+                class="grid grid-cols-1 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5 border-b border-gray-100 last:border-b-0 even:bg-white odd:bg-gray-50 hover:bg-gray-100 text-gray-700 p-4 sm:p-0"
+              >
+                @if (role === 'ROLE_DONOR') {
+                <td
+                  class="justify-self-center w-full break-words py-2 px-4 sm:py-3 sm:px-4"
+                >
+                  <span class="font-bold sm:hidden">Donation ID: </span
+                  >{{ donation.clientSideId }}
+                </td>
+                }
+                <td
+                  class="justify-self-center w-full break-words max-h-16 overflow-y-auto scrolling-auto py-2 px-4 sm:py-3 sm:px-4"
+                >
+                  <span class="font-bold sm:hidden">Item: </span
+                  >{{ donation.itemName }}
+                </td>
+                <td
+                  class="justify-self-center w-full break-words py-2 px-4 sm:py-3 sm:px-4"
+                >
+                  <span class="font-bold sm:hidden">Quantity: </span
+                  >{{ donation.quantity }}
+                </td>
+
+                @if (role === 'ROLE_NGO') {
+                <td
+                  class="justify-self-center w-full break-words py-2 px-4 sm:py-3 sm:px-4"
+                >
+                  <span class="font-bold sm:hidden">Donor Name: </span
+                  >{{ donation.donorName }}
+                </td>
+                }
+
+                <td class="py-2 px-4 sm:py-3 sm:px-4">
+                  <span class="font-bold sm:hidden">Donation Date: </span
+                  >{{ donation.createdAt | date : "mediumDate" }}
+                </td>
+                <td
+                  class="flex justify-center items-center py-2 px-4 sm:py-3 sm:px-4 gap-3 w-full col-span-1 sm:col-span-1"
+                >
+                  <div
+                    class="flex flex-row justify-center items-center gap-2 w-full"
+                  >
+                    <button
+                      class="p-2 rounded-full transition-colors"
+                      [class.hover:bg-orange-100]="role === 'ROLE_DONOR'"
+                      [class.text-orange-600]="role === 'ROLE_DONOR'"
+                      [class.hover:text-orange-700]="role === 'ROLE_DONOR'"
+                      [class.hover:bg-blue-100]="role === 'ROLE_NGO'"
+                      [class.text-blue-600]="role === 'ROLE_NGO'"
+                      [class.hover:text-blue-700]="role === 'ROLE_NGO'"
+                      [routerLink]="[
+                        '/dashboard/donations',
+                        donation.donationId
+                      ]"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-5 h-5"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        />
+                      </svg>
+                    </button>
+                    @if (donation.status === 'AVAILABLE' && role ===
+                    'ROLE_DONOR') {
+                    <button
+                      class="p-2 rounded-full transition-colors hover:bg-red-100 text-red-500 hover:text-red-600"
+                      (click)="
+                        confirmDelete($event, donation.donationId.toString())
+                      "
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-5 h-5"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09.998-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                        />
+                      </svg>
+                    </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+              } @empty {
+              <tr>
+                <td
+                  colspan="6"
+                  class="py-8 text-center text-gray-500 text-lg italic"
+                >
+                  No donations found for this status.
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

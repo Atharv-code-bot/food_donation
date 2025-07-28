@@ -1,0 +1,57 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [dismissableMask]="true"
+  [style]="{ width: '90vw', maxWidth: '500px' }"
+  [draggable]="false"
+  [resizable]="false"
+  [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+  header="Welcome, {{ role === 'ROLE_DONOR' ? 'Donor' : 'NGO Partner' }}!"
+>
+  <div class="text-center space-y-4 p-4">
+    <h2 class="text-2xl font-bold text-green-700">Thank You for Joining!</h2>
+    <p class="text-gray-700 text-sm">
+      {{
+        role === "ROLE_DONOR"
+          ? "You’re just a few steps away from making a meaningful impact. Start by listing any available food items for donation."
+          : "You’re just a few steps away from receiving support. Start by browsing available food donations and claiming a donation!"
+      }}
+    </p>
+
+    <!-- <img
+      src="https://cdn-icons-png.flaticon.com/512/10447/10447456.png"
+      alt="donation"
+      class="w-24 h-24 mx-auto"
+    /> -->
+    <lucide-icon
+      name="heart-handshake"
+      class="w-12 h-12 my-2 mx-auto text-green-600"
+    />
+
+    <div
+      class="flex flex-col md:flex-row justify-center items-center gap-4 mt-6"
+    >
+      <button
+        class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+        *ngIf="role === 'ROLE_NGO'"
+        (click)="closeDialog()"
+      >
+        Get Started
+      </button>
+      <button
+        *ngIf="role === 'ROLE_DONOR'"
+        class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+        (click)="navigateToCreateDonation()"
+      >
+        🍲 List My Food Now
+      </button>
+      <button
+        *ngIf="role === 'ROLE_DONOR'"
+        class="px-6 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition"
+        (click)="closeDialog()"
+      >
+        Later
+      </button>
+    </div>
+  </div>
+</p-dialog>

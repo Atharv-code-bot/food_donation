@@ -276,6 +276,23 @@
         }
       }
     </style>
+    <!-- Leaflet CSS -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<!-- Leaflet JS -->
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+    }
+  </style>
   </head>
   <body>
     <header class="page-header">
@@ -434,7 +451,98 @@
           </button>
         </div>
       </form>
+  
+     <h1>Select Donation Location</h1>
+  <div id="map"></div>
+
+  <!-- Hidden inputs for latitude and longitude -->
+  <form id="donationForm" action="/donations" method="POST">
+    <input type="hidden" id="latitude" name="latitude" />
+    <input type="hidden" id="longitude" name="longitude" />
+    <!-- Other form inputs like donation details -->
+    <button type="submit">Submit Donation</button>
+  </form>
+
     </main>
+
+ <script>
+  var map = L.map('map').setView([19.0760, 72.8777], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
+
+  var marker = L.marker([19.0760, 72.8777]).addTo(map);
+  marker.bindPopup("Default Location: Mumbai").openPopup();
+
+  if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    function (position) {
+      var lat = position.coords.latitude;
+      var lng = position.coords.longitude;
+
+      console.log("📍 User's Current Location:");
+      console.log("Latitude: " + lat);
+      console.log("Longitude: " + lng);
+
+      // Clear the default marker
+      map.eachLayer(function (layer) {
+        if (layer instanceof L.Marker) {
+          map.removeLayer(layer);
+        }
+      });
+
+      // Recenter the map and add marker
+      map.setView([lat, lng], 15);
+
+      L.marker([lat, lng])
+        .addTo(map)
+        .bindPopup("You are here")
+        .openPopup();
+    },
+    function (error) {
+      console.error("❌ Geolocation error: " + error.message);
+    },
+    {
+      enableHighAccuracy: true,   // This helps with GPS-level accuracy
+      timeout: 10000,
+      maximumAge: 0
+    }
+  );
+} else {
+  alert("Geolocation is not supported by your browser.");
+}
+
+
+  var donationMarker;
+
+  map.on('click', function (e) {
+    var lat = e.latlng.lat;
+    var lng = e.latlng.lng;
+
+    console.log("📌 Clicked on map:");
+    console.log("Latitude: " + lat);
+    console.log("Longitude: " + lng);
+
+    if (donationMarker) {
+      map.removeLayer(donationMarker);
+    }
+
+    donationMarker = L.marker([lat, lng]).addTo(map);
+
+    // If you have input fields with these IDs
+    var latInput = document.getElementById('latitude');
+    var lngInput = document.getElementById('longitude');
+
+    if (latInput && lngInput) {
+      latInput.value = lat;
+      lngInput.value = lng;
+    }
+  });
+</script>
+
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {

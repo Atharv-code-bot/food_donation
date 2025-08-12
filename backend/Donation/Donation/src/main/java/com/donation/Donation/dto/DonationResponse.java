@@ -31,6 +31,25 @@ public class DonationResponse {
     private Double latitude;   // ➕ Latitude
     private Double longitude;  // ➕ Longitude
 
+    private String quantityUnit;          // "KILOGRAMS"
+    private String quantityUnitLabel;
+
+    public String getQuantityUnit() {
+        return quantityUnit;
+    }
+
+    public void setQuantityUnit(String quantityUnit) {
+        this.quantityUnit = quantityUnit;
+    }
+
+    public String getQuantityUnitLabel() {
+        return quantityUnitLabel;
+    }
+
+    public void setQuantityUnitLabel(String quantityUnitLabel) {
+        this.quantityUnitLabel = quantityUnitLabel;
+    }
+
     public Double getLatitude() {
         return latitude;
     }

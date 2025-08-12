@@ -74,6 +74,18 @@ public class Donations {
     @Column(name = "claimed_at")
     private LocalDateTime claimedAt;
 
+    @Enumerated(EnumType.STRING)
+    private QuantityUnit quantityUnit;
+
+
+    public QuantityUnit getQuantityUnit() {
+        return quantityUnit;
+    }
+
+    public void setQuantityUnit(QuantityUnit quantityUnit) {
+        this.quantityUnit = quantityUnit;
+    }
+
     public User getClaimedByNgo() {
         return claimedByNgo;
     }

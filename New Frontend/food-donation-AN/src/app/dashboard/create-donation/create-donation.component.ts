@@ -18,6 +18,7 @@ import { DonationFormComponent } from '../donation-form/donation-form.component'
 import { MessageService } from 'primeng/api';
 import { Dialog } from 'primeng/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UNITS } from '../units.constant';
 // import * as L from 'leaflet';
 
 @Component({
@@ -25,7 +26,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, DonationFormComponent, Dialog],
   template: `<app-donation-form
-    [form]="form"
+    [donationForm]="form"
+    (unitSelected)="onUnitSelected($event)"
     mode="create"
     [showSuccessDialog]="showSuccessDialog()"
     (submitForm)="handleSubmit()"
@@ -51,6 +53,7 @@ export class CreateDonationComponent implements OnInit, AfterViewInit {
     private messageService: MessageService,
     private destroyRef: DestroyRef
   ) {}
+
   fb = inject(FormBuilder);
   form = this.fb.group({
     itemName: ['', Validators.required],
@@ -62,7 +65,12 @@ export class CreateDonationComponent implements OnInit, AfterViewInit {
     image: [null],
     latitude: ['', Validators.required], // Initialize with empty string
     longitude: ['', Validators.required], // Initialize with empty string
+    quantityUnit: [null, Validators.required], // ✅ Added this
   });
+
+  onUnitSelected(unit: any) {
+    this.form.patchValue({ quantityUnit: unit.value.value });
+  }
 
   ngOnInit(): void {
     // This part remains the same. It subscribes to coordinate changes
@@ -132,6 +140,7 @@ export class CreateDonationComponent implements OnInit, AfterViewInit {
     const donationData = {
       itemName: normalize(this.form.value.itemName),
       quantity: this.form.value.quantity ?? 1,
+      quantityUnit: this.form.value.quantityUnit, // ✅ Added this
       bestBeforeDate: formatDateOnly(this.form.value.bestBeforeDate),
       pickupLocation: normalize(this.form.value.pickupLocation),
       availabilityStart: formatDateTime(this.form.value.availabilityStart),

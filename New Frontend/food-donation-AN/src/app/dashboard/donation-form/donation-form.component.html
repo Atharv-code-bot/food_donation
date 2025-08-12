@@ -76,7 +76,7 @@
   <!-- Main Form Content -->
   <div class="max-w-7xl mx-auto p-4">
     <form
-      [formGroup]="form"
+      [formGroup]="donationForm"
       (ngSubmit)="onSubmit()"
       class="bg-white rounded-lg shadow-sm border border-green-100 p-6"
     >
@@ -128,13 +128,18 @@
                     min="1"
                     required
                   />
+                  <!-- Unit Autocomplete -->
+                  <!-- donation-form.component.html -->
                   <p-autoComplete
-                    placeholder="Unit"
-                    formControlName="unit"
+                    formControlName="quantityUnit"
                     [dropdown]="true"
-                    [suggestions]="items"
-                    (completeMethod)="search($event)"
-                  ></p-autoComplete>
+                    [suggestions]="filteredUnits"
+                    (completeMethod)="filterUnits($event)"
+                    (onSelect)="onUnitSelect($event)"
+                    field="label"
+                    placeholder="Unit"
+                  >
+                  </p-autoComplete>
                 </div>
               </div>
             </div>

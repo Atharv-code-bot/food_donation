@@ -22,6 +22,8 @@ import { donation } from '../donation.model'; // Correct path and interface name
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { catchError, of, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UNITS } from '../units.constant';
+import { DonationRequestPayload } from '../donationRequest.model';
 
 @Component({
   selector: 'app-update-donation',
@@ -36,7 +38,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   template: `
     <div>
       <app-donation-form
-        [form]="form"
+        [donationForm]="form"
+        (unitSelected)="onUnitSelected($event)"
         mode="update"
         [donation]="currentDonation"
         (submitForm)="confirmUpdate()"
@@ -124,7 +127,7 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
       latitude: ['', Validators.required],
       longitude: ['', Validators.required],
       image: [null as File | null],
-      unit: [null, Validators.required],
+      quantityUnit: [null, Validators.required],
     });
   }
 
@@ -153,6 +156,13 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
         .subscribe(async (donationData: donation | null) => {
           if (donationData) {
             this.currentDonation = donationData;
+            const matchedUnit =
+              UNITS.find(
+                (u) =>
+                  u.value === donationData.quantityUnit ||
+                  u.label === donationData.quantityUnitLabel ||
+                  u.fullName === donationData.quantityUnitLabel
+              ) ?? null;
 
             this.form.patchValue({
               itemName: donationData.itemName,
@@ -170,7 +180,11 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
                 '', // Use helper
               latitude: donationData.latitude,
               longitude: donationData.longitude,
+              quantityUnit: donationData.quantityUnitLabel,
             });
+
+            console.log('quantityUnit control value:', this.form.get('quantityUnit')?.value);
+
 
             if (donationData.photoUrl) {
               this.imageUrl = 'http://localhost:8080' + donationData.photoUrl;
@@ -277,39 +291,24 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
     });
   }
 
+  onUnitSelected(unitValue: any) {
+    this.form.patchValue({ quantityUnit: unitValue.label });
+  }
+
   handleSubmit() {
     if (!this.isBrowser) return;
-
-    // Use a temporary type here if the full donation type (donation) is too strict
-    // for what you're sending in the request. This avoids errors while not changing the interface.
-    interface DonationUpdateRequestPayload {
-      itemName: string;
-      quantity: number;
-      bestBeforeDate: string;
-      pickupLocation: string;
-      availabilityStart: string;
-      availabilityEnd: string;
-      latitude: string;
-      longitude: string;
-      // Add other fields that your backend's DonationRequest DTO expects.
-      // If backend allows nulls for some, ensure your backend DTO reflects that.
-      // If backend expects string, send empty string for null.
-    }
-
-    // Construct donationData, coercing nulls to empty strings for 'string' types
-    // This is the CRITICAL part for fixing the TS error without changing the interface
-    const donationData: DonationUpdateRequestPayload = {
-      itemName: this.normalize(this.form.value.itemName) ?? '', // Coerce null to ''
+    const donationData: DonationRequestPayload = {
+      itemName: this.normalize(this.form.value.itemName) ?? '',
       quantity: this.form.value.quantity ?? 1,
-      bestBeforeDate: this.formatDateOnly(this.form.value.bestBeforeDate) ?? '', // Coerce null to ''
-      pickupLocation: this.normalize(this.form.value.pickupLocation) ?? '', // Coerce null to ''
+      quantityUnit: this.form.value.quantityUnit?.value ?? null, // ✅ Send full form (e.g., "KILOGRAMS")
+      bestBeforeDate: this.formatDateOnly(this.form.value.bestBeforeDate) ?? '',
+      pickupLocation: this.normalize(this.form.value.pickupLocation) ?? '',
       availabilityStart:
-        this.formatDateTime(this.form.value.availabilityStart) ?? '', // Coerce null to ''
+        this.formatDateTime(this.form.value.availabilityStart) ?? '',
       availabilityEnd:
-        this.formatDateTime(this.form.value.availabilityEnd) ?? '', // Coerce null to ''
-      latitude: this.normalize(this.form.value.latitude) ?? '', // Coerce null to ''
-      longitude: this.normalize(this.form.value.longitude) ?? '', // Coerce null to ''
-      // Ensure all properties expected by your backend DTO are present.
+        this.formatDateTime(this.form.value.availabilityEnd) ?? '',
+      latitude: this.normalize(this.form.value.latitude) ?? '',
+      longitude: this.normalize(this.form.value.longitude) ?? '',
     };
 
     const formData = new FormData();

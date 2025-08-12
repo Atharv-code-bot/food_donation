@@ -38,7 +38,8 @@ public class AuthController {
 
     // Register new user
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<?> registerUser(@RequestBody UserRequest userRequest,
+                                          @RequestHeader(value = "X-Firebase-Token", required = false) String firebaseToken) {
         try {
             UserResponse response = userService.createUser(userRequest);
             // Fetch newly created user
@@ -46,7 +47,12 @@ public class AuthController {
 
             if (newUser.isPresent()) {
                 User user = newUser.get();
-                String token = jwtUtil.generateToken(user.getUsername(),user.getRole(),user.getUserId());
+                // 🔥 Save Firebase token if present
+                if (firebaseToken != null && !firebaseToken.isBlank()) {
+                    user.getFirebaseTokens().add(firebaseToken);
+                    userRepository.save(user);
+                }
+                String token = jwtUtil.generateToken(user.getUsername(), user.getRole(), user.getUserId());
                 return ResponseEntity.ok(new AuthResponse(token, user.getRole().name(),user.getUserId()));
             }
 
@@ -58,7 +64,8 @@ public class AuthController {
 
     // Login user
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest,
+                                       @RequestHeader(value = "X-Firebase-Token", required = false) String firebaseToken) {
         try {
             Optional<User> userOptional = userRepository.findByEmailOrUsername(loginRequest.getUsername(), loginRequest.getUsername());
 
@@ -82,13 +89,18 @@ public class AuthController {
 
             // Generate JWT Token
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String token = jwtUtil.generateToken(user.getUsername(),user.getRole(),user.getUserId());
+            String token = jwtUtil.generateToken(userDetails.getUsername(), user.getRole(), user.getUserId());
 
-            // Return token and role
-            return ResponseEntity.ok(new AuthResponse(token, user.getRole().name(),user.getUserId()));
+            // 🔥 Save Firebase token if present
+            if (firebaseToken != null && !firebaseToken.isBlank()) {
+                user.getFirebaseTokens().add(firebaseToken);
+                userRepository.save(user);
+            }
 
+            return ResponseEntity.ok(new AuthResponse(token, user.getRole().name(), user.getUserId()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Invalid credentials.");
         }
     }
+
 }

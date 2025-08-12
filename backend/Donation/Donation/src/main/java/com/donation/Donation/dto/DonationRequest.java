@@ -1,5 +1,4 @@
 package com.donation.Donation.dto;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -12,15 +11,25 @@ import java.time.LocalDateTime;
 public class DonationRequest {
     private String itemName;
     private int quantity;
-    // private String unit;
 
     private String pickupLocation;
-    private Double latitude; // ➕ Latitude
-    private Double longitude; // ➕ Longitude
+    private Double latitude;   // ➕ Latitude
+    private Double longitude;  // ➕ Longitude
+
+    private String quantityUnit;
+
+    public String getQuantityUnit() {
+        return quantityUnit;
+    }
+
+    public void setQuantityUnit(String quantityUnit) {
+        this.quantityUnit = quantityUnit;
+    }
 
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate bestBeforeDate;
+
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -97,3 +106,4 @@ public class DonationRequest {
 
     // No MultipartFile here, keeps it clean
 }
+

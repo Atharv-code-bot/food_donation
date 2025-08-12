@@ -16,6 +16,7 @@ import { ToastModule } from 'primeng/toast';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { UNITS } from '../units.constant';
 
 import { donation } from '../donation.model';
 import {
@@ -33,6 +34,11 @@ interface AutoCompleteCompleteEvent {
   query: string;
 }
 
+interface UnitOption {
+  label: string;
+  value: string;
+}
+
 @Component({
   selector: 'app-donation-form',
   standalone: true,
@@ -46,19 +52,20 @@ interface AutoCompleteCompleteEvent {
     LucideAngularModule,
     Dialog,
     AutoCompleteModule,
-    FormsModule
+    FormsModule,
   ],
   templateUrl: './donation-form.component.html',
   styleUrls: ['./donation-form.component.css'],
   encapsulation: ViewEncapsulation.None, // ✅ Important
 })
 export class DonationFormComponent implements OnChanges, OnDestroy {
-  @Input() form!: FormGroup;
+  @Input() donationForm!: FormGroup;
   @Input() mode: 'create' | 'update' = 'create';
   @Input() donation: donation | null = null;
   @Output() submitForm = new EventEmitter<void>();
   @Input() isSubmitting = false;
   @Input() showSuccessDialog: boolean = false;
+  @Output() unitSelected = new EventEmitter<string>();
 
   constructor(
     private location: Location,
@@ -76,16 +83,28 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
 
   private imageSubscription?: Subscription;
   private donationImageService = inject(DashboardService);
-  
-  items!: string[];
 
-  search(event: AutoCompleteCompleteEvent) {
-    let _items = ['kg', 'pieces', 'liters', 'packs'];
-    this.items = event.query
-      ? _items.filter((item) =>
-          item.toLowerCase().includes(event.query.toLowerCase())
-        )
-      : _items;
+  units = UNITS; // full list
+  filteredUnits: { label: string; value: string; fullName?: string }[] = [];
+
+  filterUnits(event: any) {
+    const q = (event.query || '').toLowerCase();
+    if (!q) {
+      this.filteredUnits = [...this.units];
+      return;
+    }
+    this.filteredUnits = this.units.filter(
+      (u) =>
+        u.label.toLowerCase().includes(q) ||
+        (u.fullName && u.fullName.toLowerCase().includes(q)) ||
+        u.value.toLowerCase().includes(q)
+    );
+  }
+
+  onUnitSelect(unitObj: any) {
+    // unitObj is the selected object from suggestions
+    this.unitSelected.emit(unitObj);
+    console.log(unitObj.value.value)
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -147,7 +166,7 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
     console.log('Selected file:', file);
 
     if (file) {
-      this.form.get('image')?.setValue(file);
+      this.donationForm.get('image')?.setValue(file);
 
       const reader = new FileReader();
       reader.onload = (e) => {

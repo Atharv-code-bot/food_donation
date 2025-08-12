@@ -16,4 +16,6 @@
     updatedAt: string;
     latitude: string;
     longitude: string;
+    quantityUnit: string;
+    quantityUnitLabel: string;
   }

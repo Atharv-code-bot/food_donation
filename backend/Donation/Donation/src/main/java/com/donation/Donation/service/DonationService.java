@@ -123,10 +123,10 @@ public class DonationService {
             String emailBody = "Thank you for donating food! Your donation is now available for NGOs to claim.";
             emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
-            if (user.getPhone() != null) {
-                String smsMessage = "Your food donation is live! NGOs can now claim it.";
-                smsService.sendSms(user.getPhone(), smsMessage);
-            }
+//            if (user.getPhone() != null) {
+//                String smsMessage = "Your food donation is live! NGOs can now claim it.";
+//                smsService.sendSms(user.getPhone(), smsMessage);
+//            }
         }
         catch (Exception e) {
             logger.error("Failed to send notification: Donation will not be committed", e);

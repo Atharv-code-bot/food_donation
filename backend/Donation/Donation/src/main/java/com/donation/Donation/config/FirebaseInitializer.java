@@ -6,8 +6,7 @@ import com.google.firebase.FirebaseOptions;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.InputStream;
 
 @Component
 public class FirebaseInitializer {
@@ -15,8 +14,14 @@ public class FirebaseInitializer {
     @PostConstruct
     public void init() {
         try {
-            FileInputStream serviceAccount = new FileInputStream(
-                    "src/main/resources/firebase/firebase-service-account.json");
+            // Load from resources folder via classpath
+            InputStream serviceAccount = getClass()
+                    .getClassLoader()
+                    .getResourceAsStream("food-donation-app-8fba5-firebase-adminsdk-fbsvc-070e77bb25.json");
+
+            if (serviceAccount == null) {
+                throw new IllegalStateException("❌ Firebase service account file not found in resources!");
+            }
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
@@ -27,7 +32,7 @@ public class FirebaseInitializer {
             }
 
             System.out.println("✅ Firebase Initialized");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

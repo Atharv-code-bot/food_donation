@@ -71,14 +71,14 @@ public class UserController {
 
     @PutMapping("/update")
     public ResponseEntity<?> updateUser(
-            @RequestParam(value = "userRequest", required = false) String userRequestJson,
+            @RequestParam(value = "UserRequest", required = false) String userRequestJson,
             @RequestPart(value = "image", required = false) MultipartFile imageFile) {
         try {
-            UserRequest request = null;
+            UserUpdaterRequest request = null;
             if (userRequestJson != null && !userRequestJson.isBlank()) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 // This is where the JSON string is parsed into your UserRequest DTO
-                request = objectMapper.readValue(userRequestJson, UserRequest.class);
+                request = objectMapper.readValue(userRequestJson, UserUpdaterRequest.class);
             }
 
             // Call your userService method, passing the potentially null request object.

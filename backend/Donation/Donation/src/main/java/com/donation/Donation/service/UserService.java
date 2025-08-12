@@ -74,8 +74,6 @@ public class UserService {
         user.setProvider(AuthProvider.LOCAL);
         user.setAddress(request.getAddress());
         user.setProfileImageUrl(PLACEHOLDER_IMAGE_URL);
-        user.setDefaultLatitude(request.getLatitude());
-        user.setDefaultLongitude(request.getLongitude());
 
 
         User savedUser = userRepository.save(user);
@@ -140,34 +138,25 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse updateUser(UserRequest request, MultipartFile imageFile) {
+    public UserResponse updateUser(UserUpdaterRequest request, MultipartFile imageFile) {
         User user = authUtil.getLoggedInUser();
 
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not logged in");
         }
 
-        // ✅ Robustly update user fields: only update if 'request' is not null AND the
-        // field value is provided
-        if (request != null) {
-            if (request.getFullname() != null) {
-                user.setFullname(request.getFullname());
-            }
-            if (request.getPhone() != null) {
-                user.setPhone(request.getPhone());
-            }
-            if (request.getAddress() != null) {
-                user.setAddress(request.getAddress());
-            }
-            // Assuming latitude and longitude are also in UserRequest
-            if (request.getLatitude() != null) { // Assuming getLatitude returns String or Double
-                user.setDefaultLatitude(request.getLatitude());
-            }
-            if (request.getLongitude() != null) { // Assuming getLongitude returns String or Double
-                user.setDefaultLongitude(request.getLongitude());
-            }
-            // ... handle other fields from UserRequest if they exist
+        if (request == null) {
+            throw new IllegalArgumentException("Request body is missing");
         }
+
+
+
+        // Update user fields
+        user.setFullname(request.getFullname());
+        user.setPhone(request.getPhone());
+        user.setAddress(request.getAddress());
+        user.setDefaultLatitude(request.getLatitude());
+        user.setDefaultLongitude(request.getLongitude());
 
         if (imageFile != null && !imageFile.isEmpty()) {
             String oldImageUrl = user.getProfileImageUrl();

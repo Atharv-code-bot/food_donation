@@ -76,6 +76,7 @@ public class UserService {
         user.setDefaultLatitude(request.getLatitude());
         user.setDefaultLongitude(request.getLongitude());
 
+
         User savedUser = userRepository.save(user);
 
         try {
@@ -110,9 +111,10 @@ public class UserService {
         response.setAddress(user.getAddress());
         response.setCreatedAt(user.getCreatedAt());
         response.setUpdatedAt(user.getUpdatedAt());
-        response.setPhotoUrl("/users/images" + user.getProfileImageUrl());
+        response.setPhotoUrl("/users/images"+user.getProfileImageUrl());
         response.setLatitude(user.getDefaultLatitude());
         response.setLongitude(user.getDefaultLongitude());
+
 
         return response;
     }
@@ -290,8 +292,8 @@ public class UserService {
         // Update details only for OAuth2 users
         user.setPhone(request.getPhone());
         user.setAddress(request.getAddress());
-        // user.setDefaultLatitude(request.getLatitude());
-        // user.setDefaultLongitude(request.getLongitude());
+        user.setDefaultLatitude(request.getLatitude());
+        user.setDefaultLongitude(request.getLongitude());
 
         // Role update (optional, ensure security rules before allowing this)
         if (request.getRole() != null) {

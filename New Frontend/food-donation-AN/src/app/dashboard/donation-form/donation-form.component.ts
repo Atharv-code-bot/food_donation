@@ -9,12 +9,13 @@ import {
   OnChanges,
   ViewEncapsulation,
 } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, Location } from '@angular/common';
 import { catchError, of, retry, Subscription } from 'rxjs';
 import { ToastModule } from 'primeng/toast';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 import { donation } from '../donation.model';
 import {
@@ -26,6 +27,11 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { LucideAngularModule } from 'lucide-angular';
 import { Router } from '@angular/router';
 import { Dialog } from 'primeng/dialog';
+
+interface AutoCompleteCompleteEvent {
+  originalEvent: Event;
+  query: string;
+}
 
 @Component({
   selector: 'app-donation-form',
@@ -39,6 +45,8 @@ import { Dialog } from 'primeng/dialog';
     ConfirmDialog,
     LucideAngularModule,
     Dialog,
+    AutoCompleteModule,
+    FormsModule
   ],
   templateUrl: './donation-form.component.html',
   styleUrls: ['./donation-form.component.css'],
@@ -55,7 +63,7 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
   constructor(
     private location: Location,
     private messageService: MessageService,
-    private router: Router,
+    private router: Router
   ) {}
 
   goBack(): void {
@@ -68,6 +76,17 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
 
   private imageSubscription?: Subscription;
   private donationImageService = inject(DashboardService);
+  
+  items!: string[];
+
+  search(event: AutoCompleteCompleteEvent) {
+    let _items = ['kg', 'pieces', 'liters', 'packs'];
+    this.items = event.query
+      ? _items.filter((item) =>
+          item.toLowerCase().includes(event.query.toLowerCase())
+        )
+      : _items;
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['donation'] && this.donation?.photoUrl) {

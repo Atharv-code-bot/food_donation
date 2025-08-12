@@ -54,6 +54,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .queryParam("role", user.getRole().name())
                 .queryParam("id", user.getUserId())
 
+                .queryParam("id", user.getUserId())
+
                 .build().toUriString();
 
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);

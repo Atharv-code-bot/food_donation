@@ -7,9 +7,14 @@ import {
   PLATFORM_ID,
   signal,
   AfterViewInit,
-  DestroyRef
+  DestroyRef,
 } from '@angular/core';
-import { ReactiveFormsModule, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  Validators,
+  FormBuilder,
+  FormGroup,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardService } from '../../services/dashboard.service';
 import { DonationFormComponent } from '../donation-form/donation-form.component';
@@ -108,7 +113,6 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
     }
   }
 
-
   private initForm(): void {
     this.form = this.fb.group({
       itemName: ['', Validators.required],
@@ -120,6 +124,7 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
       latitude: ['', Validators.required],
       longitude: ['', Validators.required],
       image: [null as File | null],
+      unit: [null, Validators.required],
     });
   }
 
@@ -127,7 +132,8 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
     this.donationId = this.route.snapshot.paramMap.get('donationId')!;
 
     if (this.isBrowser) {
-      this.dashboardService.loadDonation(this.donationId)
+      this.dashboardService
+        .loadDonation(this.donationId)
         .pipe(
           take(1),
           takeUntilDestroyed(this.destroyRef),
@@ -152,10 +158,16 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
               itemName: donationData.itemName,
               quantity: donationData.quantity,
               // Use null-coalescing to ensure string | null becomes string | ''
-              bestBeforeDate: this.toInputDate(donationData.bestBeforeDate) ?? '', // Use helper
+              bestBeforeDate:
+                this.toInputDate(donationData.bestBeforeDate) ?? '', // Use helper
               pickupLocation: donationData.pickupLocation,
-              availabilityStart: this.toInputDateTimeForTemplate(donationData.availabilityStart) ?? '', // Use helper
-              availabilityEnd: this.toInputDateTimeForTemplate(donationData.availabilityEnd) ?? '', // Use helper
+              availabilityStart:
+                this.toInputDateTimeForTemplate(
+                  donationData.availabilityStart
+                ) ?? '', // Use helper
+              availabilityEnd:
+                this.toInputDateTimeForTemplate(donationData.availabilityEnd) ??
+                '', // Use helper
               latitude: donationData.latitude,
               longitude: donationData.longitude,
             });
@@ -166,7 +178,9 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
 
             await this.initializeMapForUpdate();
           } else {
-            console.warn("Donation data was not loaded or an error occurred. Cannot initialize form/map.");
+            console.warn(
+              'Donation data was not loaded or an error occurred. Cannot initialize form/map.'
+            );
           }
         });
 
@@ -178,14 +192,15 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
             longitude: coords.lng.toFixed(6),
           });
         });
-
     } else {
-      console.log('UpdateDonationComponent: Running on server. Deferring data load and map setup to client.');
+      console.log(
+        'UpdateDonationComponent: Running on server. Deferring data load and map setup to client.'
+      );
       this.currentDonation = null;
     }
   }
 
-  ngAfterViewInit(): void { }
+  ngAfterViewInit(): void {}
 
   private async initializeMapForUpdate(): Promise<void> {
     if (!this.isBrowser) {
@@ -195,7 +210,11 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
 
     let initialLat: number | null = null;
     let initialLng: number | null = null;
-    if (this.currentDonation && this.currentDonation.latitude !== null && this.currentDonation.longitude !== null) {
+    if (
+      this.currentDonation &&
+      this.currentDonation.latitude !== null &&
+      this.currentDonation.longitude !== null
+    ) {
       const parsedLat = parseFloat(this.currentDonation.latitude);
       const parsedLng = parseFloat(this.currentDonation.longitude);
       if (!isNaN(parsedLat) && !isNaN(parsedLng)) {
@@ -284,8 +303,10 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
       quantity: this.form.value.quantity ?? 1,
       bestBeforeDate: this.formatDateOnly(this.form.value.bestBeforeDate) ?? '', // Coerce null to ''
       pickupLocation: this.normalize(this.form.value.pickupLocation) ?? '', // Coerce null to ''
-      availabilityStart: this.formatDateTime(this.form.value.availabilityStart) ?? '', // Coerce null to ''
-      availabilityEnd: this.formatDateTime(this.form.value.availabilityEnd) ?? '', // Coerce null to ''
+      availabilityStart:
+        this.formatDateTime(this.form.value.availabilityStart) ?? '', // Coerce null to ''
+      availabilityEnd:
+        this.formatDateTime(this.form.value.availabilityEnd) ?? '', // Coerce null to ''
       latitude: this.normalize(this.form.value.latitude) ?? '', // Coerce null to ''
       longitude: this.normalize(this.form.value.longitude) ?? '', // Coerce null to ''
       // Ensure all properties expected by your backend DTO are present.

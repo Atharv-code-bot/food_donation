@@ -30,13 +30,6 @@ public class DonationRequest {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime availabilityEnd;
 
-    // public String getUnit() {
-    //     return unit;
-    // }
-
-    // public void setUnit(String unit) {
-    //     this.unit = unit;
-    // }
 
     public Double getLatitude() {
         return latitude;

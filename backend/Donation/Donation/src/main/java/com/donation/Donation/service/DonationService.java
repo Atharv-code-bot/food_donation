@@ -107,7 +107,7 @@ public class DonationService {
         event.setLatitude(savedDonation.getLatitude());
         event.setLongitude(savedDonation.getLongitude());
 
-        // kafkaProducerService.sendDonationCreated(event);
+        kafkaProducerService.sendDonationCreated(event);
 
         try {
             String emailSubject = "Your Food Donation is Live!";
@@ -259,6 +259,7 @@ public class DonationService {
         donation.setStatus(Status.CLAIMED);
         donationRepository.save(donation);
 
+
         DonationEventDTO event = new DonationEventDTO();
         event.setDonationId(donation.getDonationId());
         event.setDonorId(donation.getDonor().getUserId());
@@ -266,7 +267,9 @@ public class DonationService {
         event.setLatitude(donation.getLatitude());
         event.setLongitude(donation.getLongitude());
 
-        // kafkaProducerService.sendDonationRequested(event);
+        kafkaProducerService.sendDonationRequested(event);
+
+
 
         try {
 
@@ -341,7 +344,8 @@ public class DonationService {
         return mapToDonationResponse(donation);
     }
 
-    public DonationResponse completeDonation(int id, String enteredOtp) {
+
+    public DonationResponse completeDonation(int id,String enteredOtp) {
 
         Otp otpEntity = otpRepository.findByDonation_DonationId(id)
                 .orElseThrow(() -> new RuntimeException("OTP not found for this donation."));
@@ -361,6 +365,7 @@ public class DonationService {
         donationRepository.save(donation);
         otpRepository.delete(otpEntity); // Clean up OTP
 
+
         DonationEventDTO event = new DonationEventDTO();
         event.setDonationId(donation.getDonationId());
         event.setDonorId(donation.getDonor().getUserId());
@@ -368,7 +373,9 @@ public class DonationService {
         event.setLatitude(donation.getLatitude());
         event.setLongitude(donation.getLongitude());
 
-        // kafkaProducerService.sendDonationCompleted(event);
+        kafkaProducerService.sendDonationCompleted(event);
+
+
 
         // Get donor details
         User donor = donation.getDonor();
@@ -576,8 +583,7 @@ public class DonationService {
         if (cachedData != null) {
             try {
                 donations = objectMapper.convertValue(
-                        cachedData, new TypeReference<List<Donations>>() {
-                        });
+                        cachedData, new TypeReference<List<Donations>>() {});
             } catch (Exception e) {
                 System.err.println("Redis Data Conversion Error: " + e.getMessage());
                 // Fallback to DB if Redis fails
@@ -598,6 +604,7 @@ public class DonationService {
             }
         }
     }
+
 
     // Fetch available donations for NGOs with filtering & sorting
     public List<DonationResponse> getAvailableDonations(String foodCategory, LocalDate expirationDate, String sortBy,

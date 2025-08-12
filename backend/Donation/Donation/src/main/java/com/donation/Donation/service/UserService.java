@@ -74,8 +74,6 @@ public class UserService {
         user.setProvider(AuthProvider.LOCAL);
         user.setAddress(request.getAddress());
         user.setProfileImageUrl(PLACEHOLDER_IMAGE_URL);
-        user.setDefaultLatitude(request.getLatitude());
-        user.setDefaultLongitude(request.getLongitude());
 
 
         User savedUser = userRepository.save(user);
@@ -140,11 +138,15 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse updateUser(UserRequest request, MultipartFile imageFile) {
+    public UserResponse updateUser(UserUpdaterRequest request, MultipartFile imageFile) {
         User user = authUtil.getLoggedInUser();
 
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not logged in");
+        }
+
+        if (request == null) {
+            throw new IllegalArgumentException("Request body is missing");
         }
 
 

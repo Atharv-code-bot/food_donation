@@ -52,7 +52,7 @@ public class AuthController {
                     user.getFirebaseTokens().add(firebaseToken);
                     userRepository.save(user);
                 }
-                String token = jwtUtil.generateToken(user.getUsername());
+                String token = jwtUtil.generateToken(user.getUsername(),user.getRole(),user.getUserId());
                 return ResponseEntity.ok(new AuthResponse(token, user.getRole().name(),user.getUserId()));
             }
 
@@ -75,21 +75,18 @@ public class AuthController {
 
             User user = userOptional.get();
 
-            // Ensure OAuth2 users have set a password before allowing login
             if (user.getProvider() == AuthProvider.GOOGLE && (user.getPassword() == null || user.getPassword().isEmpty())) {
                 return ResponseEntity.badRequest().body("You signed up with Google. Please set a password first.");
             }
 
-            // Authenticate using username and password
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), loginRequest.getPassword())
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Generate JWT Token
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String token = jwtUtil.generateToken(userDetails.getUsername());
+            String token = jwtUtil.generateToken(userDetails.getUsername(),user.getRole(),user.getUserId());
 
             // 🔥 Save Firebase token if present
             if (firebaseToken != null && !firebaseToken.isBlank()) {

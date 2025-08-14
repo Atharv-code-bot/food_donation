@@ -79,7 +79,7 @@ public class SecurityConfig {
                                 .requestMatchers("/donations/images/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_DONOR", "ROLE_NGO")  // ✅ Get donation images
                                 .requestMatchers("/donations/user/{stat}").hasAnyAuthority("ROLE_DONOR", "ROLE_ADMIN")  // ✅ Get claimed donations for donor
                                 .requestMatchers("/donations/ngo/{stat}").hasAnyAuthority("ROLE_NGO", "ROLE_ADMIN")  // ✅ Get claimed donations for NGO
-
+                                .requestMatchers("/api/notifications/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_DONOR", "ROLE_NGO")
 // 🔹 5️⃣ General rule at the END
                                 .anyRequest().authenticated()
 

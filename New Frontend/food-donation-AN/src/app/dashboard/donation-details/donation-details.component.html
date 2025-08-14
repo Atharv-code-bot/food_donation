@@ -236,40 +236,11 @@
           </div>
 
           <!-- Map -->
-          <div>
-            <h3
-              class="flex items-center gap-2 text-xl font-semibold text-green-700 mb-3"
-            >
-              <lucide-icon
-                name="map-pin"
-                class="h-5 w-5 text-green-600"
-              ></lucide-icon>
-              Pickup Location
-            </h3>
-            <div
-              class="bg-green-50 rounded-lg border border-green-100 overflow-hidden"
-            >
-              @if (mapError()) {
-              <div
-                class="flex flex-col items-center text-red-600 bg-red-100 border border-red-300 rounded p-4 gap-3"
-              >
-                <p>{{ mapError() }}</p>
-                <button
-                  class="border border-red-600 text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-                  (click)="retryInitializeMap()"
-                >
-                  <lucide-icon name="refresh-cw" class="h-4 w-4"></lucide-icon>
-                  Retry Map Load
-                </button>
-              </div>
-              } @else {
-              <div
-                id="donationMap"
-                class="w-full h-80 z-10 border-2 border-green-50"
-              ></div>
-              }
-            </div>
-          </div>
+          <app-map
+            [mode]="'view'"
+            [mapId]="'donationMap'"
+            [donationData]="donation()"
+          ></app-map>
         </div>
       </div>
 

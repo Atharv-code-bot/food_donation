@@ -8,6 +8,8 @@ import {
   signal,
   AfterViewInit,
   DestroyRef,
+  ElementRef,
+  ViewChild,
 } from '@angular/core';
 import {
   ReactiveFormsModule,
@@ -24,6 +26,7 @@ import { catchError, of, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UNITS } from '../units.constant';
 import { DonationRequestPayload } from '../donationRequest.model';
+import { MapComponent } from '../../map/map.component';
 
 @Component({
   selector: 'app-update-donation',
@@ -44,18 +47,21 @@ import { DonationRequestPayload } from '../donationRequest.model';
         [donation]="currentDonation"
         (submitForm)="confirmUpdate()"
         [showSuccessDialog]="showSuccessDialog()"
+        (coordsChange)="onCoordsChange($event)"
       >
       </app-donation-form>
     </div>
   `,
   providers: [ConfirmationService, MessageService],
 })
-export class UpdateDonationComponent implements OnInit, AfterViewInit {
+export class UpdateDonationComponent implements OnInit {
   fb = inject(FormBuilder);
   showSuccessDialog = signal(false);
   isBrowser: boolean;
   mapError = signal<string | null>(null);
   isMapLoading = signal(false);
+  selectedUnitValue!: string;
+  tempUnit!: string;
 
   private readonly defaultMapLat = 18.5204;
   private readonly defaultMapLng = 73.875794;
@@ -77,6 +83,8 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
     this.isBrowser = isPlatformBrowser(this.platformId);
     this.initForm();
   }
+
+  @ViewChild('map', { static: false }) mapElementRef!: ElementRef;
 
   // Helper functions - ensuring they return 'string' or 'string | null' as needed
   // normalize: returns string | null, which means we must check for null when assigning to strict 'string' type
@@ -182,15 +190,23 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
               longitude: donationData.longitude,
               quantityUnit: donationData.quantityUnitLabel,
             });
+            this.tempUnit = donationData.quantityUnit;
+            console.log(
+              'quantityUnit control value:',
+              this.form.get('quantityUnit')?.value
+            );
 
-            console.log('quantityUnit control value:', this.form.get('quantityUnit')?.value);
-
-
+            this.dashboardService.selectedCoordinates$
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe((coords) => {
+                this.form.patchValue({
+                  latitude: coords.lat.toFixed(6),
+                  longitude: coords.lng.toFixed(6),
+                });
+              });
             if (donationData.photoUrl) {
               this.imageUrl = 'http://localhost:8080' + donationData.photoUrl;
             }
-
-            await this.initializeMapForUpdate();
           } else {
             console.warn(
               'Donation data was not loaded or an error occurred. Cannot initialize form/map.'
@@ -214,42 +230,12 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {}
-
-  private async initializeMapForUpdate(): Promise<void> {
-    if (!this.isBrowser) {
-      this.mapError.set('Map can only be loaded in a browser environment.');
-      return;
-    }
-
-    let initialLat: number | null = null;
-    let initialLng: number | null = null;
-    if (
-      this.currentDonation &&
-      this.currentDonation.latitude !== null &&
-      this.currentDonation.longitude !== null
-    ) {
-      const parsedLat = parseFloat(this.currentDonation.latitude);
-      const parsedLng = parseFloat(this.currentDonation.longitude);
-      if (!isNaN(parsedLat) && !isNaN(parsedLng)) {
-        initialLat = parsedLat;
-        initialLng = parsedLng;
-      }
-    }
-
-    this.isMapLoading.set(true);
-    const error = await this.dashboardService.initializeLocationSelectionMap(
-      'map', // Ensure this ID matches the map container in your HTML template
-      initialLat,
-      initialLng,
-      this.defaultMapLat,
-      this.defaultMapLng
-    );
-
-    if (error) {
-      this.mapError.set(error);
-    }
-    this.isMapLoading.set(false);
+  // ✅ FIX: onCoordsChange method for updating the form
+  onCoordsChange(coords: { lat: number; lng: number }): void {
+    this.form.patchValue({
+      latitude: coords.lat.toFixed(6),
+      longitude: coords.lng.toFixed(6),
+    });
   }
 
   confirmUpdate() {
@@ -291,16 +277,23 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onUnitSelected(unitValue: any) {
-    this.form.patchValue({ quantityUnit: unitValue.label });
+  onUnitSelected(unit: any) {
+    this.form.patchValue({ quantityUnit: unit.value.label });
+    this.selectedUnitValue = unit.value.value;
+    // console.log(this.
+      
+    // );
   }
 
   handleSubmit() {
     if (!this.isBrowser) return;
+    if (this.selectedUnitValue == undefined) {
+      this.selectedUnitValue = this.tempUnit;
+    }
     const donationData: DonationRequestPayload = {
       itemName: this.normalize(this.form.value.itemName) ?? '',
       quantity: this.form.value.quantity ?? 1,
-      quantityUnit: this.form.value.quantityUnit?.value ?? null, // ✅ Send full form (e.g., "KILOGRAMS")
+      quantityUnit: this.selectedUnitValue, // ✅ Send full form (e.g., "KILOGRAMS")
       bestBeforeDate: this.formatDateOnly(this.form.value.bestBeforeDate) ?? '',
       pickupLocation: this.normalize(this.form.value.pickupLocation) ?? '',
       availabilityStart:
@@ -310,6 +303,7 @@ export class UpdateDonationComponent implements OnInit, AfterViewInit {
       latitude: this.normalize(this.form.value.latitude) ?? '',
       longitude: this.normalize(this.form.value.longitude) ?? '',
     };
+    console.log('Submitting donation data:', donationData);
 
     const formData = new FormData();
     console.log(this.form.value.longitude, this.form.value.latitude);

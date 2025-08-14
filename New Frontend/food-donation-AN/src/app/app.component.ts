@@ -3,6 +3,8 @@ import { Component, effect, inject, PLATFORM_ID } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { isPlatformBrowser, CommonModule } from '@angular/common'; // Import CommonModule
+import { FirebaseMessagingService } from './services/firebase-messaging.service';
+import { TokenService } from './services/token.service';
 
 @Component({
   selector: 'app-root',
@@ -23,20 +25,27 @@ import { isPlatformBrowser, CommonModule } from '@angular/common'; // Import Com
 export class AppComponent {
   title = 'FoodBridge';
   authService = inject(AuthService);
+  tokenService = inject(TokenService);
   private platformId = inject(PLATFORM_ID);
+  fcmService = inject(FirebaseMessagingService);
   isMobileSidebarOpen: boolean = false;
 
   constructor() {
-    // This effect runs only in the browser environment to manage the loader
     if (isPlatformBrowser(this.platformId)) {
       effect(() => {
-        // This effect will run whenever `isAuthCheckComplete` changes
         if (this.authService.isAuthCheckComplete()) {
-          // No need to remove an element from index.html anymore,
-          // the @if block handles rendering/removing this div.
           console.log(
             'AppComponent: Auth check complete, loader status updated.'
           );
+        }
+      });
+      // ✅ Get FCM token and store it at app startup
+      this.fcmService.requestPermissionAndGetToken().then((fcmToken) => {
+        if (fcmToken) {
+          console.log(
+            'FCM token acquired at startup. Storing in localStorage.'
+          );
+          this.tokenService.setFCMToken(fcmToken); // ✅ New method in TokenService
         }
       });
     }

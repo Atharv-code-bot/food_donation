@@ -8,6 +8,45 @@ export class TokenService {
     return typeof window !== 'undefined' && !!window.localStorage;
   }
 
+  // ✅ New method to get and set the FCM token
+  getFCMToken(): string | null {
+    if (this.isBrowser()) {
+      return localStorage.getItem('fcm_token');
+    }
+    return null;
+  }
+
+  setFCMToken(token: string): void {
+    if (this.isBrowser()) {
+      localStorage.setItem('fcm_token', token);
+    }
+  }
+
+  clearFCMToken(): void {
+    if (this.isBrowser()) {
+      // ... (existing token clearing logic) ...
+      localStorage.removeItem('fcm_token'); // ✅ Clear FCM token on logout
+    }
+  }
+
+      // ✅ New methods to handle latitude and longitude
+    setCoordinates(latitude: string, longitude: string): void {
+        if (this.isBrowser()) {
+            localStorage.setItem('latitude', latitude);
+            localStorage.setItem('longitude', longitude);
+        }
+    }
+    
+    getCoordinates(): { latitude: string | null, longitude: string | null } {
+        if (this.isBrowser()) {
+            return {
+                latitude: localStorage.getItem('latitude'),
+                longitude: localStorage.getItem('longitude')
+            };
+        }
+        return { latitude: null, longitude: null };
+    }
+
   getToken(): string | null {
     if (this.isBrowser()) {
       return localStorage.getItem('token');

@@ -1,0 +1,60 @@
+<div class="p-6 bg-white rounded-lg shadow-sm border border-green-100 mt-4">
+  <div class="flex justify-between mb-2">
+    <h3
+      class="flex items-center gap-2 text-xl font-semibold text-green-700 mb-3"
+    >
+      <lucide-icon name="map-pin" class="h-5 w-5 text-green-600"></lucide-icon>
+      {{ mode === "view" ? "Pickup Location" : "Select Pickup Location" }}
+    </h3>
+
+    @if (mode === 'create' || mode === 'update') {
+    <button
+      pButton
+      type="button"
+      class="border border-green-600 bg-green-200 text-green-600 hover:bg-green-100 px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+      (click)="useDefaultLocation()"
+    >
+      Use Default Location
+    </button>
+    }
+  </div>
+
+  <div
+    class="bg-green-50 rounded-lg border border-green-100 overflow-hidden relative"
+  >
+    <div
+      #mapContainer
+      [id]="mapId"
+      class="w-full h-80 z-10"
+      [class.opacity-0]="mapLoading()"
+      [class.opacity-100]="!mapLoading()"
+    ></div>
+
+    <div
+      *ngIf="mapLoading() || mapError()"
+      class="absolute inset-0 flex items-center justify-center bg-gray-50 bg-opacity-70 z-20"
+    >
+      <div *ngIf="mapLoading()" class="flex flex-col items-center">
+        <lucide-icon
+          name="loader"
+          class="h-10 w-10 text-green-600 animate-spin"
+        ></lucide-icon>
+        <p class="mt-2 text-gray-600">Loading map...</p>
+      </div>
+      <div
+        *ngIf="mapError()"
+        class="flex flex-col items-center text-red-600 bg-red-100 border border-red-300 rounded p-4 gap-3"
+      >
+        <p>{{ mapError() }}</p>
+        <button
+          pButton
+          type="button"
+          label="Retry Map Load"
+          icon="pi pi-refresh"
+          styleClass="p-button-outlined p-button-sm p-button-danger"
+          (click)="retryInitializeMap()"
+        ></button>
+      </div>
+    </div>
+  </div>
+</div>

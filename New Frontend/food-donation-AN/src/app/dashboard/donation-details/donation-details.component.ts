@@ -16,11 +16,7 @@ import {
   ImageLoadState,
 } from '../../services/dashboard.service';
 import { donation } from '../donation.model';
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   CommonModule,
   DatePipe,
@@ -39,6 +35,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { LucideAngularModule } from 'lucide-angular';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MapComponent } from '../../map/map.component';
 
 @Component({
   selector: 'app-details',
@@ -53,6 +50,7 @@ import { HttpErrorResponse } from '@angular/common/http';
     ConfirmDialogModule,
     ToastModule,
     LucideAngularModule,
+    MapComponent,
   ],
   templateUrl: './donation-details.component.html',
   styleUrl: './donation-details.component.css',
@@ -75,9 +73,6 @@ export class DonationDetailComponent implements OnInit, OnChanges, OnDestroy {
   resendCountdown = 0;
   resendInterval: any;
   showImageModal = false;
-
-  mapError = signal<string | null>(null);
-  isMapLoading = signal(false);
 
   // ✅ New signal to track successful completion for UI control
   donationSuccessfullyCompleted = signal(false);
@@ -147,20 +142,7 @@ export class DonationDetailComponent implements OnInit, OnChanges, OnDestroy {
               if (donationData) {
                 this.donation.set(donationData);
                 this.loadDonationImage();
-
-                this.isMapLoading.set(true);
-                const error = await this.dashboardService.initializeDonationMap(
-                  'donationMap',
-                  donationData.latitude,
-                  donationData.longitude,
-                  false
-                );
-                if (error) {
-                  this.mapError.set(error);
-                } else {
-                  this.mapError.set(null);
-                }
-                this.isMapLoading.set(false);
+                // Map initialization is now handled by the MapComponent's OnChanges hook
               } else {
                 console.warn(
                   'Donation data was not loaded or an error occurred. Cannot display details.'
@@ -187,10 +169,6 @@ export class DonationDetailComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy() {
     if (this.imageSubscription) {
       this.imageSubscription.unsubscribe();
-    }
-    if (this.isBrowser) {
-      document.body.style.overflow = '';
-      this.dashboardService.destroyMap();
     }
     // Clear resend interval if it's active
     if (this.resendInterval) {
@@ -305,38 +283,6 @@ export class DonationDetailComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  retryInitializeMap() {
-    const d = this.donation();
-    const lat = parseFloat(d?.latitude ?? '');
-    const lng = parseFloat(d?.longitude ?? '');
-
-    if (this.isBrowser && d && !isNaN(lat) && !isNaN(lng)) {
-      this.isMapLoading.set(true);
-      this.dashboardService
-        .initializeDonationMap('donationMap', d.latitude, d.longitude, false)
-        .then((error) => {
-          if (error) this.mapError.set(error);
-          else this.mapError.set(null);
-        })
-        .catch((err) => {
-          console.error('Map retry initialization failed:', err);
-          this.mapError.set('Map retry failed: ' + err.message);
-        })
-        .finally(() => {
-          this.isMapLoading.set(false);
-        });
-    } else if (this.isBrowser) {
-      this.mapError.set(
-        '❗ Coordinates are missing or invalid. Cannot retry map load.'
-      );
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Map Error',
-        detail: 'Coordinates are missing or invalid. Cannot retry map load.',
-      });
-    }
-  }
-
   confirmClaimDonation(event: Event): void {
     this.confirmationService.confirm({
       key: 'global',
@@ -441,7 +387,8 @@ export class DonationDetailComponent implements OnInit, OnChanges, OnDestroy {
           this.messageService.add({
             severity: 'success',
             summary: 'OTP Sent!',
-            detail: 'OTP sent to donor phone number. Enter it below to complete.',
+            detail:
+              'OTP sent to donor phone number. Enter it below to complete.',
           });
           this.startResendCooldown();
         }
@@ -539,7 +486,11 @@ export class DonationDetailComponent implements OnInit, OnChanges, OnDestroy {
             // Unauthorized
             errorMessage = 'You are not authorized. Please log in again.';
             summary = 'Unauthorized';
-            this.messageService.add({severity: severity, summary: summary, detail: errorMessage});
+            this.messageService.add({
+              severity: severity,
+              summary: summary,
+              detail: errorMessage,
+            });
             this.router.navigate(['/auth/signin']);
             return of(null);
           } else if (err.error && err.error.message) {

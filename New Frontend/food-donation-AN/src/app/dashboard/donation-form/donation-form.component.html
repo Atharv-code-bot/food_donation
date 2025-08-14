@@ -323,8 +323,8 @@
           </div>
         </div>
       </div>
-      <!-- @if (mode == 'create') { -->
-      <div>
+      
+      <div *ngIf="mode === 'create' || mode === 'update'">
         <h2
           class="flex items-center gap-2 text-xl font-semibold text-green-700 my-4"
         >
@@ -334,14 +334,26 @@
           ></lucide-icon>
           Location Map
         </h2>
-        <div
-          id="map"
-          class="w-full h-64 rounded-lg border border-green-100"
-        ></div>
-        <input type="text" id="latitude" readonly hidden />
-        <input type="text" id="longitude" readonly hidden />
+        <app-map
+          [mode]="mode"
+          [donationData]="donation!"
+          (coordsChange)="coordsChange.emit($event)"
+        ></app-map>
+        <input
+          type="text"
+          id="latitude"
+          readonly
+          hidden
+          formControlName="latitude"
+        />
+        <input
+          type="text"
+          id="longitude"
+          readonly
+          hidden
+          formControlName="longitude"
+        />
       </div>
-      <!-- } -->
 
       <!-- Form Buttons -->
       <div

@@ -59,6 +59,8 @@ import {
   PlusCircle,
   User,
   LogOut,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-angular';
 import {
   provideNgxWebstorage,
@@ -123,6 +125,8 @@ export const appConfig: ApplicationConfig = {
         PlusCircle,
         User,
         LogOut,
+        ChevronUp,
+        ChevronDown,
       }),
     ),
     MessageService,

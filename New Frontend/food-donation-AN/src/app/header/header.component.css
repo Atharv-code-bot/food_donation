@@ -18,6 +18,24 @@ header {
   padding: 0 !important;
 }
 
+
+/* Add this to style the notification list */
+.notification-list-scroll {
+  max-height: 400px; /* Adjust this value as needed */
+  overflow-y: auto;
+}
+
+/* Style the colored dot for unread notifications */
+.unread-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 8px;
+  height: 8px;
+  background-color: #FFA500; /* Use a color that matches your theme */
+  border-radius: 50%;
+}
+
 /* Optional: Fine-tune avatar online indicator color if needed */
 .bg-\[\#219653\] {
   /* Tailwind's generated class for bg-[#219653] */

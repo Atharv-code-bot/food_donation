@@ -61,10 +61,10 @@ public class DonationService {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private EmailNotificationService emailService;
-    @Autowired
-    private SmsNotificationService smsService;
+
     @Qualifier("objectMapper")
     @Autowired
     private ObjectMapper objectMapper;
@@ -109,19 +109,7 @@ public class DonationService {
 
         kafkaProducerService.sendDonationCreated(event);
 
-        try {
-            String emailSubject = "Your Food Donation is Live!";
-            String emailBody = "Thank you for donating food! Your donation is now available for NGOs to claim.";
-            emailService.sendEmail(user.getEmail(), emailSubject, emailBody);
 
-            // if (user.getPhone() != null) {
-            // String smsMessage = "Your food donation is live! NGOs can now claim it.";
-            // smsService.sendSms(user.getPhone(), smsMessage);
-            // }
-        } catch (Exception e) {
-            logger.error("Failed to send notification: Donation will not be committed", e);
-            throw new RuntimeException("Donation failed due to notification error.");
-        }
 
         redisService.delete("donations:alllist");
         redisService.delete("donations:status:AVAILABLE");
@@ -271,69 +259,7 @@ public class DonationService {
 
 
 
-        try {
 
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
-
-            String startDate = donation.getAvailabilityStart().format(dateFormatter);
-            String startTime = donation.getAvailabilityStart().format(timeFormatter);
-            String endDate = donation.getAvailabilityEnd().format(dateFormatter);
-            String endTime = donation.getAvailabilityEnd().format(timeFormatter);
-
-            String emailSubject = "Your Donation Has Been Claimed!";
-            String emailBody = String.format(
-                    """
-                            <html>
-                            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                                <p>Hello <b>%s</b>,</p>
-
-                                <p>Great news! Your donation has been <b>claimed</b> by <b>%s</b>. Thank you for your generosity! 🎉</p>
-
-                                <h3>📦 Donation Details:</h3>
-                                <ul>
-                                    <li><b>Food Item:</b> %s</li>
-                                    <li><b>Quantity:</b> %s</li>
-                                    <li><b>Pickup Location:</b> %s</li>
-                                </ul>
-
-                                <h3>⏳ Availability Period:</h3>
-                                <ul>
-                                    <li>📅 <b>Start Date:</b> %s</li>
-                                    <li>🕒 <b>Start Time:</b> %s</li>
-                                    <li>📅 <b>End Date:</b> %s</li>
-                                    <li>🕒 <b>End Time:</b> %s</li>
-                                </ul>
-
-
-                                <p>Your contribution makes a real difference. We appreciate your kindness! ❤️</p>
-
-                                <p>Best Regards,</p>
-                                <p><b>✨ Food Donation Platform Team</b></p>
-                            </body>
-                            </html>
-                            """,
-                    donor.getFullname(),
-                    ngo.getFullname(),
-                    donation.getItemName(),
-                    donation.getQuantity(),
-                    donation.getPickupLocation(),
-                    startDate,
-                    startTime,
-                    endDate,
-                    endTime);
-
-            emailService.sendEmail(donor.getEmail(), emailSubject, emailBody);
-
-            // if (donor.getPhone() != null) {
-            // String smsMessage = "Your donation has been claimed by " + ngo.getFullname()
-            // + "! Thank you for your generosity.";
-            // smsService.sendSms(donor.getPhone(), smsMessage);
-            // }
-        } catch (Exception e) {
-            logger.error("Failed to send notification: Donation claim will not be committed", e);
-            throw new RuntimeException("Donation claim failed due to notification error.");
-        }
 
         redisService.delete("donations:status:CLAIMED");
         String userCacheKey = "donations:user:" + donation.getDonor() + ":status:CLAIMED";
@@ -376,59 +302,6 @@ public class DonationService {
         kafkaProducerService.sendDonationCompleted(event);
 
 
-
-        // Get donor details
-        User donor = donation.getDonor();
-
-        // Prepare email content
-        String emailSubject = "Donation Collected Successfully!";
-        String emailBody = String.format(
-                """
-                        <html>
-                        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                            <p>Hello <b>%s</b>,</p>
-
-                            <p>Your donation has been successfully <b>collected</b>. Thank you for your generous contribution!</p>
-
-                            <h3>Donation Details:</h3>
-                            <ul>
-                                <li><b>Food Item:</b> %s</li>
-                                <li><b>Quantity:</b> %s</li>
-                                <li><b>Pickup Location:</b> %s</li>
-                            </ul>
-
-                            <p>We truly appreciate your kindness and generosity in helping those in need. ❤️</p>
-
-                            <p>Best Regards,</p>
-                            <p><b>Food Donation Platform Team</b></p>
-                        </body>
-                        </html>
-                        """,
-                donor.getFullname(),
-                donation.getItemName(),
-                donation.getQuantity(),
-                donation.getPickupLocation());
-
-        try {
-            emailService.sendEmail(donor.getEmail(), emailSubject, emailBody);
-
-        } catch (Exception e) {
-            logger.error("❌ Failed to send email to donor {}", donor.getEmail(), e);
-            throw new RuntimeException("Email sending failed: " + e.getMessage());
-        }
-
-        // Prepare SMS content
-        // if (donor.getPhone() != null && !donor.getPhone().isEmpty()) {
-        // String smsMessage = "Dear " + donor.getFullname() + ", your donation has been
-        // successfully collected! Thank you for your generosity.";
-        // try {
-        // smsService.sendSms(donor.getPhone(), smsMessage);
-
-        // } catch (Exception e) {
-        // logger.error("❌ Failed to send SMS to donor {}", donor.getPhone(), e);
-        // throw new RuntimeException("SMS sending failed: " + e.getMessage());
-        // }
-        // }
 
         redisService.delete("donations:status:COLLECTED");
         String userCacheKey = "donations:user:" + donation.getDonor() + ":status:COLLECTED";

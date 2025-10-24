@@ -1,5 +1,5 @@
-<header class="bg-white shadow-sm border-b border-green-100">
-  <button
+<header class="bg-white shadow-sm border-b border-green-100 p-6">
+  <!-- <button
     class="sm:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-400"
     (click)="toggleMobileSidebar()"
   >
@@ -17,8 +17,7 @@
         d="M4 6h16M4 12h16M4 18h16"
       ></path>
     </svg>
-  </button>
-  <!-- <img src="task-management-logo.png" alt="A todo list" /> -->
+  </button> -->
   <div
     class="flex items-center space-x-2 cursor-pointer"
     [routerLink]="['/']"
@@ -27,53 +26,72 @@
     <lucide-icon name="leaf" class="h-8 w-8 text-green-600"></lucide-icon>
     <span class="text-2xl font-bold text-green-800">FoodBridge </span>
   </div>
-  <!-- <div *ngIf="!isLoggedIn" class="flex items-center gap-4">
-    <button class="rounded-full bg-blue-500 text-white px-4 py-2">
-      <a [routerLink]="['/auth/signin']" routerLinkActive="active">Sign-in</a>
-    </button>
-    <button class="rounded-full bg-blue-500 text-white px-4 py-2">
-      <a [routerLink]="['/auth/signup']" routerLinkActive="active">Sign-up</a>
-    </button>
-  </div> -->
   <div *ngIf="isLoggedIn" class="flex items-center gap-4">
-    <!-- Bell Icon with Notification Count -->
     <p-overlayBadge [value]="unreadCount" badgeSize="small" class="mr-4">
       <i
         class="pi pi-bell"
         style="font-size: 1.5rem; cursor: pointer"
-        (click)="notificationPanel.toggle($event)"
+        (click)="loadNotificationsAndShow($event)"
       ></i>
     </p-overlayBadge>
 
-    <!-- Notification Dropdown -->
-    <p-overlayPanel
-      #notificationPanel
-      [showCloseIcon]="true"
-      styleClass="w-80 p-3"
-    >
-      <div *ngIf="notifications.length; else noNotifs">
-        <div
-          *ngFor="let notif of notifications"
-          class="border-b border-gray-200 py-2 px-1 last:border-none cursor-pointer hover:bg-gray-100"
-          (click)="markAsRead(notif)"
-        >
-          <div class="font-medium text-sm text-gray-800">{{ notif.title }}</div>
-          <div class="text-xs text-gray-500">{{ notif.message }}</div>
+    <p-popover #notificationPanel styleClass="w-80 p-3">
+      <div class="notification-list-scroll"> 
+        <div class="space-y-4">
+          <div *ngIf="unreadCount > 0">
+            <div 
+              class="flex items-center justify-between p-2 cursor-pointer rounded-lg hover:bg-gray-100"
+              (click)="showUnread = !showUnread"
+            >
+              <span class="font-bold text-gray-800">Unread ({{ unreadCount }})</span>
+              <lucide-icon [name]="showUnread ? 'chevron-up' : 'chevron-down'" class="h-4 w-4 text-gray-600"></lucide-icon>
+            </div>
+            <div *ngIf="showUnread">
+              <div
+                *ngFor="let notif of notifications | slice:0:unreadCount"
+                class="relative border-b border-gray-200 py-3 px-2 last:border-none cursor-pointer hover:bg-green-50"
+                (click)="markAsRead(notif)"
+              >
+                <span class="absolute top-2 right-5 block h-2 w-2 rounded-full bg-green-500"></span>
+                <div class="font-bold text-sm text-gray-800">{{ notif.topic }}</div>
+                <div class="text-xs text-gray-500">{{ notif.message }}</div>
+                <div class="text-xs text-gray-400 mt-1">{{ convertToDate(notif.createdAt) | date:'short' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="(notifications.length - unreadCount) > 0">
+            <div 
+              class="flex items-center justify-between p-2 cursor-pointer rounded-lg hover:bg-gray-100"
+              (click)="showRead = !showRead"
+            >
+              <span class="font-bold text-gray-800">Read ({{ notifications.length - unreadCount }})</span>
+              <lucide-icon [name]="showRead ? 'chevron-up' : 'chevron-down'" class="h-4 w-4 text-gray-600"></lucide-icon>
+            </div>
+            <div *ngIf="showRead">
+              <div
+                *ngFor="let notif of notifications | slice:unreadCount"
+                class="py-3 px-2 border-b border-gray-200 last:border-none cursor-pointer hover:bg-gray-100 opacity-60"
+              >
+                <div class="font-medium text-sm text-gray-800">{{ notif.topic }}</div>
+                <div class="text-xs text-gray-500">{{ notif.message }}</div>
+                <div class="text-xs text-gray-400 mt-1">{{ convertToDate(notif.createdAt) | date:'short' }}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
+      
       <ng-template #noNotifs>
         <div class="text-gray-500 text-sm text-center py-2">
-          No new notifications
+          No notifications to display
         </div>
       </ng-template>
-    </p-overlayPanel>
+    </p-popover>
 
-    <!-- ====== Avatars Section Start -->
     <section class="py-[75px] pl-5 dark:bg-dark" *ngIf="profileImageUrl">
       <div class="mx-auto sm:container">
         <div class="relative inline-block">
-          <!-- Avatar button triggers the menu -->
           <button
             type="button"
             class="flex items-center text-left"
@@ -86,14 +104,12 @@
                 size="large"
                 shape="circle"
               />
-
               <span
                 class="absolute -right-0.5 -top-0.5 block h-[14px] w-[14px] rounded-full border-[2.3px] border-white bg-[#219653] dark:border-dark"
               ></span>
             </div>
           </button>
 
-          <!-- PrimeNG Menu -->
           <p-menu
             #menu
             [popup]="true"
@@ -127,7 +143,5 @@
         </div>
       </div>
     </section>
-
-    <!-- ====== Avatars Section End -->
   </div>
 </header>

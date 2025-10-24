@@ -58,10 +58,18 @@ import {
   History,
   PlusCircle,
   User,
-  LogOut
+  LogOut,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-angular';
-import { provideNgxWebstorage, withLocalStorage, withNgxWebstorageConfig, withSessionStorage } from 'ngx-webstorage';
+import {
+  provideNgxWebstorage,
+  withLocalStorage,
+  withNgxWebstorageConfig,
+  withSessionStorage,
+} from 'ngx-webstorage';
 
+import { getApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -116,15 +124,17 @@ export const appConfig: ApplicationConfig = {
         History,
         PlusCircle,
         User,
-        LogOut
-      })
+        LogOut,
+        ChevronUp,
+        ChevronDown,
+      }),
     ),
     MessageService,
     ConfirmationService,
     provideNgxWebstorage(
-			withNgxWebstorageConfig({ separator: ':', caseSensitive: true }),
-			withLocalStorage(),
-			withSessionStorage()
-		)
+      withNgxWebstorageConfig({ separator: ':', caseSensitive: true }),
+      withLocalStorage(),
+      withSessionStorage()
+    ),
   ],
 };

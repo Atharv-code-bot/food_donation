@@ -1,7 +1,5 @@
 import {
   Component,
-  OnInit,
-  AfterViewInit,
   inject,
   PLATFORM_ID,
   ViewChild,
@@ -16,15 +14,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { DashboardService } from '../../services/dashboard.service';
 import { DonationFormComponent } from '../donation-form/donation-form.component';
 import { MessageService } from 'primeng/api';
-import { Dialog } from 'primeng/dialog';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { UNITS } from '../units.constant';
+import { TokenService } from '../../services/token.service';
 // import * as L from 'leaflet';
 
 @Component({
   selector: 'app-create-donation',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DonationFormComponent, Dialog],
+  imports: [CommonModule, ReactiveFormsModule, DonationFormComponent],
   template: `<app-donation-form
     [donationForm]="form"
     (unitSelected)="onUnitSelected($event)"
@@ -32,13 +28,17 @@ import { UNITS } from '../units.constant';
     [showSuccessDialog]="showSuccessDialog()"
     (submitForm)="handleSubmit()"
     [isSubmitting]="isSubmitting"
+    (coordsChange)="onCoordsChange($event)"
   />`,
 })
-export class CreateDonationComponent implements OnInit, AfterViewInit {
+export class CreateDonationComponent {
   isSubmitting = false;
   showSuccessDialog = signal(false);
   mapError = signal<string | null>(null);
   mapLoading = signal(false);
+  selectedUnitValue!: string;
+  private defaultLat!: number | null;
+  private defaultLng!: number | null;
   // Default coordinates (Pune, India)
   private readonly defaultMapLat = 18.5204;
   private readonly defaultMapLng = 73.8567;
@@ -51,7 +51,8 @@ export class CreateDonationComponent implements OnInit, AfterViewInit {
     private router: Router,
     private dialog: MatDialog,
     private messageService: MessageService,
-    private destroyRef: DestroyRef
+    private destroyRef: DestroyRef,
+    private tokenService: TokenService
   ) {}
 
   fb = inject(FormBuilder);
@@ -69,48 +70,16 @@ export class CreateDonationComponent implements OnInit, AfterViewInit {
   });
 
   onUnitSelected(unit: any) {
-    this.form.patchValue({ quantityUnit: unit.value.value });
+    this.form.patchValue({ quantityUnit: unit.value.label });
+    this.selectedUnitValue = unit.value.value;
   }
 
-  ngOnInit(): void {
-    // This part remains the same. It subscribes to coordinate changes
-    // emitted by the service's map methods and patches the form.
-    this.dashboardService.selectedCoordinates$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((coords) => {
-        this.form.patchValue({
-          latitude: coords.lat.toFixed(6),
-          longitude: coords.lng.toFixed(6),
-        });
-      });
-  }
-
-  // ✅ Call the map initialization here
-  async ngAfterViewInit(): Promise<void> {
-    if (!this.isBrowser) {
-      this.mapError.set('Map can only be loaded in a browser environment.');
-      return;
-    }
-
-    this.mapLoading.set(true);
-    // Call the method designed for location selection/creation
-    const error = await this.dashboardService.initializeLocationSelectionMap(
-      'map', // Use the ID of your map container
-      null, // No initial existing latitude for new creation
-      null, // No initial existing longitude for new creation
-      this.defaultMapLat, // Fallback default latitude
-      this.defaultMapLng // Fallback default longitude
-    );
-
-    if (error) {
-      this.mapError.set(error);
-    }
-    this.mapLoading.set(false);
-  }
-
-  ngOnDestroy(): void {
-    // Clean up the map instance when the component is destroyed
-    this.dashboardService.destroyMap();
+  // ✅ FIX: onCoordsChange method for updating the form
+  onCoordsChange(coords: { lat: number; lng: number }): void {
+    this.form.patchValue({
+      latitude: coords.lat.toFixed(6),
+      longitude: coords.lng.toFixed(6),
+    });
   }
 
   handleSubmit(): void {
@@ -140,7 +109,7 @@ export class CreateDonationComponent implements OnInit, AfterViewInit {
     const donationData = {
       itemName: normalize(this.form.value.itemName),
       quantity: this.form.value.quantity ?? 1,
-      quantityUnit: this.form.value.quantityUnit, // ✅ Added this
+      quantityUnit: this.selectedUnitValue, // ✅ Added this
       bestBeforeDate: formatDateOnly(this.form.value.bestBeforeDate),
       pickupLocation: normalize(this.form.value.pickupLocation),
       availabilityStart: formatDateTime(this.form.value.availabilityStart),

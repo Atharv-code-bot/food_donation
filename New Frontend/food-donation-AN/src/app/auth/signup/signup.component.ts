@@ -1,19 +1,24 @@
-import { Component, inject, signal, computed } from '@angular/core';
+// src/app/auth/signup/signup.component.ts
+import { Component, inject, signal, computed, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common'; // Import PLATFORM_ID, Inject
 import { LucideAngularModule } from 'lucide-angular';
+import { AuthResponseData } from '../auth.model'; // Import AuthResponseData
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-signup',
   imports: [FormsModule, RouterLink, CommonModule, LucideAngularModule],
   templateUrl: './signup.component.html',
-  styleUrl: './signup.component.css',
+  styleUrls: ['./signup.component.css'],
 })
 export class SignupComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
+  
   formSubmitted = false;
   isSigningUp = false;
   isSigningUpWithGoogle = false;
@@ -26,8 +31,13 @@ export class SignupComponent {
   enteredPhone = '';
   enteredAddress = '';
   errorMessage = signal<string | null>(null);
+  
+  isBrowser: boolean;
 
-  // Computed validation check
+  constructor() {
+      this.isBrowser = isPlatformBrowser(this.platformId);
+  }
+
   isFormValid = computed(
     () =>
       this.enteredUsername.trim() &&
@@ -42,13 +52,7 @@ export class SignupComponent {
   onSubmit() {
     this.isSigningUp = true;
     if (
-      !this.enteredUsername.trim() ||
-      !this.enteredEmail.trim() ||
-      !this.enteredFullname.trim() ||
-      !this.enteredPassword.trim() ||
-      !this.enteredRole.trim() ||
-      !this.enteredPhone.trim().match(/^\d{10}$/) ||
-      !this.enteredAddress.trim()
+      !this.isFormValid() // Use computed signal for validity check
     ) {
       this.errorMessage.set(
         'Please fill out all fields correctly before submitting.'
@@ -67,21 +71,27 @@ export class SignupComponent {
         phone: this.enteredPhone,
         address: this.enteredAddress,
       })
+      .pipe(take(1))
       .subscribe({
-        next: (res) => {
-          this.authService.saveSession(res);
-          this.router.navigate(['/dashboard']);
+        next: (res: AuthResponseData) => {
+          this.authService.onLoginSuccess(res); // ✅ FIX: Call public onLoginSuccess
         },
         error: (err) => {
           this.errorMessage.set(
-            err?.error || 'Registration failed. Please try again later.'
+            err?.error?.message || 'Registration failed. Please try again later.'
           );
+          this.isSigningUp = false;
         },
+        complete: () => {
+            this.isSigningUp = false;
+        }
       });
   }
 
   loginWithGoogle() {
     this.isSigningUpWithGoogle = true;
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    if (this.isBrowser) {
+        window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    }
   }
 }

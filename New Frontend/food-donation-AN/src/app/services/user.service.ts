@@ -15,7 +15,7 @@ export class UserService {
 
   updateUserProfile(updatedData: any) {
     const formData = new FormData();
-    formData.append('userRequest', JSON.stringify(updatedData));
+    formData.append('UserRequest', JSON.stringify(updatedData));
 
     return this.http.put(`${this.baseUrl}/update`, formData);
   }
@@ -39,7 +39,7 @@ export class UserService {
       longitude: currentUser.longitude || null, // Change from defaultLongitude
     };
 
-    formData.append('userRequest', JSON.stringify(userRequestData));
+    formData.append('UserRequest', JSON.stringify(userRequestData));
 
     formData.forEach((value, key) => {
       console.log(`${key}:`, value);

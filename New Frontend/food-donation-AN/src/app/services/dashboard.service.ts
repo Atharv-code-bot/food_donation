@@ -305,215 +305,121 @@ export class DashboardService {
    * @param isEditable If true, allows click-to-place marker and emits new coordinates.
    * @returns A Promise that resolves with null on success, or an error message string on failure.
    */
+// ✅ FIX: Use a shared private property for the active map instance
+  // The map instance should not be passed around. It lives in the service.
+  private _mapInstance: L.Map | null = null;
+  private _markerInstance: L.Marker | null = null;
+  private _isMapReady = new Subject<void>();
+
+  // This method is now used by `MapComponent` to initialize a view-only map
   async initializeDonationMap(
     mapContainerId: string,
     latitude: string,
     longitude: string,
-    isEditable: boolean = false // New parameter, defaults to false (view-only)
+    isEditable: boolean = false
   ): Promise<string | null> {
     const lat = parseFloat(latitude);
     const lng = parseFloat(longitude);
-
-    const L = await import('leaflet'); // Ensure Leaflet is loaded
+    const L = await import('leaflet');
 
     if (
-      latitude == null ||
-      longitude == null ||
-      isNaN(lat) ||
-      isNaN(lng) ||
-      !mapContainerId
+      latitude == null || longitude == null || isNaN(lat) || isNaN(lng) || !mapContainerId
     ) {
       return '❗ Coordinates are missing or invalid for this donation, or map container ID is not provided.';
     }
 
     try {
-      // Ensure Leaflet is loaded.
-      // const L = await import('leaflet'); // If dynamic import, otherwise use direct import
-
-      // If a map instance exists, remove it before creating a new one
-      if (this.activeMap) {
-        this.activeMap.remove();
-        this.activeMap = null;
+      if (this._mapInstance) {
+        this._mapInstance.remove();
+        this._mapInstance = null;
       }
-
-      this.activeMap = L.map(mapContainerId, {
+      this._mapInstance = L.map(mapContainerId, {
         zoomControl: true,
-        dragging: !isEditable, // Disable dragging for view-only maps
-        scrollWheelZoom: !isEditable, // Disable scroll zoom for view-only maps
+        dragging: !isEditable,
+        scrollWheelZoom: !isEditable,
       }).setView([lat, lng], 15);
-
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap contributors',
-      }).addTo(this.activeMap);
-
+      }).addTo(this._mapInstance);
       const updateMarker = async (markerLat: number, markerLng: number) => {
-        if (this.activeMarker) {
-          this.activeMap?.removeLayer(this.activeMarker);
+        if (this._markerInstance) {
+          this._mapInstance?.removeLayer(this._markerInstance);
         }
-
         const address = await this.reverseGeocode(markerLat, markerLng);
-        const popupContent =
-          address ||
-          `Lat: ${markerLat.toFixed(6)}, Lng: ${markerLng.toFixed(6)}`;
-
-        this.activeMarker = L.marker([markerLat, markerLng]).addTo(
-          this.activeMap!
-        );
-        this.activeMarker.bindPopup(popupContent).openPopup();
-
-        console.log(
-          `📍 Marker set at: ${markerLat.toFixed(6)}, ${markerLng.toFixed(6)}`
-        );
+        const popupContent = address || `Lat: ${markerLat.toFixed(6)}, Lng: ${markerLng.toFixed(6)}`;
+        this._markerInstance = L.marker([markerLat, markerLng]).addTo(this._mapInstance!);
+        this._markerInstance.bindPopup(popupContent).openPopup();
+        console.log(`📍 Marker set at: ${markerLat.toFixed(6)}, ${markerLng.toFixed(6)}`);
       };
-
-      // Initial marker placement
       await updateMarker(lat, lng);
-
-      // Add click listener ONLY if editable
       if (isEditable) {
-        this.activeMap.on('click', async (e: any) => {
+        this._mapInstance.on('click', async (e: any) => {
           const { lat, lng } = e.latlng;
-          await updateMarker(lat, lng); // Update marker and popup content
-          this._selectedCoordinates.next({ lat, lng }); // Emit for the component to patch form
+          await updateMarker(lat, lng);
+          this._selectedCoordinates.next({ lat, lng });
         });
       } else {
-        // For view-only maps, you might want to disable interactive elements more explicitly
-        this.activeMap.doubleClickZoom.disable();
-        this.activeMap.scrollWheelZoom.disable();
-        this.activeMap.boxZoom.disable();
-        this.activeMap.keyboard.disable();
-        if ((this.activeMap as any).tap) (this.activeMap as any).tap.disable(); // For mobile
+        this._mapInstance.doubleClickZoom.disable();
+        this._mapInstance.scrollWheelZoom.disable();
+        this._mapInstance.boxZoom.disable();
+        this._mapInstance.keyboard.disable();
+        if ((this._mapInstance as any).tap) (this._mapInstance as any).tap.disable();
       }
-
-      return null; // No error
+      return null;
     } catch (err) {
       console.error('🛑 Map initialization failed in service:', err);
       return '❗ Unable to load map. Coordinates may be missing or map service failed.';
     }
   }
 
-  /**
-   * Performs reverse geocoding using OpenStreetMap Nominatim API.
-   * @param lat Latitude
-   * @param lng Longitude
-   * @returns A Promise that resolves with the formatted address string or null if failed.
-   */
-  private async reverseGeocode(
-    lat: number,
-    lng: number
-  ): Promise<string | null> {
-    try {
-      // Nominatim usage policy: https://operations.osmfoundation.org/policies/nominatim/
-      // Ensure you set a custom User-Agent or referrer if deploying for production.
-      const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
-      const response = await firstValueFrom(
-        this.httpClient.get<any>(nominatimUrl)
-      );
-
-      if (response && response.display_name) {
-        return response.display_name;
-      } else if (response && response.address) {
-        // Fallback if display_name is not comprehensive enough
-        const address = response.address;
-        let formattedAddress = '';
-        if (address.road) formattedAddress += address.road + ', ';
-        if (address.suburb) formattedAddress += address.suburb + ', ';
-        if (address.city) formattedAddress += address.city + ', ';
-        else if (address.town) formattedAddress += address.town + ', ';
-        else if (address.village) formattedAddress += address.village + ', ';
-        if (address.state) formattedAddress += address.state + ', ';
-        if (address.postcode) formattedAddress += address.postcode;
-        return formattedAddress.replace(/, $/, ''); // Remove trailing comma and space
-      }
-      return null;
-    } catch (error) {
-      console.error('Reverse geocoding failed:', error);
-      return null;
-    }
-  }
-
-  // Optional: Method to destroy the map instance when the component is destroyed
-  destroyMap(): void {
-    if (this.activeMap) {
-      this.activeMap.remove();
-      this.activeMap = null;
-      this.activeMarker = null;
-      console.log('Map instance destroyed.');
-    }
-  }
-
-  /**
-   * Initializes a Leaflet map for current location selection (used in create/update forms).
-   * This is a specialized version of the editable map.
-   * @param mapContainerId The ID of the HTML element where the map will be rendered.
-   * @param initialLat Initial latitude (e.g., from an existing donation or a default).
-   * @param initialLng Initial longitude (e.g., from an existing donation or a default).
-   * @param defaultLat Default latitude if current location fails.
-   * @param defaultLng Default longitude if current location fails.
-   * @returns A Promise that resolves with null on success, or an error message string on failure.
-   */
   async initializeLocationSelectionMap(
     mapContainerId: string,
     initialLat: number | null,
     initialLng: number | null,
-    defaultLat: number,
-    defaultLng: number
+    defaultLat: number | null,
+    defaultLng: number | null
   ): Promise<string | null> {
     if (!mapContainerId) {
       return 'Map container ID is not provided.';
     }
-
-    const L = await import('leaflet'); // Ensure Leaflet is loaded
+    const L = await import('leaflet');
 
     try {
-      if (this.activeMap) {
-        this.activeMap.remove();
-        this.activeMap = null;
+      if (this._mapInstance) {
+        this._mapInstance.remove();
+        this._mapInstance = null;
       }
-
       const map = L.map(mapContainerId, {
         zoomControl: true,
         dragging: true,
         scrollWheelZoom: true,
       });
-
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap contributors',
       }).addTo(map);
-
-      this.activeMap = map; // Store the map instance
-
+      this._mapInstance = map;
       const setAndEmitMarker = async (
         markerLat: number,
         markerLng: number,
         popupMsg: string
       ) => {
-        if (this.activeMarker) {
-          map.removeLayer(this.activeMarker);
+        if (this._markerInstance) {
+          map.removeLayer(this._markerInstance);
         }
         const address = await this.reverseGeocode(markerLat, markerLng);
         const popupContent = address || popupMsg;
-        this.activeMarker = L.marker([markerLat, markerLng]).addTo(map);
-        this.activeMarker.bindPopup(popupContent).openPopup();
-        this._selectedCoordinates.next({ lat: markerLat, lng: markerLng }); // Emit for form update
-        console.log(
-          `📍 Marker set at: ${markerLat.toFixed(6)}, ${markerLng.toFixed(6)}`
-        );
+        this._markerInstance = L.marker([markerLat, markerLng]).addTo(map);
+        this._markerInstance.bindPopup(popupContent).openPopup();
+        this._selectedCoordinates.next({ lat: markerLat, lng: markerLng });
+        console.log(`📍 Marker set at: ${markerLat.toFixed(6)}, ${markerLng.toFixed(6)}`);
       };
 
-      // Prioritize existing coordinates if provided
-      if (
-        initialLat !== null &&
-        initialLng !== null &&
-        !isNaN(initialLat) &&
-        !isNaN(initialLng)
-      ) {
+      if (initialLat !== null && initialLng !== null && !isNaN(initialLat) && !isNaN(initialLng)) {
         map.setView([initialLat, initialLng], 15);
         await setAndEmitMarker(initialLat, initialLng, 'Initial Location');
       } else if (navigator.geolocation) {
-        // Try current location if no initial coordinates or invalid
         const tryGeolocation = (options: PositionOptions, isRetry: boolean) => {
           navigator.geolocation.getCurrentPosition(
             async (position) => {
@@ -524,85 +430,83 @@ export class DashboardService {
               await setAndEmitMarker(lat, lng, 'You are here');
             },
             (error) => {
-              console.warn(
-                `⚠️ Geolocation error (Code: ${error.code}):`,
-                error.message
-              );
+              console.warn(`⚠️ Geolocation error (Code: ${error.code}):`, error.message);
               let errorMessage = `Geolocation failed: ${error.message}.`;
               switch (error.code) {
-                case error.PERMISSION_DENIED:
-                  errorMessage =
-                    'You denied location access. Please enable it in browser settings to use this feature.';
-                  break;
-                case error.POSITION_UNAVAILABLE:
-                  errorMessage =
-                    'Location information is unavailable. Check your device settings and network connection.';
+                case error.PERMISSION_DENIED: errorMessage = 'You denied location access. Please enable it in browser settings to use this feature.'; break;
+                case error.POSITION_UNAVAILABLE: errorMessage = 'Location information is unavailable. Check your device settings and network connection.';
                   if (!isRetry && options.enableHighAccuracy) {
                     console.log('Retrying geolocation with lower accuracy...');
-                    tryGeolocation(
-                      {
-                        enableHighAccuracy: false,
-                        timeout: 20000,
-                        maximumAge: 60000,
-                      },
-                      true
-                    );
+                    tryGeolocation({ enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 }, true);
                     return;
                   }
                   break;
-                case error.TIMEOUT:
-                  errorMessage = 'The request to get user location timed out.';
+                case error.TIMEOUT: errorMessage = 'The request to get user location timed out.';
                   if (!isRetry && options.enableHighAccuracy) {
                     console.log('Retrying geolocation with lower accuracy...');
-                    tryGeolocation(
-                      {
-                        enableHighAccuracy: false,
-                        timeout: 20000,
-                        maximumAge: 60000,
-                      },
-                      true
-                    );
+                    tryGeolocation({ enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 }, true);
                     return;
                   }
                   break;
               }
               alert(errorMessage + ' Using default location.');
-              setAndEmitMarker(
-                defaultLat,
-                defaultLng,
-                'Default Location: Pune'
-              ); // Always ensure a marker is set
+              setAndEmitMarker(defaultLat!, defaultLng!, 'Default Location: Pune');
             },
             options
           );
         };
-        tryGeolocation(
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
-          false
-        );
+        tryGeolocation({ enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }, false);
       } else {
-        // Fallback to default if geolocation not supported
         console.warn('⚠️ Geolocation not supported by this browser.');
-        alert(
-          'Geolocation not supported by your browser. Using default location.'
-        );
-        await setAndEmitMarker(
-          defaultLat,
-          defaultLng,
-          'Default Location: Pune'
-        );
+        alert('Geolocation not supported by your browser. Using default location.');
+        await setAndEmitMarker(defaultLat!, defaultLng!, 'Default Location: Pune');
       }
-
-      // Click to update marker (only for editable map)
       map.on('click', async (e: any) => {
         const { lat, lng } = e.latlng;
         await setAndEmitMarker(lat, lng, 'Selected Location');
       });
-
       return null;
     } catch (err) {
       console.error('🛑 Map initialization failed in service:', err);
       return '❗ Unable to load map. Map service failed.';
     }
   }
+
+  async reverseGeocode(lat: number, lng: number): Promise<string | null> {
+    if (!isPlatformBrowser(this.platformId)) {
+        return null;
+    }
+    try {
+      const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
+      const response = await firstValueFrom(this.httpClient.get<any>(nominatimUrl));
+      if (response && response.display_name) {
+        return response.display_name;
+      } else if (response && response.address) {
+        const address = response.address;
+        let formattedAddress = '';
+        if (address.road) formattedAddress += address.road + ', ';
+        if (address.suburb) formattedAddress += address.suburb + ', ';
+        if (address.city) formattedAddress += address.city + ', ';
+        else if (address.town) formattedAddress += address.town + ', ';
+        else if (address.village) formattedAddress += address.village + ', ';
+        if (address.state) formattedAddress += address.state + ', ';
+        if (address.postcode) formattedAddress += address.postcode;
+        return formattedAddress.replace(/, $/, '');
+      }
+      return null;
+    } catch (error) {
+      console.error('Reverse geocoding failed:', error);
+      return null;
+    }
+  }
+
+  destroyMap(): void {
+    if (this.activeMap) {
+      this.activeMap.remove();
+      this.activeMap = null;
+      this.activeMarker = null;
+      console.log('Map instance destroyed.');
+    }
+  }
+
 }

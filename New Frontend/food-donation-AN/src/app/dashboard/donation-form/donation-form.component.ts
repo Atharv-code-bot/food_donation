@@ -28,16 +28,8 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { LucideAngularModule } from 'lucide-angular';
 import { Router } from '@angular/router';
 import { Dialog } from 'primeng/dialog';
-
-interface AutoCompleteCompleteEvent {
-  originalEvent: Event;
-  query: string;
-}
-
-interface UnitOption {
-  label: string;
-  value: string;
-}
+import { MapComponent } from '../../map/map.component';
+import { TokenService } from '../../services/token.service';
 
 @Component({
   selector: 'app-donation-form',
@@ -53,6 +45,7 @@ interface UnitOption {
     Dialog,
     AutoCompleteModule,
     FormsModule,
+    MapComponent,
   ],
   templateUrl: './donation-form.component.html',
   styleUrls: ['./donation-form.component.css'],
@@ -66,11 +59,17 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
   @Input() isSubmitting = false;
   @Input() showSuccessDialog: boolean = false;
   @Output() unitSelected = new EventEmitter<string>();
+  // ✅ FIX: Output for map coordinate changes
+  @Output() coordsChange = new EventEmitter<{ lat: number; lng: number }>();
+
+  private defaultLat!: number | null;
+  private defaultLng!: number | null;
 
   constructor(
     private location: Location,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private tokenService: TokenService
   ) {}
 
   goBack(): void {
@@ -104,7 +103,7 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
   onUnitSelect(unitObj: any) {
     // unitObj is the selected object from suggestions
     this.unitSelected.emit(unitObj);
-    console.log(unitObj.value.value)
+    console.log(unitObj.value.value);
   }
 
   ngOnChanges(changes: SimpleChanges) {

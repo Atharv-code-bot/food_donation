@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Food Donation App - FCM Token Test</title>
+  <!-- Load Firebase v8 compat SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
+</head>
+<body>
+  <h3>Food Donation App - Firebase Messaging Token</h3>
+  <button id="getTokenBtn">Get FCM Token</button>
+  <pre id="output"></pre>
+
+  <script>
+    // Firebase config for Food Donation App
+    const firebaseConfig = {
+      apiKey: "AIzaSyBFY0MqFTTtNpSgARdzJc0kOfjP9M9AbV4",
+      authDomain: "food-donation-app-8fba5.firebaseapp.com",
+      projectId: "food-donation-app-8fba5",
+      storageBucket: "food-donation-app-8fba5.firebasestorage.app",
+      messagingSenderId: "437904569983",
+      appId: "1:437904569983:web:94cc5141a093685687b14a",
+      measurementId: "G-GF6ZCB266K"
+    };
+
+    // Your public VAPID key
+    const VAPID_KEY = "BORi7zm4hRZC6o7iXm3mAyxVMUHjINrNddjcIEq8_o95Iylvkda8J0FrxHPHIv9ESJNXcJRqJkih7phMQR_rZ20";
+
+    // Initialize Firebase (v8 syntax)
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+
+    document.getElementById("getTokenBtn").addEventListener("click", async () => {
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission !== "granted") {
+          document.getElementById("output").textContent = "Notification permission denied.";
+          return;
+        }
+
+        // Register service worker
+        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js')
+
+        // Get the token
+        const token = await messaging.getToken({
+          vapidKey: VAPID_KEY
+        });
+
+        if (token) {
+          console.log("✅ FCM Token:", token);
+          document.getElementById("output").textContent = token;
+        } else {
+          document.getElementById("output").textContent = "No registration token available.";
+        }
+      } catch (err) {
+        console.error("Error getting token", err);
+        document.getElementById("output").textContent = "Error: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>

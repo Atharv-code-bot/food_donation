@@ -1,3 +1,4 @@
+// src/app/app.routes.ts
 import { Routes } from '@angular/router';
 
 import { HomeComponent } from './home/home.component';
@@ -7,6 +8,7 @@ import { DonationListComponent } from './dashboard/donation-list/donation-list.c
 import { SigninComponent } from './auth/signin/signin.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { authGuard } from './auth/auth.guard';
+import { roleGuard } from './auth/role.guard'; // ✅ Import new roleGuard
 import { CreateDonationComponent } from './dashboard/create-donation/create-donation.component';
 import { UpdateDonationComponent } from './dashboard/update-donation/update-donation.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -28,7 +30,8 @@ export const routes: Routes = [
       {
         path: 'create',
         component: CreateDonationComponent,
-        canActivate: [authGuard],
+        canActivate: [authGuard, roleGuard], // ✅ Add roleGuard
+        data: { allowedRoles: ['ROLE_DONOR'] }, // ✅ Specify allowed roles
       },
       {
         path: 'donations/:donationId',
@@ -37,7 +40,8 @@ export const routes: Routes = [
           {
             path: 'update',
             component: UpdateDonationComponent,
-            canActivate: [authGuard],
+            canActivate: [authGuard, roleGuard], // ✅ Add roleGuard
+            data: { allowedRoles: ['ROLE_DONOR'] }, // ✅ Specify allowed roles
           },
         ],
       },
@@ -62,7 +66,7 @@ export const routes: Routes = [
       { path: 'oauth2/redirect', component: OAuth2RedirectComponent },
       {
         path: 'complete-profile',
-        component: Oauth2CompleteProfileComponent ,
+        component: Oauth2CompleteProfileComponent,
         canActivate: [OAuthGuard],
       },
     ],

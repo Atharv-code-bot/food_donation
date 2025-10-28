@@ -32,8 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-src/main/resources/application.properties
-src/main/resources/food-donation-app-8fba5-firebase-adminsdk-fbsvc-070e77bb25.json
+
 uploads/
 .env
 

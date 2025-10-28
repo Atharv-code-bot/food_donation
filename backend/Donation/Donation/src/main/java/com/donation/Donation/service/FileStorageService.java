@@ -13,47 +13,24 @@ import java.util.UUID;
 @Service
 public class FileStorageService {
 
-    private final String uploadDir = "D:\\food_donation\\backend\\Donation\\Donation\\uploads";
+    private final AwsS3Service awsS3Service;
 
-
-    public FileStorageService() {
-        File directory = new File(uploadDir);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
+    public FileStorageService(AwsS3Service awsS3Service) {
+        this.awsS3Service = awsS3Service;
     }
 
     public String storeFile(MultipartFile file) {
-        try {
-            // Generate a unique filename
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            Path filePath = Paths.get(uploadDir, fileName);
-
-            // Save the file
-            Files.write(filePath, file.getBytes());
-
-            return fileName; // Return the file name for storing in DB
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to store file", e);
-        }
+        // Upload to S3 under "donations/" folder
+        return awsS3Service.uploadFile(file, "donations");
     }
 
-    public byte[] getFile(String fileName) {
-        try {
-            Path filePath = Paths.get(uploadDir, fileName);
-            return Files.readAllBytes(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException("File not found", e);
-        }
+    public void deleteFile(String fileUrl) {
+        awsS3Service.deleteFile(fileUrl);
     }
 
-    public void deleteFile(String fileName) {
-        Path filePath = Paths.get(uploadDir).resolve(fileName).normalize();
-        try {
-            Files.deleteIfExists(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to delete file: " + fileName, e);
-        }
-    }
+//    public String getFile(String fileUrl) {
+//        // Simply return the public S3 URL (path)
+//        return fileUrl;
+//    }
 
 }

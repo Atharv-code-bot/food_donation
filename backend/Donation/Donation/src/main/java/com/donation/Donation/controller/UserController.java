@@ -118,17 +118,17 @@ public class UserController {
 
     }
 
-    @GetMapping("/images/profile_images/{fileName}")
-    public ResponseEntity<byte[]> getUserProfileImage(@PathVariable String fileName) {
-        try {
-            byte[] image = imageStorageService.getFile(fileName);
-            return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG) // Adjust content type dynamically if needed
-                    .body(image);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
+//    @GetMapping("/images/profile_images/{fileName}")
+//    public ResponseEntity<byte[]> getUserProfileImage(@PathVariable String fileName) {
+//        try {
+//            byte[] image = imageStorageService.getFile(fileName);
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.IMAGE_JPEG) // Adjust content type dynamically if needed
+//                    .body(image);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//        }
+//    }
 
     @PutMapping("/update-oauth2-user")
     public ResponseEntity<?> updateOAuth2User(@RequestBody Auth2UpdateRequest request) {

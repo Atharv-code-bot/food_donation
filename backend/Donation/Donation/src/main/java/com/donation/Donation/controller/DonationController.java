@@ -111,15 +111,15 @@ public class DonationController {
     }
 
 
-    @GetMapping("/images/{fileName}")
-    public ResponseEntity<byte[]> getImage(@PathVariable String fileName) {
-        try {
-            byte[] image = fileStorageService.getFile(fileName);
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
-        } catch (Exception e) {
-            return ResponseEntity.status(404).body(null);
-        }
-    }
+//    @GetMapping("/images/{fileName}")
+//    public ResponseEntity<byte[]> getImage(@PathVariable String fileName) {
+//        try {
+//            byte[] image = fileStorageService.getFile(fileName);
+//            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(404).body(null);
+//        }
+//    }
 
     @PutMapping("/{id}/claim")
     public ResponseEntity<?>claimDonation(@PathVariable int id) {

@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,7 +50,8 @@ public class UserService {
     @Autowired
     private ImageStorageService imageStorageService;
 
-    private final String PLACEHOLDER_IMAGE_URL = "/profile_images/placeholder.png"; // Path to Placeholder
+    @Value("${app.default-profile-image}")
+    private String PLACEHOLDER_IMAGE_URL;
 
 
     @Transactional
@@ -109,7 +111,7 @@ public class UserService {
         response.setAddress(user.getAddress());
         response.setCreatedAt(user.getCreatedAt());
         response.setUpdatedAt(user.getUpdatedAt());
-        response.setPhotoUrl("/users/images"+user.getProfileImageUrl());
+        response.setPhotoUrl(user.getProfileImageUrl());
         response.setLatitude(user.getDefaultLatitude());
         response.setLongitude(user.getDefaultLongitude());
 

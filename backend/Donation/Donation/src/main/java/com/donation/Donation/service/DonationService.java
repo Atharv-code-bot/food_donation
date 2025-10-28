@@ -139,7 +139,7 @@ public class DonationService {
         response.setAvailabilityStart(donation.getAvailabilityStart());
         response.setAvailabilityEnd(donation.getAvailabilityEnd());
         response.setStatus(donation.getStatus());
-        response.setPhotoUrl("/donations/images/" + donation.getPhotoUrl()); // Provide URL for frontend
+        response.setPhotoUrl(donation.getPhotoUrl()); // Provide URL for frontend
         response.setCreatedAt(donation.getCreatedAt());
         response.setUpdatedAt(donation.getUpdatedAt());
         response.setNgoId(ngoId);
@@ -443,6 +443,16 @@ public class DonationService {
     @Scheduled(cron = "0 0 0 * * ?") // Runs daily at midnight
     @Transactional
     public void cleanupOrphanedDonations() {
+        // Step 1: Fetch orphaned donations before deleting
+        List<Donations> orphanedDonations = donationRepository.findOrphanedDonations();
+
+        // Step 2: Delete images from S3
+        for (Donations donation : orphanedDonations) {
+            if (donation.getPhotoUrl() != null) {
+                fileStorageService.deleteFile(donation.getPhotoUrl());
+            }
+        }
+
         int deletedCount = donationRepository.deleteOrphanedDonations();
         System.out.println("🗑 Cleanup: " + deletedCount + " orphaned donations removed.");
     }
@@ -472,6 +482,9 @@ public class DonationService {
         for (Donations donation : donations) {
             LocalDateTime expiryThreshold = donation.getAvailabilityEnd().plusHours(graceHours);
             if (now.isAfter(expiryThreshold)) {
+                if (donation.getPhotoUrl() != null) {
+                    fileStorageService.deleteFile(donation.getPhotoUrl());
+                }
                 donationRepository.delete(donation);
                 System.out.println("Deleted expired donation with ID: " + donation.getDonationId());
             }

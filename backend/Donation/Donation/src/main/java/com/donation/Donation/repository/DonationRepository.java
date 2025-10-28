@@ -37,6 +37,10 @@ public interface DonationRepository extends JpaRepository<Donations,Integer> {
     @Query("DELETE FROM Donations d WHERE d.donor IS NULL AND d.claimedByNgo IS NULL")
     int deleteOrphanedDonations();
 
+    @Query("SELECT d FROM Donations d WHERE d.donor IS NULL AND d.claimedByNgo IS NULL")
+    List<Donations> findOrphanedDonations();
+
+
 
     boolean existsByDonorAndStatus(User user, Status status);
 

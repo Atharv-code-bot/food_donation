@@ -4,6 +4,8 @@ pipeline {
     environment {
         ENV_PATH = "/home/ubuntu/food_donation_env/.env"
         IMAGE_NAME = "food-donation-backend"
+        CONTAINER_NAME = "food-donation-backend"
+        PORT = "8081"
     }
 
     stages {
@@ -16,19 +18,52 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 dir('backend/Donation/Donation') {
-                    sh 'docker build -t ${IMAGE_NAME} .'
+                    echo "🧱 Building optimized Docker image..."
+                    sh 'docker build -t ${IMAGE_NAME}:latest .'
                 }
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Stop and Remove Old Container') {
+            steps {
+                echo "🧹 Cleaning up old container if exists..."
+                sh '''
+                    if [ "$(docker ps -aq -f name=${CONTAINER_NAME})" ]; then
+                        docker stop ${CONTAINER_NAME} || true
+                        docker rm ${CONTAINER_NAME} || true
+                    fi
+                '''
+            }
+        }
+
+        stage('Run New Container') {
             steps {
                 dir('backend/Donation/Donation') {
-                    sh 'docker stop ${IMAGE_NAME} || true'
-                    sh 'docker rm ${IMAGE_NAME} || true'
-                    sh 'docker run --env-file ${ENV_PATH} -d -p 8081:8080 --name ${IMAGE_NAME} ${IMAGE_NAME}'
+                    echo "🚀 Running new container..."
+                    sh '''
+                        docker run --env-file ${ENV_PATH} \
+                        -d -p ${PORT}:8080 \
+                        --name ${CONTAINER_NAME} \
+                        ${IMAGE_NAME}:latest
+                    '''
                 }
             }
+        }
+
+        stage('Cleanup Old Images') {
+            steps {
+                echo "🧼 Removing dangling images..."
+                sh 'docker image prune -f'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Deployment successful! Backend running on port ${PORT}"
+        }
+        failure {
+            echo "❌ Build failed! Check the logs above for details."
         }
     }
 }

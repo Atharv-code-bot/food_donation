@@ -1,39 +1,33 @@
 package com.donation.Donation.config;
 
-
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-
-import java.io.InputStream;
 
 @Component
 public class FirebaseInitializer {
 
+    @Value("${firebase.config.path}")
+    private Resource firebaseConfigPath;
+
     @PostConstruct
     public void init() {
         try {
-            // Load from resources folder via classpath
-            InputStream serviceAccount = getClass()
-                    .getClassLoader()
-                    .getResourceAsStream("food-donation-app-8fba5-firebase-adminsdk-fbsvc-070e77bb25.json");
-
-            if (serviceAccount == null) {
-                throw new IllegalStateException("❌ Firebase service account file not found in resources!");
-            }
-
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setCredentials(GoogleCredentials.fromStream(firebaseConfigPath.getInputStream()))
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
             }
 
-            System.out.println("✅ Firebase Initialized");
+            System.out.println("✅ Firebase Initialized using: " + firebaseConfigPath);
         } catch (Exception e) {
+            System.err.println("❌ Firebase initialization failed: " + e.getMessage());
             e.printStackTrace();
         }
     }

@@ -6,6 +6,7 @@ pipeline {
         IMAGE_NAME = "food-donation-backend"
         CONTAINER_NAME = "food-donation-backend"
         PORT = "8081"
+        SECRETS_PATH = "/home/ubuntu/secrets"   // 🔐 Firebase credentials folder
     }
 
     stages {
@@ -26,7 +27,7 @@ pipeline {
 
         stage('Stop and Remove Old Container') {
             steps {
-                echo "🧹 Cleaning up old container if exists..."
+                echo "🧹 Cleaning up old container if it exists..."
                 sh '''
                     if [ "$(docker ps -aq -f name=${CONTAINER_NAME})" ]; then
                         docker stop ${CONTAINER_NAME} || true
@@ -39,12 +40,14 @@ pipeline {
         stage('Run New Container') {
             steps {
                 dir('backend/Donation/Donation') {
-                    echo "🚀 Running new container..."
+                    echo "🚀 Running new container with secrets mounted..."
                     sh '''
-                        docker run --env-file ${ENV_PATH} \
-                        -d -p ${PORT}:8080 \
-                        --name ${CONTAINER_NAME} \
-                        ${IMAGE_NAME}:latest
+                        docker run -d \
+                            --name ${CONTAINER_NAME} \
+                            -p ${PORT}:8080 \
+                            --env-file ${ENV_PATH} \
+                            -v ${SECRETS_PATH}:${SECRETS_PATH} \
+                            ${IMAGE_NAME}:latest
                     '''
                 }
             }
@@ -63,7 +66,7 @@ pipeline {
             echo "✅ Deployment successful! Backend running on port ${PORT}"
         }
         failure {
-            echo "❌ Build failed! Check the logs above for details."
+            echo "❌ Build failed! Check logs above for details."
         }
     }
 }

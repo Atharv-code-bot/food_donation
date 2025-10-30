@@ -33,11 +33,6 @@
               "node_modules/aos/dist/aos.css"
             ],
             "scripts": [],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            },
             "allowedCommonJsDependencies": [
               "aos",
               "leaflet"
@@ -69,10 +64,7 @@
                 "styles": true
               },
               "sourceMap": false,
-              "extractLicenses": true,
-              "ssr": false,
-              "prerender": false,
-              "outputMode": "static"
+              "extractLicenses": true
             },
             "development": {
               "optimization": false,

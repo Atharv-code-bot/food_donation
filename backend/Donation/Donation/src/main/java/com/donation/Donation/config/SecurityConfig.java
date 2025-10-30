@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ✅ Preflight
 
-                                .requestMatchers("/auth/register", "/auth/login", "/auth/logout", "/oauth2/**").permitAll()
+                                .requestMatchers("/auth/register", "/auth/login", "/auth/logout", "/oauth2/**","/test").permitAll()
 
 // 🔹 1️⃣ OAuth2-Specific Endpoints (Keep these first)
                                 .requestMatchers("/users/set-password").hasAnyAuthority("ROLE_OAUTH2_USER", "ROLE_ADMIN")  // ✅ Only OAuth2 users & Admin

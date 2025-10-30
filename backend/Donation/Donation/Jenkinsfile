@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+
+    environment {
+        ENV_PATH = "/home/ubuntu/food_donation_env/.env"
+        IMAGE_NAME = "food-donation-backend"
+        CONTAINER_NAME = "food-donation-backend"
+        PORT = "8081"
+        SECRETS_PATH = "/home/ubuntu/secrets"   // 🔐 Firebase credentials folder
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Atharv-code-bot/food_donation.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('backend/Donation/Donation') {
+                    echo "🧱 Building optimized Docker image..."
+                    sh 'docker build -t ${IMAGE_NAME}:latest .'
+                }
+            }
+        }
+
+        stage('Stop and Remove Old Container') {
+            steps {
+                echo "🧹 Cleaning up old container if it exists..."
+                sh '''
+                    if [ "$(docker ps -aq -f name=${CONTAINER_NAME})" ]; then
+                        docker stop ${CONTAINER_NAME} || true
+                        docker rm ${CONTAINER_NAME} || true
+                    fi
+                '''
+            }
+        }
+
+        stage('Run New Container') {
+            steps {
+                dir('backend/Donation/Donation') {
+                    echo "🚀 Running new container with secrets mounted..."
+                    sh '''
+                        docker run -d \
+                            --name ${CONTAINER_NAME} \
+                            -p ${PORT}:8080 \
+                            --env-file ${ENV_PATH} \
+                            -v ${SECRETS_PATH}:${SECRETS_PATH} \
+                            ${IMAGE_NAME}:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Cleanup Old Images') {
+            steps {
+                echo "🧼 Removing dangling images..."
+                sh 'docker image prune -f'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Deployment successfull! Backend running on port ${PORT}"
+        }
+        failure {
+            echo "❌ Build failed! Check logs above for details."
+        }
+    }
+}

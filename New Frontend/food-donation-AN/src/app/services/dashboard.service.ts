@@ -18,6 +18,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { isPlatformBrowser } from '@angular/common';
+import { environment } from '../../environments/environment'; // This automatically selects the correct file
 
 export interface ImageLoadState {
   state: 'loading' | 'loaded' | 'error';
@@ -27,11 +28,10 @@ export interface ImageLoadState {
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
-  private apiUrl = 'http://localhost:8080';
+  private API_URL = environment.apiUrl;
   private httpClient = inject(HttpClient);
   private tokenService = inject(TokenService);
   private messageService = inject(MessageService);
-  private baseUrl = 'http://localhost:8080';
   private imageCache = new Map<string, BehaviorSubject<ImageLoadState>>();
   private activeMap: L.Map | null = null; // To store the map instance
   private activeMarker: L.Marker | null = null; // To store the active marker instance
@@ -42,31 +42,31 @@ export class DashboardService {
   //     const token = localStorage.getItem('token')
   //   }
   createDonation(formData: FormData) {
-    return this.httpClient.post('http://localhost:8080/donations', formData);
+    return this.httpClient.post(`${this.API_URL}/donations`, formData);
   }
 
   updateDonation(id: string, formData: FormData) {
     return this.httpClient.put(
-      `http://localhost:8080/donations/${id}`,
+      `${this.API_URL}/donations/${id}`,
       formData
     );
   }
   deleteDonation(id: string) {
-    return this.httpClient.delete(`http://localhost:8080/donations/${id}`, {
+    return this.httpClient.delete(`${this.API_URL}/${id}`, {
       responseType: 'text', // 👈 Tell Angular to expect plain text, not JSON
     });
   }
 
   claimDonation(id: string) {
     return this.httpClient.put(
-      `http://localhost:8080/donations/${id}/claim`,
+      `${this.API_URL}/donations/${id}/claim`,
       {}
     );
   }
 
   sendOtp(id: string) {
     return this.httpClient.post(
-      `http://localhost:8080/donations/${id}/send-otp`,
+      `${this.API_URL}/donations/${id}/send-otp`,
       {},
       { responseType: 'text' } // explicitly tell Angular it's plain text
     );
@@ -74,7 +74,7 @@ export class DashboardService {
 
   completeDonation(id: string, otp: string) {
     return this.httpClient.put(
-      `http://localhost:8080/donations/${id}/complete`,
+      `${this.API_URL}/donations/${id}/complete`,
       null,
       {
         params: { otp },
@@ -84,12 +84,12 @@ export class DashboardService {
 
   getDonation(id: string) {
     return this.httpClient.get<donation>(
-      `http://localhost:8080/donations/${id}`
+      `${this.API_URL}/donations/${id}`
     );
   }
 
   loadDonation(id: string) {
-    return this.fetchDonation(`http://localhost:8080/donations/${id}`);
+    return this.fetchDonation(`${this.API_URL}/donations/${id}`);
   }
 
   loadDonations(
@@ -114,12 +114,12 @@ export class DashboardService {
 
     if (role === 'ROLE_NGO') {
       if (status === 'AVAILABLE') {
-        url = `${this.apiUrl}/donations/status/AVAILABLE`;
+        url = `${this.API_URL}/donations/status/AVAILABLE`;
       } else {
-        url = `${this.apiUrl}/donations/ngo/${status}`;
+        url = `${this.API_URL}/donations/ngo/${status}`;
       }
     } else if (role === 'ROLE_DONOR') {
-      url = `${this.apiUrl}/donations/user/${status}`;
+      url = `${this.API_URL}/donations/user/${status}`;
     } else {
       // This error will only be thrown client-side if a valid role isn't found
       // after the token is read.
@@ -174,7 +174,7 @@ export class DashboardService {
     }
 
     this.httpClient
-      .get(`${this.baseUrl}${photoUrl}`, {
+      .get(`${this.API_URL}${photoUrl}`, {
         responseType: 'blob',
       })
       .pipe(

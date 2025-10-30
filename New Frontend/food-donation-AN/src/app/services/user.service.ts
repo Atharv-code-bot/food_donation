@@ -2,22 +2,23 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from './user.model';
+import { environment } from '../../environments/environment'; // This automatically selects the correct file
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private baseUrl = 'http://localhost:8080/users';
+  private API_URL = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
   getCurrentUser() {
-    return this.http.get<any>(`${this.baseUrl}/current`);
+    return this.http.get<any>(`${this.API_URL}/current`);
   }
 
   updateUserProfile(updatedData: any) {
     const formData = new FormData();
     formData.append('UserRequest', JSON.stringify(updatedData));
 
-    return this.http.put(`${this.baseUrl}/update`, formData);
+    return this.http.put(`${this.API_URL}/update`, formData);
   }
 
   /**
@@ -45,17 +46,17 @@ export class UserService {
       console.log(`${key}:`, value);
     });
 
-    return this.http.put(`${this.baseUrl}/update`, formData);
+    return this.http.put(`${this.API_URL}/update`, formData);
   }
 
   getUserImage(photoUrl: string) {
-    return this.http.get(`http://localhost:8080${photoUrl}`, {
+    return this.http.get(`${this.API_URL}${photoUrl}`, {
       responseType: 'blob',
     });
   }
 
   changePassword(currentPassword: string, newPassword: string) {
-    return this.http.put(`${this.baseUrl}/password-change`, {
+    return this.http.put(`${this.API_URL}/password-change`, {
       currentPassword,
       newPassword,
     });

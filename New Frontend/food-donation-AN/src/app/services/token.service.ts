@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { User } from './user.model';
+import { environment } from '../../environments/environment'; // This automatically selects the correct file
 
 @Injectable({ providedIn: 'root' })
 export class TokenService {
+  private API_URL = environment.apiUrl;
   isBrowser(): boolean {
     return typeof window !== 'undefined' && !!window.localStorage;
   }
@@ -122,7 +124,7 @@ export class TokenService {
   getProfileImage(): string {
     const user = this.getUser();
     return user?.photoUrl
-      ? `http://localhost:8080${user.photoUrl}`
+      ? `${this.API_URL}${user.photoUrl}`
       : 'default.jpg';
   }
 

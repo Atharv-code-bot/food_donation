@@ -2,6 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment'; // This automatically selects the correct file
 
 // Define the structure of a notification as it comes from the API
 export interface ApiNotification {
@@ -17,20 +18,20 @@ export interface ApiNotification {
   providedIn: 'root',
 })
 export class NotificationService {
-  private apiUrl = 'http://localhost:8080/api/notifications';
+  private API_URL = environment.apiUrl;
   private httpClient = inject(HttpClient);
 
   getNotifications(): Observable<ApiNotification[]> {
-    return this.httpClient.get<ApiNotification[]>(this.apiUrl);
+    return this.httpClient.get<ApiNotification[]>(this.API_URL);
   }
 
   getUnreadCount(): Observable<number> {
-    return this.httpClient.get<number>(`${this.apiUrl}/unread-count`);
+    return this.httpClient.get<number>(`${this.API_URL}/unread-count`);
   }
 
   markAsRead(id: number): Observable<string> { 
     return this.httpClient.put(
-      `${this.apiUrl}/${id}/mark-read`, 
+      `${this.API_URL}/${id}/mark-read`, 
       null,
       { responseType: 'text' }
     );

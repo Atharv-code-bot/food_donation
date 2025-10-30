@@ -44,3 +44,6 @@ Thumbs.db
 
 /src/firebase-messaging-sw.js
 /src/firebase-debug.log
+
+# Generated environment file
+src/environments/environment.prod.ts

@@ -13,7 +13,8 @@ import { TokenService } from './token.service';
 import { Router } from '@angular/router';
 import { User } from './user.model';
 import { isPlatformBrowser } from '@angular/common';
-import { Observable } from 'rxjs'; // ✅ FIX: Import Observable
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -21,6 +22,7 @@ export class AuthService {
   private tokenService = inject(TokenService);
   private router = inject(Router);
   private ngZone = inject(NgZone);
+  private API_URL = environment.apiUrl;
 
   private _isAuthCheckComplete = signal(false);
   isAuthCheckComplete = this._isAuthCheckComplete.asReadonly();
@@ -71,31 +73,31 @@ export class AuthService {
   }
 
   login(username: string, password: string, fcmToken: string | null): Observable<AuthResponseData> {
-    // ✅ FIX: Send username and password in the body
+    // Send username and password in the body
     const body = { username, password };
     
-    // ✅ FIX: Send FCM token in the header
+    // Send FCM token in the header
     let headers = new HttpHeaders();
     if (fcmToken) {
       headers = headers.set('X-Firebase-Token', fcmToken);
     }
     
     return this.httpClient.post<AuthResponseData>(
-      'http://localhost:8080/auth/login',
+      `${this.API_URL}/auth/login`,
       body,
-      { headers } // ✅ FIX: Pass headers in the options object
+      { headers } // Pass headers in the options object
     );
   }
 
   register(data: RegisterRequestData) {
     console.log('in register fn');
     return this.httpClient.post<AuthResponseData>(
-      'http://localhost:8080/auth/register',
+      `${this.API_URL}/auth/register`,
       data
     );
   }
 
-  // ✅ FIX: saveSession is now a private helper
+  // saveSession is now a private helper
   private saveSession(data: AuthResponseData) {
     if (this.isBrowserFlag) {
       localStorage.setItem('token', data.token);
@@ -151,7 +153,7 @@ export class AuthService {
     this._isAuthCheckComplete.set(true);
   }
 
-  // ✅ FIX: onLoginSuccess is now a public method that handles saving and redirecting
+  // onLoginSuccess is now a public method that handles saving and redirecting
   // It is the single entry point for components to handle a successful auth event.
   onLoginSuccess(authData: AuthResponseData): void {
       if (!this.isBrowserFlag) {

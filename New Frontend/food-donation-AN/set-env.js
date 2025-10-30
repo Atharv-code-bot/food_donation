@@ -28,6 +28,7 @@ if (unsetVars.length > 0) {
 }
 
 // --- This is the template for your environment.prod.ts file ---
+// --- This is the template for your environment.prod.ts file ---
 const envConfigFile = `
 export const environment = {
   production: true,
@@ -41,7 +42,7 @@ export const environment = {
     measurementId: '${process.env.FIREBASE_MEASUREMENT_ID}',
     vapidKey: '${process.env.FIREBASE_VAPID_KEY}',
   },
-  apiUrl: '${process.env.API_URL}',
+  apiUrl: '/api', // <-- THIS IS THE CHANGE
 };
 `;
 // --- End of template ---

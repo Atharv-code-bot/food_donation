@@ -18,7 +18,7 @@ export interface ApiNotification {
   providedIn: 'root',
 })
 export class NotificationService {
-  private API_URL = environment.apiUrl;
+  private API_URL = environment.apiUrl + '/api/notifications';
   private httpClient = inject(HttpClient);
 
   getNotifications(): Observable<ApiNotification[]> {

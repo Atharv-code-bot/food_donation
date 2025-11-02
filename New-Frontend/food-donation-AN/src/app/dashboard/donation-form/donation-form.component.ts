@@ -21,7 +21,6 @@ import { UNITS } from '../units.constant';
 import { donation } from '../donation.model';
 import {
   DashboardService,
-  ImageLoadState,
 } from '../../services/dashboard.service';
 import { MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
@@ -51,13 +50,14 @@ import { TokenService } from '../../services/token.service';
   styleUrls: ['./donation-form.component.css'],
   encapsulation: ViewEncapsulation.None, // ✅ Important
 })
-export class DonationFormComponent implements OnChanges, OnDestroy {
+export class DonationFormComponent implements  OnDestroy {
   @Input() donationForm!: FormGroup;
   @Input() mode: 'create' | 'update' = 'create';
   @Input() donation: donation | null = null;
-  @Output() submitForm = new EventEmitter<void>();
   @Input() isSubmitting = false;
   @Input() showSuccessDialog: boolean = false;
+  @Input() maxAvailabilityDate: string | null = null;
+  @Output() submitForm = new EventEmitter<void>();
   @Output() unitSelected = new EventEmitter<string>();
   // ✅ FIX: Output for map coordinate changes
   @Output() coordsChange = new EventEmitter<{ lat: number; lng: number }>();
@@ -76,12 +76,12 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
     this.location.back();
   }
 
-  imageState: 'loading' | 'loaded' | 'error' = 'loading';
+  // imageState: 'loading' | 'loaded' | 'error' = 'loading';
   imageUrl: string | null = null;
   selectedImageUrl: string | null = null;
 
   private imageSubscription?: Subscription;
-  private donationImageService = inject(DashboardService);
+  // private donationImageService = inject(DashboardService);
 
   units = UNITS; // full list
   filteredUnits: { label: string; value: string; fullName?: string }[] = [];
@@ -106,11 +106,11 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
     console.log(unitObj.value.value);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['donation'] && this.donation?.photoUrl) {
-      this.loadDonationImage();
-    }
-  }
+  // ngOnChanges(changes: SimpleChanges) {
+  //   if (changes['donation'] && this.donation?.photoUrl) {
+  //     this.loadDonationImage();
+  //   }
+  // }
 
   ngOnDestroy() {
     if (this.imageSubscription) {
@@ -118,43 +118,43 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
     }
   }
 
-  private loadDonationImage() {
-    const photoUrl = this.donation?.photoUrl;
+  // private loadDonationImage() {
+  //   const photoUrl = this.donation?.photoUrl;
 
-    if (!photoUrl || photoUrl.includes('/null')) {
-      this.imageState = 'error';
-      this.imageUrl = null;
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'No Image',
-        detail: 'No image available for this donation.',
-      });
-      return;
-    }
+  //   if (!photoUrl || photoUrl.includes('/null')) {
+  //     this.imageState = 'error';
+  //     this.imageUrl = null;
+  //     this.messageService.add({
+  //       severity: 'warn',
+  //       summary: 'No Image',
+  //       detail: 'No image available for this donation.',
+  //     });
+  //     return;
+  //   }
 
-    if (this.imageState === 'loaded') return;
+  //   if (this.imageState === 'loaded') return;
 
-    this.imageSubscription = this.donationImageService
-      .loadImage(photoUrl)
-      .pipe(
-        retry(1),
-        catchError((err) =>
-          of({ state: 'error' as const, error: 'Image load failed' })
-        )
-      )
-      .subscribe((imageState: ImageLoadState) => {
-        this.imageState = imageState.state;
-        this.imageUrl = imageState.url || null;
+  //   this.imageSubscription = this.donationImageService
+  //     .loadImage(photoUrl)
+  //     .pipe(
+  //       retry(1),
+  //       catchError((err) =>
+  //         of({ state: 'error' as const, error: 'Image load failed' })
+  //       )
+  //     )
+  //     .subscribe((imageState: ImageLoadState) => {
+  //       this.imageState = imageState.state;
+  //       this.imageUrl = imageState.url || null;
 
-        if (imageState.state === 'error') {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Image Load Failed',
-            detail: imageState.error || 'Could not load donation image.',
-          });
-        }
-      });
-  }
+  //       if (imageState.state === 'error') {
+  //         this.messageService.add({
+  //           severity: 'error',
+  //           summary: 'Image Load Failed',
+  //           detail: imageState.error || 'Could not load donation image.',
+  //         });
+  //       }
+  //     });
+  // }
 
   onSubmit() {
     this.submitForm.emit();
@@ -177,20 +177,19 @@ export class DonationFormComponent implements OnChanges, OnDestroy {
     }
   }
 
-  retryLoadImage() {
-    const photoUrl = this.donation?.photoUrl;
+  // retryLoadImage() {
+  //   const photoUrl = this.donation?.photoUrl;
 
-    if (photoUrl) {
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Retrying',
-        detail: 'Trying to reload image...',
-      });
-
-      this.donationImageService.clearImageFromCache(photoUrl);
-      this.loadDonationImage();
-    }
-  }
+  //   if (photoUrl) {
+  //     this.messageService.add({
+  //       severity: 'info',
+  //       summary: 'Retrying',
+  //       detail: 'Trying to reload image...',
+  //     });
+  //     this.loadDonationImage();
+  //   }
+  // }
+  
   navigateToDashboard() {
     this.showSuccessDialog = false;
     this.router.navigate(['/dashboard']);

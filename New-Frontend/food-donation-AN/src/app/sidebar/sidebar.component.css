@@ -16,6 +16,21 @@
   padding-right: 5px; /* Adjust padding for collapsed state if needed */
 }
 
+.sidebar-link {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.sidebar-link:not(.active-sidebar-link)::after {
+  content: ''; /* Required for a pseudo-element */
+  position: absolute;
+  bottom: 0; /* Puts the line at the very bottom of the item */
+  left: 10%; /* Makes the line start 10% from the left */
+  width: 80%; /* Makes the line 80% wide */
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1); /* Your line color */
+}
+
 .sidebar.collapsed a{
   justify-content: center; /* Center the icon when collapsed */
   padding: 0.75rem; /* Adjust padding for better alignment */
@@ -119,6 +134,17 @@
 
 /* General Link/Button appearance inside sidebar (if not fully covered by Tailwind) */
 .sidebar-link,
-.logout-container button {
+#logout-container {
+  position: relative; /* Needed to position the line */
   white-space: nowrap; /* Prevent text wrapping when collapsed */
+}
+
+#logout-container::before {
+  content: ''; /* Required for a pseudo-element */
+  position: absolute;
+  top: 0; /* Puts the line at the very bottom of the item */
+  left: 10%; /* Makes the line start 10% from the left */
+  width: 80%; /* Makes the line 80% wide */
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1); /* Your line color */
 }

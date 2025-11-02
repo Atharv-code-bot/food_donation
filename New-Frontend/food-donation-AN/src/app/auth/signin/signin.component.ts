@@ -1,4 +1,3 @@
-// src/app/auth/signin/signin.component.ts
 import { Component, inject, PLATFORM_ID, signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';

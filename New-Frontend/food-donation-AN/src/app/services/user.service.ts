@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment'; // This automatica
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private API_URL = environment.apiUrl;
+  private API_URL = environment.apiUrl + '/users';
 
   constructor(private http: HttpClient) {}
 
@@ -49,11 +49,11 @@ export class UserService {
     return this.http.put(`${this.API_URL}/update`, formData);
   }
 
-  getUserImage(photoUrl: string) {
-    return this.http.get(`${this.API_URL}${photoUrl}`, {
-      responseType: 'blob',
-    });
-  }
+  // getUserImage(photoUrl: string) {
+  //   return this.http.get(`${this.API_URL}${photoUrl}`, {
+  //     responseType: 'blob',
+  //   });
+  // }
 
   changePassword(currentPassword: string, newPassword: string) {
     return this.http.put(`${this.API_URL}/password-change`, {

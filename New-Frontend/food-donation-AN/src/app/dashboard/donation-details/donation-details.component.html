@@ -204,15 +204,15 @@
             <div
               class="bg-green-0 rounded-lg flex justify-center p-4 border border-green-100 overflow-hidden"
             >
-              @if (imageUrl) {
-              <div
+              @if (donation()?.photoUrl) {
+                <div
                 class="group relative cursor-pointer"
                 (click)="openImageModal()"
-              >
+                >
                 <img
-                  [src]="imageUrl"
+                  [src]="donation()?.photoUrl"
                   alt="Donation Image"
-                  class="w-96 rounded-lg object-contain hover:opacity-90 transition-opacity"
+                  class="w-40 rounded-lg object-contain hover:opacity-90 transition-opacity"
                 />
                 <div
                   class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
@@ -395,7 +395,7 @@
           Donation Image Preview
         </h3>
         <img
-          [src]="imageUrl || '/assets/placeholder.svg'"
+          [src]="donation()?.photoUrl || '/assets/placeholder.svg'"
           alt="Enlarged Donation Image"
           class="max-w-xl max-h-[70vh] object-contain rounded-lg"
         />

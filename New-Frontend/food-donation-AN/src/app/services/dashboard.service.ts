@@ -10,6 +10,7 @@ import {
   firstValueFrom,
   throwError,
 } from 'rxjs';
+import { shareReplay, startWith } from 'rxjs/operators';
 
 import { TokenService } from './token.service';
 import { donation } from '../dashboard/donation.model';
@@ -20,11 +21,11 @@ import { MessageService } from 'primeng/api';
 import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../environments/environment'; // This automatically selects the correct file
 
-export interface ImageLoadState {
-  state: 'loading' | 'loaded' | 'error';
-  url?: string;
-  error?: string;
-}
+// export interface ImageLoadState {
+//   state: 'loading' | 'loaded' | 'error';
+//   url?: string;
+//   error?: string;
+// }
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
@@ -32,7 +33,8 @@ export class DashboardService {
   private httpClient = inject(HttpClient);
   private tokenService = inject(TokenService);
   private messageService = inject(MessageService);
-  private imageCache = new Map<string, BehaviorSubject<ImageLoadState>>();
+  // The cache now stores the Observable itself, not a BehaviorSubject
+  // private imageCache = new Map<string, Observable<ImageLoadState>>();
   private activeMap: L.Map | null = null; // To store the map instance
   private activeMarker: L.Marker | null = null; // To store the active marker instance
   private _selectedCoordinates = new Subject<{ lat: number; lng: number }>();
@@ -46,10 +48,7 @@ export class DashboardService {
   }
 
   updateDonation(id: string, formData: FormData) {
-    return this.httpClient.put(
-      `${this.API_URL}/donations/${id}`,
-      formData
-    );
+    return this.httpClient.put(`${this.API_URL}/donations/${id}`, formData);
   }
   deleteDonation(id: string) {
     return this.httpClient.delete(`${this.API_URL}/${id}`, {
@@ -58,10 +57,7 @@ export class DashboardService {
   }
 
   claimDonation(id: string) {
-    return this.httpClient.put(
-      `${this.API_URL}/donations/${id}/claim`,
-      {}
-    );
+    return this.httpClient.put(`${this.API_URL}/donations/${id}/claim`, {});
   }
 
   sendOtp(id: string) {
@@ -83,9 +79,7 @@ export class DashboardService {
   }
 
   getDonation(id: string) {
-    return this.httpClient.get<donation>(
-      `${this.API_URL}/donations/${id}`
-    );
+    return this.httpClient.get<donation>(`${this.API_URL}/donations/${id}`);
   }
 
   loadDonation(id: string) {
@@ -152,79 +146,91 @@ export class DashboardService {
     return this.httpClient.get<donation>(url, { headers });
   }
 
-  /**
-   * Loads an image from the server and caches it.
-   * @param photoUrl The URL of the image to load.
-   * @returns An observable that emits the image load state.
-   */
-  loadImage(photoUrl: string): Observable<ImageLoadState> {
-    if (this.imageCache.has(photoUrl)) {
-      return this.imageCache.get(photoUrl)!.asObservable();
-    }
+  // /**
+  //  * Loads an image from a direct URL and provides its load state.
+  //  * @param photoUrl The direct, full URL of the image to load.
+  //  * @returns An observable that emits the image load state.
+  //  */
+  // loadImage(photoUrl: string): Observable<ImageLoadState> {
+  //   // 1. Check if we've already tried to load this image
+  //   if (this.imageCache.has(photoUrl)) {
+  //     return this.imageCache.get(photoUrl)!;
+  //   }
 
-    const subject = new BehaviorSubject<ImageLoadState>({ state: 'loading' });
-    this.imageCache.set(photoUrl, subject);
+  //   // 2. Handle null/invalid URLs
+  //   if (!photoUrl || photoUrl.includes('/null')) {
+  //     const errorState = of({
+  //       state: 'error' as const,
+  //       error: 'Image not available (URL is null)',
+  //     });
+  //     // Cache the error response
+  //     this.imageCache.set(photoUrl, errorState);
+  //     return errorState;
+  //   }
 
-    if (photoUrl.includes('/null')) {
-      subject.next({
-        state: 'error',
-        error: 'Image not available (URL is null)',
-      });
-      return subject.asObservable();
-    }
+  //   // 3. Create a new Observable to manage the image loading
+  //   const loadObservable = new Observable<ImageLoadState>((observer) => {
+  //     const img = new Image();
 
-    this.httpClient
-      .get(`${this.API_URL}${photoUrl}`, {
-        responseType: 'blob',
-      })
-      .pipe(
-        map((blob) => {
-          const objectUrl = URL.createObjectURL(blob);
-          return { state: 'loaded' as const, url: objectUrl };
-        }),
-        catchError((error) => {
-          console.error('Failed to load donation image:', error);
-          return of({ state: 'error' as const, error: 'Failed to load image' });
-        })
-      )
-      .subscribe({
-        next: (result) => subject.next(result),
-        error: (error) =>
-          subject.next({ state: 'error', error: error.message }),
-      });
+  //     // On successful load
+  //     img.onload = () => {
+  //       observer.next({ state: 'loaded', url: photoUrl });
+  //       observer.complete();
+  //     };
 
-    return subject.asObservable();
-  }
+  //     // On load error
+  //     img.onerror = (err) => {
+  //       console.error('Failed to load image from URL:', photoUrl, err);
+  //       observer.next({ state: 'error', error: 'Failed to load image' });
+  //       observer.complete();
+  //     };
 
-  /**
-   * Loads an image from the server and returns it as a Blob.
-   * @param photoUrl The URL of the image to load.
-   * @returns An observable that emits the Blob of the image.
-   */
-  // Clean up specific image from cache
-  clearImageFromCache(photoUrl: string): void {
-    const subject = this.imageCache.get(photoUrl);
-    if (subject) {
-      const currentValue = subject.value;
-      if (currentValue.url) {
-        URL.revokeObjectURL(currentValue.url);
-      }
-      subject.complete();
-      this.imageCache.delete(photoUrl);
-    }
-  }
+  //     // Start the download by setting the src
+  //     img.src = photoUrl;
+  //   }).pipe(
+  //     startWith({ state: 'loading' as const }), // Immediately emit 'loading'
+  //     shareReplay(1) // Cache the final result (loaded or error)
+  //   );
 
-  // Clean up all cached images
-  clearAllImages(): void {
-    this.imageCache.forEach((subject, key) => {
-      const currentValue = subject.value;
-      if (currentValue.url) {
-        URL.revokeObjectURL(currentValue.url);
-      }
-      subject.complete();
-    });
-    this.imageCache.clear();
-  }
+  //   // 4. Store this new observable in the cache and return it
+  //   this.imageCache.set(photoUrl, loadObservable);
+  //   return loadObservable;
+  // }
+
+  // // Add this function to your ImageService
+  // clearFromCache(photoUrl: string): void {
+  //   this.imageCache.delete(photoUrl);
+  // }
+
+  // /**
+  //  * Loads an image from the server and returns it as a Blob.
+  //  * @param photoUrl The URL of the image to load.
+  //  * @returns An observable that emits the Blob of the image.
+  //  */
+  // // Clean up specific image from cache
+  // clearImageFromCache(photoUrl: string): void {
+  //   const subject = this.imageCache.get(photoUrl);
+  //   if (subject) {
+  //     const currentValue = subject.value;
+  //     if (currentValue.url) {
+  //       URL.revokeObjectURL(currentValue.url);
+  //     }
+  //     subject.complete();
+  //     this.imageCache.delete(photoUrl);
+  //   }
+  // }
+
+  // // Clean up all cached images
+  // clearAllImages(): void {
+  //   this.imageCache.forEach((subject, key) => {
+  //     const currentValue = subject.value;
+  //     if (currentValue.url) {
+  //       URL.revokeObjectURL(currentValue.url);
+  //     }
+  //     subject.complete();
+  //   });
+  //   this.imageCache.clear();
+  // }
 
   /**
    * Deletes a donation and shows a success dialog.
@@ -305,7 +311,7 @@ export class DashboardService {
    * @param isEditable If true, allows click-to-place marker and emits new coordinates.
    * @returns A Promise that resolves with null on success, or an error message string on failure.
    */
-// ✅ FIX: Use a shared private property for the active map instance
+  // ✅ FIX: Use a shared private property for the active map instance
   // The map instance should not be passed around. It lives in the service.
   private _mapInstance: L.Map | null = null;
   private _markerInstance: L.Marker | null = null;
@@ -323,7 +329,11 @@ export class DashboardService {
     const L = await import('leaflet');
 
     if (
-      latitude == null || longitude == null || isNaN(lat) || isNaN(lng) || !mapContainerId
+      latitude == null ||
+      longitude == null ||
+      isNaN(lat) ||
+      isNaN(lng) ||
+      !mapContainerId
     ) {
       return '❗ Coordinates are missing or invalid for this donation, or map container ID is not provided.';
     }
@@ -347,10 +357,16 @@ export class DashboardService {
           this._mapInstance?.removeLayer(this._markerInstance);
         }
         const address = await this.reverseGeocode(markerLat, markerLng);
-        const popupContent = address || `Lat: ${markerLat.toFixed(6)}, Lng: ${markerLng.toFixed(6)}`;
-        this._markerInstance = L.marker([markerLat, markerLng]).addTo(this._mapInstance!);
+        const popupContent =
+          address ||
+          `Lat: ${markerLat.toFixed(6)}, Lng: ${markerLng.toFixed(6)}`;
+        this._markerInstance = L.marker([markerLat, markerLng]).addTo(
+          this._mapInstance!
+        );
         this._markerInstance.bindPopup(popupContent).openPopup();
-        console.log(`📍 Marker set at: ${markerLat.toFixed(6)}, ${markerLng.toFixed(6)}`);
+        console.log(
+          `📍 Marker set at: ${markerLat.toFixed(6)}, ${markerLng.toFixed(6)}`
+        );
       };
       await updateMarker(lat, lng);
       if (isEditable) {
@@ -364,7 +380,8 @@ export class DashboardService {
         this._mapInstance.scrollWheelZoom.disable();
         this._mapInstance.boxZoom.disable();
         this._mapInstance.keyboard.disable();
-        if ((this._mapInstance as any).tap) (this._mapInstance as any).tap.disable();
+        if ((this._mapInstance as any).tap)
+          (this._mapInstance as any).tap.disable();
       }
       return null;
     } catch (err) {
@@ -413,10 +430,17 @@ export class DashboardService {
         this._markerInstance = L.marker([markerLat, markerLng]).addTo(map);
         this._markerInstance.bindPopup(popupContent).openPopup();
         this._selectedCoordinates.next({ lat: markerLat, lng: markerLng });
-        console.log(`📍 Marker set at: ${markerLat.toFixed(6)}, ${markerLng.toFixed(6)}`);
+        console.log(
+          `📍 Marker set at: ${markerLat.toFixed(6)}, ${markerLng.toFixed(6)}`
+        );
       };
 
-      if (initialLat !== null && initialLng !== null && !isNaN(initialLat) && !isNaN(initialLng)) {
+      if (
+        initialLat !== null &&
+        initialLng !== null &&
+        !isNaN(initialLat) &&
+        !isNaN(initialLng)
+      ) {
         map.setView([initialLat, initialLng], 15);
         await setAndEmitMarker(initialLat, initialLng, 'Initial Location');
       } else if (navigator.geolocation) {
@@ -430,36 +454,72 @@ export class DashboardService {
               await setAndEmitMarker(lat, lng, 'You are here');
             },
             (error) => {
-              console.warn(`⚠️ Geolocation error (Code: ${error.code}):`, error.message);
+              console.warn(
+                `⚠️ Geolocation error (Code: ${error.code}):`,
+                error.message
+              );
               let errorMessage = `Geolocation failed: ${error.message}.`;
               switch (error.code) {
-                case error.PERMISSION_DENIED: errorMessage = 'You denied location access. Please enable it in browser settings to use this feature.'; break;
-                case error.POSITION_UNAVAILABLE: errorMessage = 'Location information is unavailable. Check your device settings and network connection.';
+                case error.PERMISSION_DENIED:
+                  errorMessage =
+                    'You denied location access. Please enable it in browser settings to use this feature.';
+                  break;
+                case error.POSITION_UNAVAILABLE:
+                  errorMessage =
+                    'Location information is unavailable. Check your device settings and network connection.';
                   if (!isRetry && options.enableHighAccuracy) {
                     console.log('Retrying geolocation with lower accuracy...');
-                    tryGeolocation({ enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 }, true);
+                    tryGeolocation(
+                      {
+                        enableHighAccuracy: false,
+                        timeout: 20000,
+                        maximumAge: 60000,
+                      },
+                      true
+                    );
                     return;
                   }
                   break;
-                case error.TIMEOUT: errorMessage = 'The request to get user location timed out.';
+                case error.TIMEOUT:
+                  errorMessage = 'The request to get user location timed out.';
                   if (!isRetry && options.enableHighAccuracy) {
                     console.log('Retrying geolocation with lower accuracy...');
-                    tryGeolocation({ enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 }, true);
+                    tryGeolocation(
+                      {
+                        enableHighAccuracy: false,
+                        timeout: 20000,
+                        maximumAge: 60000,
+                      },
+                      true
+                    );
                     return;
                   }
                   break;
               }
               alert(errorMessage + ' Using default location.');
-              setAndEmitMarker(defaultLat!, defaultLng!, 'Default Location: Pune');
+              setAndEmitMarker(
+                defaultLat!,
+                defaultLng!,
+                'Default Location: Pune'
+              );
             },
             options
           );
         };
-        tryGeolocation({ enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }, false);
+        tryGeolocation(
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
+          false
+        );
       } else {
         console.warn('⚠️ Geolocation not supported by this browser.');
-        alert('Geolocation not supported by your browser. Using default location.');
-        await setAndEmitMarker(defaultLat!, defaultLng!, 'Default Location: Pune');
+        alert(
+          'Geolocation not supported by your browser. Using default location.'
+        );
+        await setAndEmitMarker(
+          defaultLat!,
+          defaultLng!,
+          'Default Location: Pune'
+        );
       }
       map.on('click', async (e: any) => {
         const { lat, lng } = e.latlng;
@@ -474,11 +534,13 @@ export class DashboardService {
 
   async reverseGeocode(lat: number, lng: number): Promise<string | null> {
     if (!isPlatformBrowser(this.platformId)) {
-        return null;
+      return null;
     }
     try {
       const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
-      const response = await firstValueFrom(this.httpClient.get<any>(nominatimUrl));
+      const response = await firstValueFrom(
+        this.httpClient.get<any>(nominatimUrl)
+      );
       if (response && response.display_name) {
         return response.display_name;
       } else if (response && response.address) {
@@ -508,5 +570,4 @@ export class DashboardService {
       console.log('Map instance destroyed.');
     }
   }
-
 }

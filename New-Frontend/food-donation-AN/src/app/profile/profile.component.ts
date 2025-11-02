@@ -438,17 +438,7 @@ export class ProfileComponent implements OnInit {
         'https://primefaces.org/cdn/primeng/images/avatar/amyelsner.png';
       return;
     }
-    this.userService.getUserImage(photoUrl).subscribe({
-      next: (blob) => {
-        const objectURL = URL.createObjectURL(blob);
-        this.profileImageUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
-      },
-      error: (err) => {
-        console.error('Error loading profile image:', err);
-        this.profileImageUrl =
-          'https://primefaces.org/cdn/primeng/images/avatar/amyelsner.png';
-      },
-    });
+    this.profileImageUrl = photoUrl
   }
 
   checkPasswordMatch() {

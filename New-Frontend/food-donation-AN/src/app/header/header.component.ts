@@ -87,10 +87,7 @@ export class HeaderComponent implements OnInit {
     this.isLoggedIn = !this.tokenService.isTokenExpired();
     if (this.isBrowser && this.isLoggedIn) {
       this.fetchUnreadCount();
-      const photoUrl = localStorage.getItem('photoUrl');
-      if (photoUrl) {
-        this.loadImage(JSON.parse(photoUrl));
-      }
+      this.photoUrl = localStorage.getItem('photoUrl');
     }
   }
 
@@ -163,16 +160,16 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  loadImage(photoUrl: string) {
-    if (!photoUrl) return;
-    this.userService.getUserImage(photoUrl).subscribe({
-      next: (blob) => {
-        const objectURL = URL.createObjectURL(blob);
-        this.profileImageUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
-      },
-      error: (err) => {
-        console.error('❌ Error loading profile image:', err);
-      },
-    });
-  }
+  // loadImage(photoUrl: string) {
+  //   if (!photoUrl) return;
+  //   this.userService.getUserImage(photoUrl).subscribe({
+  //     next: (blob) => {
+  //       const objectURL = URL.createObjectURL(blob);
+  //       this.profileImageUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+  //     },
+  //     error: (err) => {
+  //       console.error('❌ Error loading profile image:', err);
+  //     },
+  //   });
+  // }
 }

@@ -203,7 +203,15 @@
                   formControlName="availabilityStart"
                   placeholder="Select start date and time"
                   required
+                  [max]="maxAvailabilityDate"
                 />
+                @if (
+                donationForm.get('availabilityStart')?.hasError('maxDateError')
+                && donationForm.get('availabilityStart')?.touched ) {
+                <div class="text-red-600 text-sm mt-1">
+                  "Available From" date cannot be after the "Best Before" date.
+                </div>
+                }
               </div>
 
               <div class="form-group">
@@ -219,7 +227,15 @@
                   formControlName="availabilityEnd"
                   placeholder="Select end date and time"
                   required
+                  [max]="maxAvailabilityDate"
                 />
+                @if (
+                donationForm.get('availabilityEnd')?.hasError('maxDateError') &&
+                donationForm.get('availabilityEnd')?.touched ) {
+                <div class="text-red-600 text-sm mt-1">
+                  "Available Until" date cannot be after the "Best Before" date.
+                </div>
+                }
               </div>
             </div>
           </div>
@@ -279,40 +295,12 @@
               <h3 class="text-lg font-medium text-green-800 mb-2">
                 Current Image
               </h3>
-              @if (imageState === 'loading') {
-              <div
-                class="bg-green-50 rounded-lg border border-green-100 p-12 flex flex-col items-center justify-center"
-              >
-                <lucide-icon
-                  name="loader"
-                  class="h-8 w-8 animate-spin text-green-600"
-                ></lucide-icon>
-                <p class="mt-2 text-gray-600">Loading image...</p>
-              </div>
-              } @else if (imageState === 'error') {
-              <div
-                class="bg-red-50 rounded-lg border border-red-100 p-4 flex flex-col items-center justify-center"
-              >
-                <lucide-icon
-                  name="alert-circle"
-                  class="h-8 w-8 text-red-600"
-                ></lucide-icon>
-                <p class="mt-2 text-red-600">Failed to load image</p>
-                <button
-                  type="button"
-                  class="mt-2 border border-red-600 text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-                  (click)="retryLoadImage()"
-                >
-                  <lucide-icon name="refresh-cw" class="h-4 w-4"></lucide-icon>
-                  Retry
-                </button>
-              </div>
-              } @else if (imageState === 'loaded' && imageUrl) {
+              @if (donation?.photoUrl) {
               <div
                 class="bg-green-50 rounded-lg border border-green-100 p-4 flex justify-center"
               >
                 <img
-                  [src]="imageUrl"
+                  [src]="donation?.photoUrl"
                   alt="Current Donation Image"
                   class="max-w-full rounded-lg h-48 object-contain"
                 />
@@ -323,7 +311,7 @@
           </div>
         </div>
       </div>
-      
+
       <div *ngIf="mode === 'create' || mode === 'update'">
         <h2
           class="flex items-center gap-2 text-xl font-semibold text-green-700 my-4"

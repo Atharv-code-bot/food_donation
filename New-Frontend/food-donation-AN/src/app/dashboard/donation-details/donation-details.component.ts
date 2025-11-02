@@ -13,7 +13,6 @@ import {
 } from '@angular/core';
 import {
   DashboardService,
-  ImageLoadState,
 } from '../../services/dashboard.service';
 import { donation } from '../donation.model';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -56,7 +55,7 @@ import { MapComponent } from '../../map/map.component';
   styleUrl: './donation-details.component.css',
   providers: [ConfirmationService, MessageService],
 })
-export class DonationDetailComponent implements OnInit, OnChanges, OnDestroy {
+export class DonationDetailComponent implements OnInit, OnDestroy {
   value: any;
   donation = signal<donation | undefined>(undefined);
   isFetching = signal(false);
@@ -141,7 +140,7 @@ export class DonationDetailComponent implements OnInit, OnChanges, OnDestroy {
             .subscribe(async (donationData: donation | undefined) => {
               if (donationData) {
                 this.donation.set(donationData);
-                this.loadDonationImage();
+                // this.loadDonationImage();
                 // Map initialization is now handled by the MapComponent's OnChanges hook
               } else {
                 console.warn(
@@ -160,11 +159,11 @@ export class DonationDetailComponent implements OnInit, OnChanges, OnDestroy {
       });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['donation'] && this.donation()?.photoUrl) {
-      this.loadDonationImage();
-    }
-  }
+  // ngOnChanges(changes: SimpleChanges) {
+  //   if (changes['donation'] && this.donation()?.photoUrl) {
+  //     this.loadDonationImage();
+  //   }
+  // }
 
   ngOnDestroy() {
     if (this.imageSubscription) {
@@ -221,67 +220,66 @@ export class DonationDetailComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  private loadDonationImage() {
-    if (
-      !this.isBrowser ||
-      !this.donation()?.photoUrl ||
-      this.donation()?.photoUrl.includes('/null')
-    ) {
-      this.imageState = 'error';
-      this.imageUrl = null;
-      if (this.isBrowser) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'No Image',
-          detail: 'No image available for this donation.',
-        });
-      }
-      return;
-    }
+  // private loadDonationImage() {
+  //   if (
+  //     !this.isBrowser ||
+  //     !this.donation()?.photoUrl ||
+  //     this.donation()?.photoUrl.includes('/null')
+  //   ) {
+  //     this.imageState = 'error';
+  //     this.imageUrl = null;
+  //     if (this.isBrowser) {
+  //       this.messageService.add({
+  //         severity: 'warn',
+  //         summary: 'No Image',
+  //         detail: 'No image available for this donation.',
+  //       });
+  //     }
+  //     return;
+  //   }
 
-    if (this.imageState === 'loaded') {
-      console.log('Image already loaded.');
-      return;
-    }
+  //   if (this.imageState === 'loaded') {
+  //     console.log('Image already loaded.');
+  //     return;
+  //   }
 
-    this.imageSubscription = this.dashboardService
-      .loadImage(this.donation()!.photoUrl)
-      .pipe(
-        retry(1),
-        takeUntilDestroyed(this.destroyRef),
-        catchError((err) => {
-          console.error('Image load failed:', err);
-          return of({ state: 'error' as const, error: 'Image load failed' });
-        })
-      )
-      .subscribe((imageState: ImageLoadState) => {
-        this.imageState = imageState.state;
-        this.imageUrl =
-          imageState.url && !imageState.url.includes('/null')
-            ? imageState.url
-            : null;
-        if (this.imageState === 'error' && this.isBrowser) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Image Error',
-            detail: 'Failed to load donation image.',
-          });
-        }
-      });
-  }
+  //   this.imageSubscription = this.dashboardService
+  //     .loadImage(this.donation()!.photoUrl)
+  //     .pipe(
+  //       retry(1),
+  //       takeUntilDestroyed(this.destroyRef),
+  //       catchError((err) => {
+  //         console.error('Image load failed:', err);
+  //         return of({ state: 'error' as const, error: 'Image load failed' });
+  //       })
+  //     )
+  //     .subscribe((imageState: ImageLoadState) => {
+  //       this.imageState = imageState.state;
+  //       this.imageUrl =
+  //         imageState.url && !imageState.url.includes('/null')
+  //           ? imageState.url
+  //           : null;
+  //       if (this.imageState === 'error' && this.isBrowser) {
+  //         this.messageService.add({
+  //           severity: 'error',
+  //           summary: 'Image Error',
+  //           detail: 'Failed to load donation image.',
+  //         });
+  //       }
+  //     });
+  // }
 
-  retryLoadImage() {
-    if (this.isBrowser && this.donation()?.photoUrl) {
-      this.dashboardService.clearImageFromCache(this.donation()!.photoUrl);
-      this.loadDonationImage();
-    } else if (this.isBrowser) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'No Image',
-        detail: 'No image URL to retry loading.',
-      });
-    }
-  }
+  // retryLoadImage() {
+  //   if (this.isBrowser && this.donation()?.photoUrl) {
+  //     this.loadDonationImage();
+  //   } else if (this.isBrowser) {
+  //     this.messageService.add({
+  //       severity: 'warn',
+  //       summary: 'No Image',
+  //       detail: 'No image URL to retry loading.',
+  //     });
+  //   }
+  // }
 
   confirmClaimDonation(event: Event): void {
     this.confirmationService.confirm({

@@ -232,6 +232,12 @@ export class UpdateDonationComponent implements OnInit {
 
   // ✅ FIX: onCoordsChange method for updating the form
   onCoordsChange(coords: { lat: number; lng: number }): void {
+    if (!this.form || coords.lat === null || coords.lng === null) {
+      console.warn(
+        'onCoordsChange called before form was ready or with invalid coords.'
+      );
+      return; // Do nothing
+    }
     this.form.patchValue({
       latitude: coords.lat.toFixed(6),
       longitude: coords.lng.toFixed(6),
@@ -281,7 +287,7 @@ export class UpdateDonationComponent implements OnInit {
     this.form.patchValue({ quantityUnit: unit.value.label });
     this.selectedUnitValue = unit.value.value;
     // console.log(this.
-      
+
     // );
   }
 

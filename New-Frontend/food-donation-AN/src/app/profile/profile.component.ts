@@ -106,7 +106,7 @@ export class ProfileComponent implements OnInit {
           if (data.latitude && data.longitude) {
             this.tokenService.setCoordinates(
               data.latitude.toString(),
-              data.longitude.toString(),
+              data.longitude.toString()
             );
           }
         },
@@ -276,6 +276,12 @@ export class ProfileComponent implements OnInit {
 
   // ✅ New method to handle coordinates from the map component
   onCoordsChange(coords: { lat: number; lng: number }) {
+    if (!this.profileForm || coords.lat === null || coords.lng === null) {
+      console.warn(
+        'onCoordsChange called before form was ready or with invalid coords.'
+      );
+      return; // Do nothing
+    }
     this.profileForm.patchValue({
       latitude: coords.lat.toFixed(6),
       longitude: coords.lng.toFixed(6),
@@ -438,7 +444,7 @@ export class ProfileComponent implements OnInit {
         'https://primefaces.org/cdn/primeng/images/avatar/amyelsner.png';
       return;
     }
-    this.profileImageUrl = photoUrl
+    this.profileImageUrl = photoUrl;
   }
 
   checkPasswordMatch() {

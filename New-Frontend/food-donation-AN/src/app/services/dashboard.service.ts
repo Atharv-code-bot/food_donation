@@ -319,218 +319,146 @@ export class DashboardService {
 
   // This method is now used by `MapComponent` to initialize a view-only map
   async initializeDonationMap(
-    mapContainerId: string,
-    latitude: string,
-    longitude: string,
-    isEditable: boolean = false
-  ): Promise<string | null> {
-    const lat = parseFloat(latitude);
-    const lng = parseFloat(longitude);
+  mapContainerId: string,
+  latitude: string,
+  longitude: string,
+  isEditable: boolean = false
+): Promise<string | null> {
+  if (typeof window === 'undefined') {
+    console.warn('Leaflet map not initialized — running on server.');
+    return null;
+  }
+
+  const lat = parseFloat(latitude);
+  const lng = parseFloat(longitude);
+
+  if (!mapContainerId || isNaN(lat) || isNaN(lng)) {
+    return '❗ Coordinates are missing or invalid.';
+  }
+
+  try {
+    // Lazy import only in browser
     const L = await import('leaflet');
 
-    if (
-      latitude == null ||
-      longitude == null ||
-      isNaN(lat) ||
-      isNaN(lng) ||
-      !mapContainerId
-    ) {
-      return '❗ Coordinates are missing or invalid for this donation, or map container ID is not provided.';
+    if (this._mapInstance) {
+      this._mapInstance.remove();
+      this._mapInstance = null;
     }
 
-    try {
-      if (this._mapInstance) {
-        this._mapInstance.remove();
-        this._mapInstance = null;
+    this._mapInstance = L.map(mapContainerId, {
+      zoomControl: true,
+      dragging: !isEditable,
+      scrollWheelZoom: !isEditable,
+    }).setView([lat, lng], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(this._mapInstance);
+
+    const updateMarker = async (markerLat: number, markerLng: number) => {
+      if (this._markerInstance) {
+        this._mapInstance?.removeLayer(this._markerInstance);
       }
-      this._mapInstance = L.map(mapContainerId, {
-        zoomControl: true,
-        dragging: !isEditable,
-        scrollWheelZoom: !isEditable,
-      }).setView([lat, lng], 15);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors',
-      }).addTo(this._mapInstance);
-      const updateMarker = async (markerLat: number, markerLng: number) => {
-        if (this._markerInstance) {
-          this._mapInstance?.removeLayer(this._markerInstance);
-        }
-        const address = await this.reverseGeocode(markerLat, markerLng);
-        const popupContent =
-          address ||
-          `Lat: ${markerLat.toFixed(6)}, Lng: ${markerLng.toFixed(6)}`;
-        this._markerInstance = L.marker([markerLat, markerLng]).addTo(
-          this._mapInstance!
-        );
-        this._markerInstance.bindPopup(popupContent).openPopup();
-        console.log(
-          `📍 Marker set at: ${markerLat.toFixed(6)}, ${markerLng.toFixed(6)}`
-        );
-      };
-      await updateMarker(lat, lng);
-      if (isEditable) {
-        this._mapInstance.on('click', async (e: any) => {
-          const { lat, lng } = e.latlng;
-          await updateMarker(lat, lng);
-          this._selectedCoordinates.next({ lat, lng });
-        });
-      } else {
-        this._mapInstance.doubleClickZoom.disable();
-        this._mapInstance.scrollWheelZoom.disable();
-        this._mapInstance.boxZoom.disable();
-        this._mapInstance.keyboard.disable();
-        if ((this._mapInstance as any).tap)
-          (this._mapInstance as any).tap.disable();
-      }
-      return null;
-    } catch (err) {
-      console.error('🛑 Map initialization failed in service:', err);
-      return '❗ Unable to load map. Coordinates may be missing or map service failed.';
+      const address = await this.reverseGeocode(markerLat, markerLng);
+      const popupContent = address || `Lat: ${markerLat}, Lng: ${markerLng}`;
+      this._markerInstance = L.marker([markerLat, markerLng]).addTo(this._mapInstance!);
+      this._markerInstance.bindPopup(popupContent).openPopup();
+    };
+
+    await updateMarker(lat, lng);
+
+    if (isEditable) {
+      this._mapInstance.on('click', async (e: any) => {
+        const { lat, lng } = e.latlng;
+        await updateMarker(lat, lng);
+        this._selectedCoordinates.next({ lat, lng });
+      });
     }
+
+    return null;
+  } catch (err) {
+    console.error('🛑 Map initialization failed in service:', err);
+    return '❗ Unable to load map.';
   }
+}
+
 
   async initializeLocationSelectionMap(
-    mapContainerId: string,
-    initialLat: number | null,
-    initialLng: number | null,
-    defaultLat: number | null,
-    defaultLng: number | null
-  ): Promise<string | null> {
-    if (!mapContainerId) {
-      return 'Map container ID is not provided.';
-    }
+  mapContainerId: string,
+  initialLat: number | null,
+  initialLng: number | null,
+  defaultLat: number | null,
+  defaultLng: number | null
+): Promise<string | null> {
+  if (typeof window === 'undefined') {
+    console.warn('Leaflet map not initialized — running on server.');
+    return null;
+  }
+
+  if (!mapContainerId) return 'Map container ID is not provided.';
+
+  try {
     const L = await import('leaflet');
 
-    try {
-      if (this._mapInstance) {
-        this._mapInstance.remove();
-        this._mapInstance = null;
-      }
-      const map = L.map(mapContainerId, {
-        zoomControl: true,
-        dragging: true,
-        scrollWheelZoom: true,
-      });
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors',
-      }).addTo(map);
-      this._mapInstance = map;
-      const setAndEmitMarker = async (
-        markerLat: number,
-        markerLng: number,
-        popupMsg: string
-      ) => {
-        if (this._markerInstance) {
-          map.removeLayer(this._markerInstance);
-        }
-        const address = await this.reverseGeocode(markerLat, markerLng);
-        const popupContent = address || popupMsg;
-        this._markerInstance = L.marker([markerLat, markerLng]).addTo(map);
-        this._markerInstance.bindPopup(popupContent).openPopup();
-        this._selectedCoordinates.next({ lat: markerLat, lng: markerLng });
-        console.log(
-          `📍 Marker set at: ${markerLat.toFixed(6)}, ${markerLng.toFixed(6)}`
-        );
-      };
-
-      if (
-        initialLat !== null &&
-        initialLng !== null &&
-        !isNaN(initialLat) &&
-        !isNaN(initialLng)
-      ) {
-        map.setView([initialLat, initialLng], 15);
-        await setAndEmitMarker(initialLat, initialLng, 'Initial Location');
-      } else if (navigator.geolocation) {
-        const tryGeolocation = (options: PositionOptions, isRetry: boolean) => {
-          navigator.geolocation.getCurrentPosition(
-            async (position) => {
-              const lat = position.coords.latitude;
-              const lng = position.coords.longitude;
-              console.log(`✅ Geolocation successful: ${lat}, ${lng}`);
-              map.setView([lat, lng], 15);
-              await setAndEmitMarker(lat, lng, 'You are here');
-            },
-            (error) => {
-              console.warn(
-                `⚠️ Geolocation error (Code: ${error.code}):`,
-                error.message
-              );
-              let errorMessage = `Geolocation failed: ${error.message}.`;
-              switch (error.code) {
-                case error.PERMISSION_DENIED:
-                  errorMessage =
-                    'You denied location access. Please enable it in browser settings to use this feature.';
-                  break;
-                case error.POSITION_UNAVAILABLE:
-                  errorMessage =
-                    'Location information is unavailable. Check your device settings and network connection.';
-                  if (!isRetry && options.enableHighAccuracy) {
-                    console.log('Retrying geolocation with lower accuracy...');
-                    tryGeolocation(
-                      {
-                        enableHighAccuracy: false,
-                        timeout: 20000,
-                        maximumAge: 60000,
-                      },
-                      true
-                    );
-                    return;
-                  }
-                  break;
-                case error.TIMEOUT:
-                  errorMessage = 'The request to get user location timed out.';
-                  if (!isRetry && options.enableHighAccuracy) {
-                    console.log('Retrying geolocation with lower accuracy...');
-                    tryGeolocation(
-                      {
-                        enableHighAccuracy: false,
-                        timeout: 20000,
-                        maximumAge: 60000,
-                      },
-                      true
-                    );
-                    return;
-                  }
-                  break;
-              }
-              alert(errorMessage + ' Using default location.');
-              setAndEmitMarker(
-                defaultLat!,
-                defaultLng!,
-                'Default Location: Pune'
-              );
-            },
-            options
-          );
-        };
-        tryGeolocation(
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
-          false
-        );
-      } else {
-        console.warn('⚠️ Geolocation not supported by this browser.');
-        alert(
-          'Geolocation not supported by your browser. Using default location.'
-        );
-        await setAndEmitMarker(
-          defaultLat!,
-          defaultLng!,
-          'Default Location: Pune'
-        );
-      }
-      map.on('click', async (e: any) => {
-        const { lat, lng } = e.latlng;
-        await setAndEmitMarker(lat, lng, 'Selected Location');
-      });
-      return null;
-    } catch (err) {
-      console.error('🛑 Map initialization failed in service:', err);
-      return '❗ Unable to load map. Map service failed.';
+    if (this._mapInstance) {
+      this._mapInstance.remove();
+      this._mapInstance = null;
     }
+
+    const map = L.map(mapContainerId, {
+      zoomControl: true,
+      dragging: true,
+      scrollWheelZoom: true,
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(map);
+
+    this._mapInstance = map;
+
+    const setAndEmitMarker = async (lat: number, lng: number, popupMsg: string) => {
+      if (this._markerInstance) map.removeLayer(this._markerInstance);
+      const address = await this.reverseGeocode(lat, lng);
+      const popupContent = address || popupMsg;
+      this._markerInstance = L.marker([lat, lng]).addTo(map);
+      this._markerInstance.bindPopup(popupContent).openPopup();
+      this._selectedCoordinates.next({ lat, lng });
+    };
+
+    if (initialLat && initialLng) {
+      map.setView([initialLat, initialLng], 15);
+      await setAndEmitMarker(initialLat, initialLng, 'Initial Location');
+    } else if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async pos => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          map.setView([lat, lng], 15);
+          await setAndEmitMarker(lat, lng, 'You are here');
+        },
+        async () => {
+          await setAndEmitMarker(defaultLat!, defaultLng!, 'Default Location');
+        }
+      );
+    } else {
+      await setAndEmitMarker(defaultLat!, defaultLng!, 'Default Location');
+    }
+
+    map.on('click', async (e: any) => {
+      const { lat, lng } = e.latlng;
+      await setAndEmitMarker(lat, lng, 'Selected Location');
+    });
+
+    return null;
+  } catch (err) {
+    console.error('🛑 Map initialization failed in service:', err);
+    return '❗ Unable to load map.';
   }
+}
+
 
   async reverseGeocode(lat: number, lng: number): Promise<string | null> {
     if (!isPlatformBrowser(this.platformId)) {

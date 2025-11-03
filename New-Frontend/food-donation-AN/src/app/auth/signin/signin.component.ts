@@ -8,6 +8,7 @@ import { FirebaseMessagingService } from '../../services/firebase-messaging.serv
 import { take } from 'rxjs/operators';
 import { AuthResponseData } from '../../auth/auth.model'; // Import AuthResponseData
 import { isPlatformBrowser } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-signin',
@@ -22,6 +23,8 @@ export class SigninComponent {
   private router = inject(Router);
   private fcmService = inject(FirebaseMessagingService);
   private platformId = inject(PLATFORM_ID);
+  private API_URL = environment.apiUrl;
+  
 
   username = signal('');
   password = signal('');
@@ -73,7 +76,7 @@ export class SigninComponent {
     this.isSigningInWithGoogle = true;
     if (isPlatformBrowser(this.platformId)) {
       window.location.href =
-        'http://localhost:8080/oauth2/authorization/google';
+        `${this.API_URL}/oauth2/authorization/google`;
     }
   }
 }

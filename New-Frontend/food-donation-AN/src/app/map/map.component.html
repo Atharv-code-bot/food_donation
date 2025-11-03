@@ -25,9 +25,10 @@
     <div
       #mapContainer
       [id]="mapId"
-      class="w-full h-80 z-10"
+      class="w-full h-80 z-10 map-container"
       [class.opacity-0]="mapLoading()"
       [class.opacity-100]="!mapLoading()"
+      style="height: 400px; width: 100%;"
     ></div>
 
     <div

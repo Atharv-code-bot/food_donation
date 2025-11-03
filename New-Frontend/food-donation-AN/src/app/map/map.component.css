@@ -1,0 +1,5 @@
+.map-container {
+  height: 400px; /* Or whatever height you need */
+  width: 100%;
+  position: relative;
+}

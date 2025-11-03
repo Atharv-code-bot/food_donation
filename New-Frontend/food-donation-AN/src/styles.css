@@ -164,6 +164,12 @@ body {
   width: 100%;
 }
 
+.map-container {
+  height: 400px; /* Or whatever height you need */
+  width: 100%;
+  position: relative;
+}
+
 /* Mobile specific sidebar styles */
 .mobile-sidebar-default {
   position: fixed; /* Fixed position so it overlays content */

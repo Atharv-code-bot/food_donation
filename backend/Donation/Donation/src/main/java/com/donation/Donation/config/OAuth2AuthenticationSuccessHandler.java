@@ -49,7 +49,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         System.out.println("Granted Authorities: " + authentication2.getAuthorities());
 
         // Redirect with token & role
-        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:4200/auth/oauth2/redirect")
+        String redirectUrl = UriComponentsBuilder.fromUriString("http://food-donation-blue.vercel.app/auth/oauth2/redirect")
                 .queryParam("token", token)
                 .queryParam("role", user.getRole().name())
                 .queryParam("id", user.getUserId())

@@ -20,7 +20,7 @@ public class CorsConfig {
         config.setAllowCredentials(true);
 
         // ✅ Allow frontend URLs
-        config.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost:5500", "http://127.0.0.1:5500"));
+        config.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost:5500", "http://127.0.0.1:5500", "https://food-donation-blue.vercel.app"));
 
         // ✅ Allow all HTTP methods
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

@@ -34,6 +34,21 @@ export default async function handler(req, res) {
       body = Buffer.concat(chunks);
     }
 
+    // Handle preflight OPTIONS request (browser CORS check)
+    if (req.method === 'OPTIONS') {
+      res.setHeader('Access-Control-Allow-Origin', 'https://food-donation-blue.vercel.app');
+      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Firebase-Token');
+      res.status(200).end();
+      return;
+    }
+
+    // Add CORS headers for all responses
+    res.setHeader('Access-Control-Allow-Origin', 'https://food-donation-blue.vercel.app');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Firebase-Token');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+
+
     // ✅ Forward the request to backend
     const backendResponse = await fetch(destinationUrl, {
       method: req.method,

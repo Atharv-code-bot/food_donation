@@ -8,6 +8,6 @@ public class TestController {
 
     @GetMapping("/test")
     public String testWebhook() {
-        return "Ganpati bappa morya !! Mangalmurti morya!!";
+        return "Ganpati bappa morya ";
     }
 }

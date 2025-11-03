@@ -11,6 +11,7 @@ import com.donation.Donation.service.OtpService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -137,7 +138,10 @@ public class DonationController {
         Donations donation = donationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Donation not found"));
         otpService.sendOtpToNgo(donation);
-        return ResponseEntity.ok("OTP sent to NGO successfully.");
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
+                .body("OTP sent to NGO successfully.");
+
     }
 
     @PutMapping("/{id}/complete")

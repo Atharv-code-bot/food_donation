@@ -11,7 +11,7 @@ import {
   throwError,
 } from 'rxjs';
 import { shareReplay, startWith } from 'rxjs/operators';
-
+import * as L from 'leaflet';
 import { TokenService } from './token.service';
 import { donation } from '../dashboard/donation.model';
 import { SuccessDialogComponent } from '../shared/success-dialog/success-dialog.component';
@@ -336,7 +336,7 @@ export class DashboardService {
 
     const lat = parseFloat(latitude);
     const lng = parseFloat(longitude);
-    const L = await import('leaflet');
+    // const L = await import('leaflet');
 
     if (
       latitude == null ||
@@ -420,7 +420,7 @@ export class DashboardService {
     if (!mapContainerId) {
       return 'Map container ID is not provided.';
     }
-    const L = await import('leaflet');
+    // const L = await import('leaflet');
 
     try {
       if (this._mapInstance) {

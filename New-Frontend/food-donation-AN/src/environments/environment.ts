@@ -13,4 +13,5 @@ export const environment = {
       'BORi7zm4hRZC6o7iXm3mAyxVMUHjINrNddjcIEq8_o95Iylvkda8J0FrxHPHIv9ESJNXcJRqJkih7phMQR_rZ20',
   },
   apiUrl: 'http://localhost:8080',
+  absoluteApiUrl: 'http://localhost:3000'
 };

@@ -25,7 +25,6 @@ export class SignupComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
-  private API_URL = environment.apiUrl;
 
   formSubmitted = false;
   isSigningUp = false;
@@ -99,9 +98,9 @@ export class SignupComponent {
 
   loginWithGoogle() {
     this.isSigningUpWithGoogle = true;
-    if (this.isBrowser) {
-      window.location.href =
-        `${this.API_URL}/oauth2/authorization/google`;
+    if (isPlatformBrowser(this.platformId)) {
+      // Use the NEW absoluteApiUrl variable
+      window.location.href = `${environment.absoluteApiUrl}/oauth2/authorization/google`;
     }
   }
 }

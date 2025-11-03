@@ -23,8 +23,6 @@ export class SigninComponent {
   private router = inject(Router);
   private fcmService = inject(FirebaseMessagingService);
   private platformId = inject(PLATFORM_ID);
-  private API_URL = environment.apiUrl;
-  
 
   username = signal('');
   password = signal('');
@@ -75,8 +73,8 @@ export class SigninComponent {
   loginWithGoogle() {
     this.isSigningInWithGoogle = true;
     if (isPlatformBrowser(this.platformId)) {
-      window.location.href =
-        `${this.API_URL}/oauth2/authorization/google`;
+      // Use the NEW absoluteApiUrl variable
+      window.location.href = `${environment.absoluteApiUrl}/oauth2/authorization/google`;
     }
   }
 }

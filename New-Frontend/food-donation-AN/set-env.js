@@ -43,6 +43,7 @@ export const environment = {
     vapidKey: '${process.env.FIREBASE_VAPID_KEY}',
   },
   apiUrl: '/api', // <-- THIS IS THE CHANGE
+  absoluteApiUrl: '${process.env.API_URL}'
 };
 `;
 // --- End of template ---

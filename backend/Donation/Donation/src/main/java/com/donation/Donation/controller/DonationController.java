@@ -137,7 +137,7 @@ public class DonationController {
     public ResponseEntity<String> sendOtp(@PathVariable int id) {
         Donations donation = donationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Donation not found"));
-        otpService.sendOtpToNgo(donation);
+        otpService.sendOtpToDonor(donation);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
                 .body("OTP sent to NGO successfully.");

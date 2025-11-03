@@ -28,7 +28,7 @@ public class OtpService {
         return String.valueOf(new Random().nextInt(900000) + 100000);
     }
 
-    public void sendOtpToNgo(Donations donation) {
+    public void sendOtpToDonor(Donations donation) {
         String otp = generateOtp();
         LocalDateTime expiry = LocalDateTime.now().plusMinutes(10);
 
@@ -39,7 +39,7 @@ public class OtpService {
 
         otpRepository.save(existingOtp);
 
-        String ngoPhone = donation.getClaimedByNgo().getPhone();
+        String ngoPhone = donation.getDonor().getPhone();
         String message = "Your OTP for completing donation is: " + otp;
         smsNotificationService.sendSms(ngoPhone, message);
     }

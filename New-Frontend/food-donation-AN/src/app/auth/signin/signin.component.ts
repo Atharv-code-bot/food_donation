@@ -8,6 +8,7 @@ import { FirebaseMessagingService } from '../../services/firebase-messaging.serv
 import { take } from 'rxjs/operators';
 import { AuthResponseData } from '../../auth/auth.model'; // Import AuthResponseData
 import { isPlatformBrowser } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-signin',
@@ -72,8 +73,8 @@ export class SigninComponent {
   loginWithGoogle() {
     this.isSigningInWithGoogle = true;
     if (isPlatformBrowser(this.platformId)) {
-      window.location.href =
-        'http://localhost:8080/oauth2/authorization/google';
+      // Use the NEW absoluteApiUrl variable
+      window.location.href = `${environment.absoluteApiUrl}/oauth2/authorization/google`;
     }
   }
 }

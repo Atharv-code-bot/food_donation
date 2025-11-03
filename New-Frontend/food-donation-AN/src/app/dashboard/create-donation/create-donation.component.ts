@@ -110,6 +110,10 @@ export class CreateDonationComponent implements OnInit, OnDestroy {
   }
 
   onCoordsChange(coords: { lat: number; lng: number }): void {
+    if (!this.form || coords.lat === null || coords.lng === null) {
+    console.warn('onCoordsChange called before form was ready or with invalid coords.');
+    return; // Do nothing
+  }
     this.form.patchValue({
       latitude: coords.lat.toFixed(6),
       longitude: coords.lng.toFixed(6),
